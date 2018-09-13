@@ -1,6 +1,0 @@
-python_rave.egg-info
-dist
-build
-test_*
-.DS_Store
-python_rave/__pycache__/
