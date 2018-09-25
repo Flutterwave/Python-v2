@@ -21,6 +21,7 @@ class Account(Payment):
 
         responseJson = res["json"]
         flwRef = res["flwRef"]
+        print(res)
         
         # If all preliminary checks are passed
         if not (responseJson["data"].get("chargeResponseCode", None) == "00"):
