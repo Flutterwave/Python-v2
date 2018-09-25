@@ -27,4 +27,5 @@ class Mpesa(Payment):
 
         # Checking for required account components
         requiredParameters = ["amount", "email", "phonenumber", "IP"]
-        return super(Mpesa, self).charge(accountDetails, requiredParameters, endpoint)
+        res = super(Mpesa, self).charge(accountDetails, requiredParameters, endpoint)
+        return res
