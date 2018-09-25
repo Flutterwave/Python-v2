@@ -19,7 +19,7 @@ setuptools.setup(
         "Operating System :: OS Independent",
     ),
     install_requires = [
-        'PyCrypto',
+        'pycryptodome',
         'requests'
     ]
 )

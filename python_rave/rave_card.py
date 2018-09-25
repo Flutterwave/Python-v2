@@ -47,8 +47,14 @@ class Card(Payment):
         # Checking if there was a server error during the call (in this case html is returned instead of json)
         res =  self._preliminaryResponseChecks(response, TransactionVerificationError, txRef=txRef)
 
+        # sets flwref, amount, chargedAmount, status, chargeCode, responseMessage as variables from the verification response
         responseJson = res["json"]
-        flwRef = res["flwRef"]
+        flwRef = responseJson["data"]["flwref"]
+        amount = responseJson["data"]["amount"]
+        chargedAmount = responseJson["data"]["chargedamount"]
+        status = responseJson["data"]["status"]
+        chargeCode = responseJson["data"]["chargecode"]
+        responseMessage = responseJson["data"]["vbvmessage"]
 
         # Check if the call returned something other than a 200
         if not response.ok:
@@ -57,10 +63,10 @@ class Card(Payment):
         
         # if the chargecode is not 00
         elif not (responseJson["data"].get("chargecode", None) == "00"):
-            return {"error": False, "transactionComplete": False, "txRef": txRef, "flwRef":flwRef, "cardToken": responseJson["data"]["card"]["card_tokens"][0]["embedtoken"]}
+            return {"status": status, "error": False, "transactionComplete": False, "amount": amount, "chargedAmount": chargedAmount, "chargecode": chargeCode, "responsemessage": responseMessage, "txRef": txRef, "flwRef": flwRef, "cardToken": responseJson["data"]["card"]["card_tokens"][0]["embedtoken"]}
         
         else:
-            return {"error":False, "transactionComplete": True, "txRef": txRef, "flwRef": flwRef, "cardToken": responseJson["data"]["card"]["card_tokens"][0]["embedtoken"]}
+            return {"status": status, "error": False, "transactionComplete": True, "amount": amount, "chargedAmount": chargedAmount, "chargecode": chargeCode, "responsemessage": responseMessage, "txRef": txRef, "flwRef": flwRef, "cardToken": responseJson["data"]["card"]["card_tokens"][0]["embedtoken"]}
 
     
     # Charge card function
