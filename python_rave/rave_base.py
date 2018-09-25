@@ -99,9 +99,7 @@ class RaveBase(object):
         key = self.__getEncryptionKey()
         cipher = DES3.new(key, DES3.MODE_ECB)
         plainText = "{}{}".format(plainText, "".join(chr(padDiff) * padDiff))
-        encodeText = plainText.encode("utf-8")
-        encrypted = base64.b64encode(
-        cipher.encrypt(encodeText)).decode("utf-8")
+        encrypted = base64.b64encode(cipher.encrypt(plainText)).decode("utf-8")
         return encrypted
         
 
