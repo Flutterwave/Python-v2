@@ -13,6 +13,10 @@ To install, run
 
 ``` pip install python_rave```
 
+## Prerequisite
+
+``` pip install pycryptodome ```
+
 Note: This is currently under active development
 ## Import Package
 The base class for this package is 'Rave'. To use this class, add:
