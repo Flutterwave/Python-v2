@@ -60,9 +60,9 @@ class Payment(RaveBase):
 
         res = self._preliminaryResponseChecks(response, TransactionVerificationError, txRef=txRef)
 
-
+        # sets flwref as a variable from the verification response
         responseJson = res["json"]
-        flwRef = res["flwRef"]
+        flwRef = responseJson["data"]["flwref"]
 
         # Check if the chargecode is 00
         if not (responseJson["data"].get("chargecode", None) == "00"):

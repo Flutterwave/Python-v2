@@ -47,8 +47,9 @@ class Card(Payment):
         # Checking if there was a server error during the call (in this case html is returned instead of json)
         res =  self._preliminaryResponseChecks(response, TransactionVerificationError, txRef=txRef)
 
+        # sets flwref as a variable from the verification response
         responseJson = res["json"]
-        flwRef = res["flwRef"]
+        flwRef = responseJson["data"]["flwref"]
 
         # Check if the call returned something other than a 200
         if not response.ok:
