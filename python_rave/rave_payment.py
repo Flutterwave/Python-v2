@@ -65,13 +65,17 @@ class Payment(RaveBase):
         flwRef = responseJson["data"]["flwref"]
         status = responseJson["data"]["status"]
         amount = responseJson["data"]["amount"]
+        chargecode = responseJson["data"]["chargecode"]
+        acctmessage = responseJson["data"]["acctmessage"]
+        
+        
 
         # Check if the chargecode is 00
         if not (responseJson["data"].get("chargecode", None) == "00"):
-            return {"error": False, "status": status, "amount": amount,  "transactionComplete": False, "txRef": txRef, "flwRef":flwRef}
+            return {"error": False, "status": status, "amount": amount, "chargecode":chargecode, "acctmessage": acctmessage, "transactionComplete": False, "txRef": txRef, "flwRef":flwRef}
         
         else:
-            return {"error": False, "status": status, "amount": amount, "transactionComplete": True, "txRef": txRef, "flwRef":flwRef}
+            return {"error": False, "status": status, "amount": amount, "chargecode":chargecode, "acctmessage": acctmessage,"transactionComplete": True, "txRef": txRef, "flwRef":flwRef}
 
     
     # returns true if further action is required, false if it isn't    

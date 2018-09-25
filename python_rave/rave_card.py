@@ -51,6 +51,8 @@ class Card(Payment):
         flwRef = responseJson["data"]["flwref"]
         status = responseJson["data"]["status"]
         amount = responseJson["data"]["amount"]
+        chargecode = responseJson["data"]["chargecode"]
+        vbvmessage = responseJson["data"]["vbvmessage"]
 
         # Check if the call returned something other than a 200
         if not response.ok:
@@ -59,10 +61,10 @@ class Card(Payment):
         
         # if the chargecode is not 00
         elif not (responseJson["data"].get("chargecode", None) == "00"):
-            return {"error": False, "status": status, "amount": amount, "transactionComplete": False, "txRef": txRef, "flwRef":flwRef, "cardToken": responseJson["data"]["card"]["card_tokens"][0]["embedtoken"]}
+            return {"error": False, "status": status, "amount": amount, "chargecode":chargecode, "vbvmessage": vbvmessage,"transactionComplete": False, "txRef": txRef, "flwRef":flwRef, "cardToken": responseJson["data"]["card"]["card_tokens"][0]["embedtoken"]}
         
         else:
-            return {"error":False, "status": status, "amount": amount,  "transactionComplete": True, "txRef": txRef, "flwRef": flwRef, "cardToken": responseJson["data"]["card"]["card_tokens"][0]["embedtoken"]}
+            return {"error":False, "status": status, "amount": amount, "chargecode":chargecode, "vbvmessage": vbvmessage, "transactionComplete": True, "txRef": txRef, "flwRef": flwRef, "cardToken": responseJson["data"]["card"]["card_tokens"][0]["embedtoken"]}
 
     
     # Charge card function

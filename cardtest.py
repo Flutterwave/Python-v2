@@ -38,7 +38,7 @@ try:
         rave.Card.validate(res["flwRef"], "12345")
 
     res = rave.Card.verify(res["txRef"])
-    print(res["transactionComplete"])
+    print(res)
 
 except RaveExceptions.CardChargeError as e:
     print(e.err["errMsg"])
