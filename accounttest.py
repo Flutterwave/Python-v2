@@ -1,8 +1,8 @@
 from python_rave import Rave , RaveExceptions
 
 # initialization
-OUR_PUBLIC_KEY = "FLWPUBK-3f9b0d8bc9eacc5ce6ee9e167c613c62-X"
-YOUR_SECRET_KEY = "FLWSECK-cdbf6713ce1ceb507b1f03fa44040f56-X"
+OUR_PUBLIC_KEY = "#"
+YOUR_SECRET_KEY = "#"
 
 rave = Rave(OUR_PUBLIC_KEY, YOUR_SECRET_KEY, usingEnv = False)
 
@@ -15,8 +15,8 @@ payload = {
   "currency": "NGN",
   "country": "NG",
   "amount": "100",
-  "email": "ifunanyaikemma@gmail.com",
-  "phonenumber": "08134836828",
+  "email": "ifunanya@gmail.com",
+  "phonenumber": "08087227647",
   "IP": "355426087298442",
 }
 
