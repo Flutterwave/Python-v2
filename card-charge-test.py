@@ -1,10 +1,10 @@
 # CARD TRANSACTION
 
 from python_rave import Rave, RaveExceptions, Misc
-rave = Rave(
-    "FLWPUBK-92e93a5c487ad64939327052e113c813-X",
-    "FLWSECK-61037cfe3cfc53b03e339ee201fa98f5-X",
-    usingEnv = False
+    rave = Rave(
+        "RAVE_PUBLIC_KEY",
+        "RAVE_SECRET_KEY",
+        usingEnv=False
     )
 
 # Payload with pin
