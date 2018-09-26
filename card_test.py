@@ -17,7 +17,6 @@ payload = {
 
 try:
     res = rave.Card.charge(payload)
-
     if res["suggestedAuth"]:
         arg = Misc.getTypeOfArgsRequired(res["suggestedAuth"])
 
@@ -27,13 +26,11 @@ try:
             Misc.updatePayload(res["suggestedAuth"], payload, address= {"billingzip": "07205", "billingcity": "Hillside", "billingaddress": "470 Mundet PI", "billingstate": "NJ", "billingcountry": "US"})
         
         res = rave.Card.charge(payload)
-
     if res["validationRequired"]:
         rave.Card.validate(res["flwRef"], "12345")
 
     res = rave.Card.verify(res["txRef"])
     print(res)
-
 except RaveExceptions.CardChargeError as e:
     print(e.err["errMsg"])
     print(e.err["flwRef"])

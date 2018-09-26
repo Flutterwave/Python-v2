@@ -17,7 +17,9 @@ class Card(Payment):
         """ This handles charge responses """
         res =  self._preliminaryResponseChecks(response, CardChargeError, txRef=txRef)
         
+    
         responseJson = res["json"]
+        print(responseJson)
         flwRef = res["flwRef"]
 
         # Checking if there is auth url
@@ -46,9 +48,7 @@ class Card(Payment):
 
         # Checking if there was a server error during the call (in this case html is returned instead of json)
         res =  self._preliminaryResponseChecks(response, TransactionVerificationError, txRef=txRef)
-
         responseJson = res["json"]
-        print(responseJson);
         flwRef = res["flwRef"]
         # print(responseJson)
         # Check if the call returned something other than a 200

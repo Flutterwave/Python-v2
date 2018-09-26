@@ -45,22 +45,19 @@ class Payment(RaveBase):
             raise ServerError({"error": True, "txRef": txRef, "flwRef": flwRef, "errMsg": response})
 
 
+        # Check if the response contains data parameter
         if responseJson.get("data", None):
             if txRef:
                 flwRef = responseJson["data"].get("flwRef", None)
             if flwRef:
                 txRef = responseJson["data"].get("txRef", None)
         else:
-            preliminary_error_response["error"] = 'True'
-            preliminary_error_response["errMsg"] = 'Server is down'
-            raise TypeOfErrorToRaise(preliminary_error_response)
+            raise TypeOfErrorToRaise({"error": True, "txRef": txRef, "flwRef": flwRef, "errMsg": responseJson.get("message", "Server is down")})
         
         # Check if it is returning a 200
         if not response.ok:
-            # retrieve necessary properties from response 
-            preliminary_error_response['flwRef'], preliminary_error_response["status"], preliminary_error_response["chargedamount"], preliminary_error_response["errMsg"] = Payment.retrieve(responseJson['data']['err_tx'], "flwRef", "status", "charged_amount", "chargeResponseMessage")
-            preliminary_error_response["error"] = 'True'
-            raise TypeOfErrorToRaise(preliminary_error_response)
+            errMsg = responseJson["data"].get("message", None)
+            raise TypeOfErrorToRaise({"error": True, "txRef": txRef, "flwRef": flwRef, "errMsg": errMsg})
         
         return {"json": responseJson, "flwRef": flwRef, "txRef": txRef}
 
@@ -69,9 +66,10 @@ class Payment(RaveBase):
 
         # If we cannot parse the json, it means there is a server error
         res = self._preliminaryResponseChecks(response, TransactionChargeError, txRef=txRef)
-
+        
         responseJson = res["json"]
-        flwRef = res["flwRef"]
+        # print(responseJson)
+        flwRef = responseJson["data"]["flwRef"]
         
         # if all preliminary tests pass
         if not (responseJson["data"].get("chargeResponseCode", None) == "00"):
@@ -92,6 +90,8 @@ class Payment(RaveBase):
 
 
         responseJson = res["json"]
+        print("Yoo")
+        print(responseJson)
         # retrieve necessary properties from response 
         verify_response["status"] = responseJson['status']
         verify_response['flwRef'], verify_response["txRef"], verify_response["vbvcode"], verify_response["vbvmessage"], verify_response["acctmessage"], verify_response["currency"], verify_response["chargecode"], verify_response["amount"], verify_response["chargedamount"] = Payment.retrieve(responseJson['data'], "flwref", "txref", "vbvcode", "vbvmessage", "acctmessage", "currency", "chargecode", "amount", "chargedamount")
@@ -124,7 +124,13 @@ class Payment(RaveBase):
         res = self._preliminaryResponseChecks(response, TransactionValidationError, flwRef=flwRef)
 
         responseJson = res["json"]
-        txRef = res["txRef"]
+        if responseJson["data"].get("tx") == None:
+            txRef = responseJson["data"]["txRef"]
+        else:
+            txRef = responseJson["data"]["tx"]["txRef"]
+        # print("cool")
+        # print(responseJson) 
+        
 
         # Of all preliminary checks passed
         if not (responseJson["data"].get("tx", responseJson["data"]).get("chargeResponseCode", None) == "00"):
