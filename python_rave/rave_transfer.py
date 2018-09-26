@@ -3,6 +3,7 @@ from python_rave.rave_base import RaveBase
 from python_rave.rave_misc import checkIfParametersAreComplete, generateTransactionReference
 from python_rave.rave_exceptions import InitiateTransferError, ServerError, TransferFetchError
 class Transfer(RaveBase):
+    
     def __init__(self, publicKey, secretKey, production, usingEnv):
         super(Transfer, self).__init__(publicKey, secretKey, production, usingEnv)
     

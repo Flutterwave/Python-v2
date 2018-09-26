@@ -99,7 +99,8 @@ class RaveBase(object):
         key = self.__getEncryptionKey()
         cipher = DES3.new(key, DES3.MODE_ECB)
         plainText = "{}{}".format(plainText, "".join(chr(padDiff) * padDiff))
-        encrypted = base64.b64encode(cipher.encrypt(plainText)).decode("utf-8")
+        encodedPlainText = plainText.encode('utf-8') #added this to enable pycryptodome encrypt the file
+        encrypted = base64.b64encode(cipher.encrypt(encodedPlainText)).decode("utf-8")
         return encrypted
         
 
