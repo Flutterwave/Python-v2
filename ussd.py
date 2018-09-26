@@ -4,8 +4,8 @@
 from python_rave import Rave, RaveExceptions, Misc
 
 rave = Rave(
-  "FLWPUBK-56e4a2c6c9a6b58364bfd07fc1993e2c-X", 
-  "FLWSECK-ea81e705d82161de5b7757c897d96ba4-X", 
+  "YOUR_PUBLIC_KEY", 
+  "YOUR_SECRET_KEY", 
   usingEnv = False
   )
 
