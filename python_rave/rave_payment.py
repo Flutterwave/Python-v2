@@ -3,6 +3,20 @@ from python_rave.rave_base import RaveBase
 from python_rave.rave_exceptions import RaveError, IncompletePaymentDetailsError, AuthMethodNotSupportedError, TransactionChargeError, TransactionVerificationError, TransactionValidationError, ServerError, RefundError
 from python_rave.rave_misc import checkIfParametersAreComplete
 
+response_object = {
+    "error": False,
+    "transactionComplete": False,
+    "flwRef": "",
+    "txRef": "",
+    "chargecode": '00',
+    "status": "",
+    "vbvcode": "",
+    "vbvmessage": "",
+    "acctmessage": "",
+    "currency": "",
+    "chargedamount": 00
+}
+
 # All payment subclasses are encrypted classes
 class Payment(RaveBase):
     """ This is the base class for all the payments """
@@ -10,27 +24,43 @@ class Payment(RaveBase):
         # Instantiating the base class
         super(Payment, self).__init__(publicKey, secretKey, production, usingEnv)
 
+    @classmethod
+    def retrieve(cls, mapping, *keys): 
+        return (mapping[key] for key in keys) 
+
+    @classmethod
+    def deleteUnnecessaryKeys(cls,response_dict, *keys):
+        for key in keys:
+            del response_dict[key]
+        return response_dict
 
     def _preliminaryResponseChecks(self, response, TypeOfErrorToRaise, txRef=None, flwRef=None):
+        preliminary_error_response = copy.deepcopy(response_object)
+        preliminary_error_response = Payment.deleteUnnecessaryKeys(preliminary_error_response, "transactionComplete", "chargecode", "vbvmessage", "vbvcode", "acctmessage", "currency")
+
         # Check if we can obtain a json
         try:
             responseJson = response.json()
         except:
             raise ServerError({"error": True, "txRef": txRef, "flwRef": flwRef, "errMsg": response})
 
-        # Check if the response contains data parameter
+
         if responseJson.get("data", None):
             if txRef:
                 flwRef = responseJson["data"].get("flwRef", None)
             if flwRef:
                 txRef = responseJson["data"].get("txRef", None)
         else:
-            raise TypeOfErrorToRaise({"error": True, "txRef": txRef, "flwRef": flwRef, "errMsg": responseJson.get("message", "Server is down")})
+            preliminary_error_response["error"] = 'True'
+            preliminary_error_response["errMsg"] = 'Server is down'
+            raise TypeOfErrorToRaise(preliminary_error_response)
         
         # Check if it is returning a 200
         if not response.ok:
-            errMsg = responseJson["data"].get("message", None)
-            raise TypeOfErrorToRaise({"error": True, "txRef": txRef, "flwRef": flwRef, "errMsg": errMsg})
+            # retrieve necessary properties from response 
+            preliminary_error_response['flwRef'], preliminary_error_response["status"], preliminary_error_response["chargedamount"], preliminary_error_response["errMsg"] = Payment.retrieve(responseJson['data']['err_tx'], "flwRef", "status", "charged_amount", "chargeResponseMessage")
+            preliminary_error_response["error"] = 'True'
+            raise TypeOfErrorToRaise(preliminary_error_response)
         
         return {"json": responseJson, "flwRef": flwRef, "txRef": txRef}
 
@@ -57,19 +87,32 @@ class Payment(RaveBase):
              Parameters include:\n
             response (dict) -- This is the response Http object returned from the verify call
          """
-
+        verify_response = copy.deepcopy(response_object)
         res = self._preliminaryResponseChecks(response, TransactionVerificationError, txRef=txRef)
 
 
         responseJson = res["json"]
-        flwRef = res["flwRef"]
+        # retrieve necessary properties from response 
+        verify_response["status"] = responseJson['status']
+        verify_response['flwRef'], verify_response["txRef"], verify_response["vbvcode"], verify_response["vbvmessage"], verify_response["acctmessage"], verify_response["currency"], verify_response["chargecode"], verify_response["amount"], verify_response["chargedamount"] = Payment.retrieve(responseJson['data'], "flwref", "txref", "vbvcode", "vbvmessage", "acctmessage", "currency", "chargecode", "amount", "chargedamount")
 
         # Check if the chargecode is 00
-        if not (responseJson["data"].get("chargecode", None) == "00"):
-            return {"error": False, "transactionComplete": False, "txRef": txRef, "flwRef":flwRef}
+        if verify_response['chargecode'] == "00":
+            verify_response["error"] = False
+            verify_response["transactionComplete"] = True
+            return verify_response
         
         else:
-            return {"error": False, "transactionComplete": True, "txRef": txRef, "flwRef":flwRef}
+            verify_response["error"] = False
+            verify_response["transactionComplete"] = False
+            return verify_response
+        
+        # # Check if the chargecode is 00
+        # if not (responseJson["data"].get("chargecode", None) == "00"):
+        #     return {"error": False, "transactionComplete": False, "txRef": txRef, "flwRef":flwRef}
+        
+        # else:
+        #     return {"error": False, "transactionComplete": True, "txRef": txRef, "flwRef":flwRef}
 
     
     # returns true if further action is required, false if it isn't    

@@ -12,7 +12,6 @@ payload = {
 }
 try:
     res = rave.Account.charge(payload)
-    print(res)
     if res["authUrl"]:
         print(res["authUrl"])
 
