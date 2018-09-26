@@ -11,7 +11,7 @@ This is a Python wrapper around the [API](https://flutterwavedevelopers.readme.i
 ## Installation
 To install, run
 
-``` pip install python_rave```
+``` pip install pycryptodome```
 
 Note: This is currently under active development
 ## Import Package
