@@ -40,6 +40,7 @@ class Payment(RaveBase):
 
         # Check if we can obtain a json
         try:
+            # print(response)
             responseJson = response.json()
         except:
             raise ServerError({"error": True, "txRef": txRef, "flwRef": flwRef, "errMsg": response})
@@ -90,8 +91,6 @@ class Payment(RaveBase):
 
 
         responseJson = res["json"]
-        print("Yoo")
-        print(responseJson)
         # retrieve necessary properties from response 
         verify_response["status"] = responseJson['status']
         verify_response['flwRef'], verify_response["txRef"], verify_response["vbvcode"], verify_response["vbvmessage"], verify_response["acctmessage"], verify_response["currency"], verify_response["chargecode"], verify_response["amount"], verify_response["chargedamount"] = Payment.retrieve(responseJson['data'], "flwref", "txref", "vbvcode", "vbvmessage", "acctmessage", "currency", "chargecode", "amount", "chargedamount")
@@ -151,6 +150,7 @@ class Payment(RaveBase):
             shouldReturnRequest -- This determines whether a request is passed to _handleResponses\n
         """
         # Checking for required components
+        print(endpoint)
         try:
             checkIfParametersAreComplete(requiredParameters, paymentDetails)
         except: 
@@ -162,21 +162,24 @@ class Payment(RaveBase):
         # Adding PBFPubKey param to paymentDetails
         paymentDetails.update({"PBFPubKey": self._getPublicKey()})
 
-        # Encrypting payment details (_encrypt is inherited from RaveEncryption)
-        encryptedPaymentDetails = self._encrypt(json.dumps(paymentDetails))
-
         # Collating request headers
         headers = {
             'content-type': 'application/json',
         }
-        
-        # Collating the payload for the request
-        payload = {
-            "PBFPubKey": paymentDetails["PBFPubKey"],
-            "client": encryptedPaymentDetails,
-            "alg": "3DES-24"
-        }
-        response = requests.post(endpoint, headers=headers, data=json.dumps(payload))
+        if "token" in paymentDetails:
+            paymentDetails.update({"SECKEY": self._getSecretKey()})
+            response = requests.post(endpoint, headers=headers, data=json.dumps(paymentDetails))
+        else:
+            # Encrypting payment details (_encrypt is inherited from RaveEncryption)
+            encryptedPaymentDetails = self._encrypt(json.dumps(paymentDetails))
+            
+            # Collating the payload for the request
+            payload = {
+                "PBFPubKey": paymentDetails["PBFPubKey"],
+                "client": encryptedPaymentDetails,
+                "alg": "3DES-24"
+            }
+            response = requests.post(endpoint, headers=headers, data=json.dumps(payload))
         
         if shouldReturnRequest:
             return self._handleChargeResponse(response, paymentDetails["txRef"], paymentDetails)

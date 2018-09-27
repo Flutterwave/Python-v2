@@ -13,7 +13,7 @@ class RaveBase(object):
                 "charge": "flwv3-pug/getpaidx/api/charge",
                 "validate": "flwv3-pug/getpaidx/api/validatecharge",
                 "verify": "flwv3-pug/getpaidx/api/v2/verify",
-                "preauthSavedCard": "flwv3-pug/getpaidx/api/tokenized/preauth_charge",
+                "preauthSavedCard": "flwv3-pug/getpaidx/api/tokenized/charge",
                 "capture": "flwv3-pug/getpaidx/api/capture",
                 "refundorvoid": "flwv3-pug/getpaidx/api/refundorvoid"
             },

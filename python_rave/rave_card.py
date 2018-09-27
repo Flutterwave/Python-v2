@@ -16,10 +16,10 @@ class Card(Payment):
     def _handleChargeResponse(self, response, txRef, request=None):
         """ This handles charge responses """
         res =  self._preliminaryResponseChecks(response, CardChargeError, txRef=txRef)
-        
+
     
         responseJson = res["json"]
-        print(responseJson)
+        # print(responseJson)
         flwRef = res["flwRef"]
 
         # Checking if there is auth url
@@ -34,7 +34,7 @@ class Card(Payment):
             suggestedAuth = responseJson["data"].get("suggested_auth", None)
             return {"error": False,  "validationRequired": True, "txRef": txRef, "flwRef": flwRef, "suggestedAuth": suggestedAuth, "authUrl": authUrl}
         else:
-            return {"error": False,  "validationRequired": False, "txRef": txRef, "flwRef": flwRef, "suggestedAuth": None, "authUrl": authUrl}
+            return {"error": False, "status": responseJson["status"],  "validationRequired": False, "txRef": txRef, "flwRef": flwRef, "suggestedAuth": None, "authUrl": authUrl}
 
     
 
@@ -72,16 +72,16 @@ class Card(Payment):
             hasFailed (bool) -- This indicates whether the request had previously failed for timeout handling
         """
 
-        # Checking for required card components
-        requiredParameters = ["cardno", "cvv", "expirymonth", "expiryyear", "amount", "email", "phonenumber", "firstname", "lastname", "IP"]
 
         # setting the endpoint
         if not chargeWithToken:
             endpoint = self._baseUrl + self._endpointMap["card"]["charge"]
+            requiredParameters = ["cardno", "cvv", "expirymonth", "expiryyear", "amount", "email", "phonenumber", "firstname", "lastname", "IP"]
         else:
             endpoint = self._baseUrl + self._endpointMap["card"]["preauthSavedCard"]
+            requiredParameters = ["currency", "token", "country", "amount", "email", "firstname", "lastname", "txRef", "IP"]
             # add token to requiredParameters
-            requiredParameters.append("token")
+            # requiredParameters.append("token")
 
         if not ("txRef" in cardDetails):
             cardDetails.update({"txRef":generateTransactionReference()})
