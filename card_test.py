@@ -19,7 +19,6 @@ payload_token = {
    "token":"flw-t1nf-5b0f12d565cd961f73c51370b1340f1f-m03k",
    "country":"NG",
    "amount":1000,
-   "email":"user@gmail.com",
    "firstname":"temi",
    "lastname":"Oyekole",
    "IP":"190.233.222.1",

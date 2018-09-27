@@ -46,6 +46,27 @@ class TestRavePaymentOptions(unittest.TestCase):
             "lastname": "desola",
             "IP": "355426087298442",
         }
+        self.saved_card_details = {
+            "token":"flw-t1nf-5b0f12d565cd961f73c51370b1340f1f-m03k",
+            "country":"NG",
+            "amount":1000,
+            "email":"user@gmail.com",
+            "firstname":"temi",
+            "lastname":"Oyekole",
+            "IP":"190.233.222.1",
+            "txRef":"MC-7666-YU",
+            "currency":"NGN",
+        }
+        self.faulty_saved_card_details = {
+            "token":"flw-t1nf-5b0f12d565cd961f73c51370b1340f1f-m03k",
+            "country":"NG",
+            "amount":1000,
+            "firstname":"temi",
+            "lastname":"Oyekole",
+            "IP":"190.233.222.1",
+            "txRef":"MC-7666-YU",
+            "currency":"NGN",
+        }
 
         self.rave = Rave("FLWPUBK-ba0a57153f497c03bf34a9e296aa9439-X", "FLWSECK-327b3874ca8e75640a1198a1b75c0b0b-X", usingEnv = False)
 
@@ -90,6 +111,17 @@ class TestRavePaymentOptions(unittest.TestCase):
         with self.assertRaises(TransactionVerificationError):
             self.rave.Card.verify("MC-8883838388881") # a wrong txRef to ensure TransactionVerificationError is raised anytime a wrong transaction reference is passed
 
+    def test_saved_card(self):
+        res = self.rave.Card.charge(self.saved_card_details, chargeWithToken=True)
+        self.assertIsNotNone(res["status"])
+        self.assertEqual(res["status"], 'success')
+
+        with self.assertRaises(IncompletePaymentDetailsError):
+            self.rave.Card.charge(self.faulty_saved_card_details, chargeWithToken=True)
+        
+        self.assertEqual(self.rave.Card.verify(res["txRef"])["transactionComplete"], True)
+        with self.assertRaises(TransactionVerificationError):
+            self.rave.Card.verify("MC-8883838388881") # a wrong txRef to ensure TransactionVerificationError is raised anytime a wrong transaction reference is passed
         
 if __name__ == '__main__':
     unittest.main()
