@@ -5,12 +5,13 @@ def account(payload):
 # account payload
     try:
         res = rave.Account.charge(payload)
+        print("Account Charge ")
         print(res)
         if res["authUrl"]:
             print(res["authUrl"])
 
         elif res["validationRequired"]:
-            print(rave.Account.validate(res["flwRef"], "123"))
+            print(rave.Account.validate(res["flwRef"], "12345"))
             
         res = rave.Account.verify(res["txRef"])
         print(res)
@@ -35,7 +36,7 @@ if __name__ == __name__:
     account(payload = {
     "accountbank":"044",
     "accountnumber":"0690000031",
-    "amount":"900",
+    "amount":"500",
     "country":"NG",
     "email":"varisiv@gmail.com",
     "phonenumber":"08031142735",
