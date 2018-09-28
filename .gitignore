@@ -1,2 +1,7 @@
 *.pyc
-*_test.py
+card_test.py
+account_test.py
+gnmobile_test.py
+mpesa_test.py
+preauth_test.py
+ussd_test.py
