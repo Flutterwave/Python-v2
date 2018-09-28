@@ -150,7 +150,7 @@ class Payment(RaveBase):
             shouldReturnRequest -- This determines whether a request is passed to _handleResponses\n
         """
         # Checking for required components
-        print(endpoint)
+        print(requiredParameters)
         try:
             checkIfParametersAreComplete(requiredParameters, paymentDetails)
         except: 

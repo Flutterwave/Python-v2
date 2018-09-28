@@ -346,10 +346,10 @@ A sample verify call is:
 
 #### Returns
 
-This call returns a dict with ```txRef```, ```flwRef``` and ```transactionComplete``` which indicates whether the transaction was completed successfully. Sample
+This call returns a dict with ```txRef```, ```flwRef``` and ```transactionComplete``` which indicates whether the transaction was completed successfully. 
 
-```{'flwRef': None, 'cardToken': u'flw-t1nf-5b0f12d565cd961f73c51370b1340f1f-m03k', 'chargedAmount': 100, 'amount': 100, 'transactionComplete': True, 'error': False, 'txRef': u'MC-1538095718251'}
-```
+Sample
+```{'flwRef': None, 'cardToken': u'flw-t1nf-5b0f12d565cd961f73c51370b1340f1f-m03k', 'chargedAmount': 100, 'amount': 100, 'transactionComplete': True, 'error': False, 'txRef': u'MC-1538095718251'}```
 
 #### Please note that after successfully charging a card successfully on rave, if you wish to save the card for further charges, In your verify payment response you will find an object: "embedtoken": "flw-t0-f6f915f53a094671d98560272572993e-m03k".  This is the token you will use for card tokenization. Details are provided below.
 
@@ -408,6 +408,7 @@ try:
     #Your charge call
 except RaveExceptions.IncompletePaymentDetailsError as e:
     print(e.err["errMsg"])
+```
 
 Once this is done, call ```rave.Card.verify``` passing in the ```txRef``` returned in the response to verify the payment. Sample response:
 
@@ -938,6 +939,7 @@ except RaveExceptions.ServerError as e:
 ```
 
 ## Run Tests
+
 All of the SDK's test are written with python's ```unittest``` module. The tests currently test:
 ```rave.Account.charge(payload)```
 ```rave.Account.validate(flwRef,otp)```

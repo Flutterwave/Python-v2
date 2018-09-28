@@ -28,28 +28,28 @@ payload_token = {
 }
 
 try:
-    # res = rave.Card.charge(payload_token, chargeWithToken=True)
-    # print(res)
-    # if res["error"] == False:
-    #     res = rave.Card.verify(res["txRef"])
-    #     print(res)
-    res = rave.Card.charge(payload)
-    print("card")
-    if res["suggestedAuth"]:
-        arg = Misc.getTypeOfArgsRequired(res["suggestedAuth"])
-
-        if arg == "pin":
-            Misc.updatePayload(res["suggestedAuth"], payload, pin="3310")
-        if arg == "address":
-            Misc.updatePayload(res["suggestedAuth"], payload, address= {"billingzip": "07205", "billingcity": "Hillside", "billingaddress": "470 Mundet PI", "billingstate": "NJ", "billingcountry": "US"})
-        
-        res = rave.Card.charge(payload)
-        
-    if res["validationRequired"]:
-        res = rave.Card.validate(res["flwRef"], "12345")    
-
-    res = rave.Card.verify(res["txRef"])
+    res = rave.Card.charge(payload_token, chargeWithToken=True)
     print(res)
+    if res["error"] == False:
+        res = rave.Card.verify(res["txRef"])
+        print(res)
+    # res = rave.Card.charge(payload)
+    # print("card")
+    # if res["suggestedAuth"]:
+    #     arg = Misc.getTypeOfArgsRequired(res["suggestedAuth"])
+
+    #     if arg == "pin":
+    #         Misc.updatePayload(res["suggestedAuth"], payload, pin="3310")
+    #     if arg == "address":
+    #         Misc.updatePayload(res["suggestedAuth"], payload, address= {"billingzip": "07205", "billingcity": "Hillside", "billingaddress": "470 Mundet PI", "billingstate": "NJ", "billingcountry": "US"})
+        
+    #     res = rave.Card.charge(payload)
+        
+    # if res["validationRequired"]:
+    #     res = rave.Card.validate(res["flwRef"], "12345")    
+
+    # res = rave.Card.verify(res["txRef"])
+    # print(res)
 except RaveExceptions.CardChargeError as e:
     print("here")
     print(e.err["errMsg"])

@@ -72,12 +72,14 @@ class Card(Payment):
             hasFailed (bool) -- This indicates whether the request had previously failed for timeout handling
         """
 
-
+        print(cardDetails)
         # setting the endpoint
         if not chargeWithToken:
+            print("got here1")
             endpoint = self._baseUrl + self._endpointMap["card"]["charge"]
             requiredParameters = ["cardno", "cvv", "expirymonth", "expiryyear", "amount", "email", "phonenumber", "firstname", "lastname", "IP"]
         else:
+            print("got here")
             endpoint = self._baseUrl + self._endpointMap["card"]["preauthSavedCard"]
             requiredParameters = ["currency", "token", "country", "amount", "email", "firstname", "lastname", "txRef", "IP"]
             # add token to requiredParameters

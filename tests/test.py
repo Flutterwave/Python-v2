@@ -1,8 +1,8 @@
 import unittest
 from python_rave import Rave, RaveExceptions, Misc
 from python_rave.rave_exceptions import RaveError, IncompletePaymentDetailsError, AccountChargeError,TransactionVerificationError, TransactionValidationError, ServerError, CardChargeError
-from test_data import TestData
-data = TestData()
+
+# This class tests card and account payment options on Rave. It uses mock data
 
 class TestRavePaymentOptions(unittest.TestCase):
     def setUp(self):
