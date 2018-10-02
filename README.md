@@ -149,7 +149,18 @@ A sample verify call is:
 
 This call returns a dict with ```txRef```, ```flwRef``` and ```transactionComplete``` which indicates whether the transaction was completed successfully. 
 
-If your call could not be completed successfully, a ```TransactionVerificationError``` is raised.
+Sample
+
+```{'status': u'success', 'vbvcode': u'N/A', 'chargedamount': 500, 'vbvmessage': u'N/A', 'error': False, 'flwRef': u'ACHG-1538093023787', 'currency': u'NGN', 'amount': 500, 'transactionComplete': True, 'acctmessage': u'Approved Or Completed Successfully', 'chargecode': u'00', 'txRef': u'MC-1538093008498'}```
+
+If your call could not be completed successfully or if a wrong ```txRef``` is passed, a ```TransactionVerificationError``` is raised. You can handle that as such
+```
+try: 
+    #Your charge call
+except RaveExceptions.TransactionVerificationError as e:
+    print(e.err["errMsg"])
+    print(e.err["flwRef"])
+```
 
 
 
@@ -249,7 +260,7 @@ A sample call is:
 
 This call returns a dictionary. A sample response is:
 
- ```{'error': False, 'validationRequired': True, 'txRef': 'MC-1530899106006', 'flwRef': 'ACHG-1530899109682', 'suggestedAuth': None} ```
+ ```{'validationRequired': True, 'suggestedAuth': u'PIN', 'flwRef': None, 'authUrl': None, 'error': False, 'txRef': 'MC-1538095398058'} ```
 
  This call raises an ```CardChargeError``` if there was a problem processing your transaction. The ```CardChargeError``` contains some information about your transaction. You can handle this as such:
 
@@ -264,6 +275,7 @@ except RaveExceptions.CardChargeError as e:
 A sample ``` e.err ``` contains:
 
 ```{'error': True, 'txRef': 'MC-1530897824739', 'flwRef': None, 'errMsg': 'Sorry, that card number is invalid, please check and try again'}```
+
 
 <br>
 
@@ -304,7 +316,7 @@ A sample validate call is:
 
 #### Returns
 
-This call returns a dictionary containing the ```txRef```, ```flwRef``` among others if successful.
+This call returns a dictionary containing the ```txRef```, ```flwRef``` among others if successful. 
 
 This call raises a ```TransactionValidationError``` if the OTP is not correct or there was a problem processing your request. 
 
@@ -336,7 +348,82 @@ A sample verify call is:
 
 This call returns a dict with ```txRef```, ```flwRef``` and ```transactionComplete``` which indicates whether the transaction was completed successfully. 
 
+Sample
+```{'flwRef': None, 'cardToken': u'flw-t1nf-5b0f12d565cd961f73c51370b1340f1f-m03k', 'chargedAmount': 100, 'amount': 100, 'transactionComplete': True, 'error': False, 'txRef': u'MC-1538095718251'}```
+
+#### Please note that after successfully charging a card successfully on rave, if you wish to save the card for further charges, In your verify payment response you will find an object: "embedtoken": "flw-t0-f6f915f53a094671d98560272572993e-m03k".  This is the token you will use for card tokenization. Details are provided below.
+
 If your call could not be completed successfully, a ```TransactionVerificationError``` is raised.
+
+<br>
+
+### ```.charge(payload_for_saved_card, chargeWithToken=True)```
+This is called to start a card transaction with a card that has been saved. The payload should be a dictionary containing card information. It should have the parameters:
+
+* ```token```,
+
+* ```country```, 
+
+* ```amount```, 
+
+* ```email```, 
+
+* ```firstname```, 
+
+* ```lastname```, 
+
+* ```IP```,
+
+* ```txRef```, 
+
+* ```currency```
+
+#### NB: email must be the same as before the card was saved
+Optionally, you can add a custom transaction reference using the ```txRef``` parameter. Note that if you do not specify one, it would be automatically generated. We do provide a function for generating transaction references in the Misc library (add link).
+
+A sample call is:
+
+``` res = rave.Card.charge(payload_for_saved_card, chargeWithToken=True) ```
+
+#### Returns
+
+This call returns a dictionary. A sample response is:
+
+ ```{'status': u'success', 'validationRequired': False, 'suggestedAuth': None, 'flwRef': u'FLW-M03K-cdb24d740fb18c242dd277fb1f74d399', 'authUrl': None, 'error': False, 'txRef': 'MC-7666-YU'}```
+
+ This call raises a ```CardChargeError``` if a wrong token or email is passed or if there was a problem processing your transaction. The ```CardChargeError``` contains some information about your transaction. You can handle this as such:
+
+ ```
+try: 
+    #Your charge call
+except RaveExceptions.CardChargeError as e:
+    print(e.err["errMsg"])
+    print(e.err["flwRef"])
+```
+
+This call also raises an ```IncompletePaymentDetailsError``` if any of the required parameters are missing. The ```IncompletePaymentDetailsError``` contains information about which parameter was not included in the payload. You can handle this such as:
+
+```
+try:
+    #Your charge call
+except RaveExceptions.IncompletePaymentDetailsError as e:
+    print(e.err["errMsg"])
+```
+
+Once this is done, call ```rave.Card.verify``` passing in the ```txRef``` returned in the response to verify the payment. Sample response:
+
+```{'flwRef': None, 'cardToken': u'flw-t1nf-5b0f12d565cd961f73c51370b1340f1f-m03k', 'chargedAmount': 1000, 'amount': 1000, 'transactionComplete': True, 'error': False, 'txRef': 'MC-7666-YU'}```
+
+```rave.Card.verify``` raises a ```TransactionVerificationError``` if an invalid ```txRef`` is supplied. You can handle this as such:
+
+ ```
+try: 
+    #Your charge call
+except RaveExceptions.CardChargeError as e:
+    print(e.err["errMsg"])
+    print(e.err["flwRef"])
+```
+#### NB: when charging saved cards, you do not need to call rave.card.Validate()
 
 ### Complete card charge flow
 
@@ -850,3 +937,17 @@ except RaveExceptions.ServerError as e:
 
 
 ```
+
+## Run Tests
+
+All of the SDK's test are written with python's ```unittest``` module. The tests currently test:
+```rave.Account.charge(payload)```
+```rave.Account.validate(flwRef,otp)```
+```rave.Account.verify(txRef)```
+```rave.Card.charge(payload)```
+```rave.card.charge(payload_for_saved_card, chargeWithToken)```
+```rave.Card.validate(flwRef,otp)```
+```rave.Card.verify(txRef)```
+They can be run like so:
+
+```python test.py```

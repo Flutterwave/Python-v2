@@ -13,7 +13,7 @@ class RaveBase(object):
                 "charge": "flwv3-pug/getpaidx/api/charge",
                 "validate": "flwv3-pug/getpaidx/api/validatecharge",
                 "verify": "flwv3-pug/getpaidx/api/v2/verify",
-                "preauthSavedCard": "flwv3-pug/getpaidx/api/tokenized/preauth_charge",
+                "preauthSavedCard": "flwv3-pug/getpaidx/api/tokenized/charge",
                 "capture": "flwv3-pug/getpaidx/api/capture",
                 "refundorvoid": "flwv3-pug/getpaidx/api/refundorvoid"
             },
@@ -76,7 +76,8 @@ class RaveBase(object):
             hashedseckeylast12 = hashedseckey[-12:]
             seckeyadjusted = self.__secretKey.replace('FLWSECK-', '')
             seckeyadjustedfirst12 = seckeyadjusted[:12]
-            return seckeyadjustedfirst12 + hashedseckeylast12
+            key = seckeyadjustedfirst12 + hashedseckeylast12
+            return key
 
         raise ValueError("Please initialize RavePay")
     
@@ -99,7 +100,9 @@ class RaveBase(object):
         key = self.__getEncryptionKey()
         cipher = DES3.new(key, DES3.MODE_ECB)
         plainText = "{}{}".format(plainText, "".join(chr(padDiff) * padDiff))
-        encrypted = base64.b64encode(cipher.encrypt(plainText)).decode("utf-8")
+        # cipher.encrypt - the C function that powers this doesn't accept plain string, rather it accepts byte strings, hence the need for the conversion below
+        test = plainText.encode('utf-8')
+        encrypted = base64.b64encode(cipher.encrypt(test)).decode("utf-8")
         return encrypted
         
 

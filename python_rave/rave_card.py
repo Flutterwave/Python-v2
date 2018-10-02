@@ -16,8 +16,10 @@ class Card(Payment):
     def _handleChargeResponse(self, response, txRef, request=None):
         """ This handles charge responses """
         res =  self._preliminaryResponseChecks(response, CardChargeError, txRef=txRef)
-        
+
+    
         responseJson = res["json"]
+        # print(responseJson)
         flwRef = res["flwRef"]
 
         # Checking if there is auth url
@@ -32,7 +34,7 @@ class Card(Payment):
             suggestedAuth = responseJson["data"].get("suggested_auth", None)
             return {"error": False,  "validationRequired": True, "txRef": txRef, "flwRef": flwRef, "suggestedAuth": suggestedAuth, "authUrl": authUrl}
         else:
-            return {"error": False,  "validationRequired": False, "txRef": txRef, "flwRef": flwRef, "suggestedAuth": None, "authUrl": authUrl}
+            return {"error": False, "status": responseJson["status"],  "validationRequired": False, "txRef": txRef, "flwRef": flwRef, "suggestedAuth": None, "authUrl": authUrl}
 
     
 
@@ -46,10 +48,9 @@ class Card(Payment):
 
         # Checking if there was a server error during the call (in this case html is returned instead of json)
         res =  self._preliminaryResponseChecks(response, TransactionVerificationError, txRef=txRef)
-
         responseJson = res["json"]
         flwRef = res["flwRef"]
-
+        # print(responseJson)
         # Check if the call returned something other than a 200
         if not response.ok:
             errMsg = responseJson["data"].get("message", "Your call failed with no response")
@@ -60,7 +61,7 @@ class Card(Payment):
             return {"error": False, "transactionComplete": False, "txRef": txRef, "flwRef":flwRef, "cardToken": responseJson["data"]["card"]["card_tokens"][0]["embedtoken"]}
         
         else:
-            return {"error":False, "transactionComplete": True, "txRef": txRef, "flwRef": flwRef, "cardToken": responseJson["data"]["card"]["card_tokens"][0]["embedtoken"]}
+            return {"error":False, "transactionComplete": True, "txRef": txRef, "flwRef": flwRef, "amount":responseJson["data"]["amount"], "chargedAmount":responseJson["data"]["chargedamount"], "cardToken": responseJson["data"]["card"]["card_tokens"][0]["embedtoken"]}
 
     
     # Charge card function
@@ -71,16 +72,18 @@ class Card(Payment):
             hasFailed (bool) -- This indicates whether the request had previously failed for timeout handling
         """
 
-        # Checking for required card components
-        requiredParameters = ["cardno", "cvv", "expirymonth", "expiryyear", "amount", "email", "phonenumber", "firstname", "lastname", "IP"]
-
+        print(cardDetails)
         # setting the endpoint
         if not chargeWithToken:
+            print("got here1")
             endpoint = self._baseUrl + self._endpointMap["card"]["charge"]
+            requiredParameters = ["cardno", "cvv", "expirymonth", "expiryyear", "amount", "email", "phonenumber", "firstname", "lastname", "IP"]
         else:
+            print("got here")
             endpoint = self._baseUrl + self._endpointMap["card"]["preauthSavedCard"]
+            requiredParameters = ["currency", "token", "country", "amount", "email", "firstname", "lastname", "txRef", "IP"]
             # add token to requiredParameters
-            requiredParameters.append("token")
+            # requiredParameters.append("token")
 
         if not ("txRef" in cardDetails):
             cardDetails.update({"txRef":generateTransactionReference()})

@@ -20,7 +20,9 @@ class Account(Payment):
         res =  self._preliminaryResponseChecks(response, AccountChargeError, txRef=txRef)
 
         responseJson = res["json"]
-        flwRef = res["flwRef"]
+        # print(responseJson)
+        # change - added data before flwRef
+        flwRef = responseJson['data']["flwRef"]
         
         # If all preliminary checks are passed
         if not (responseJson["data"].get("chargeResponseCode", None) == "00"):
