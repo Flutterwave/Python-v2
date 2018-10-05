@@ -40,7 +40,6 @@ class Payment(RaveBase):
 
         # Check if we can obtain a json
         try:
-            # print(response)
             responseJson = response.json()
         except:
             raise ServerError({"error": True, "txRef": txRef, "flwRef": flwRef, "errMsg": response})
@@ -69,7 +68,6 @@ class Payment(RaveBase):
         res = self._preliminaryResponseChecks(response, TransactionChargeError, txRef=txRef)
         
         responseJson = res["json"]
-        # print(responseJson)
         flwRef = responseJson["data"]["flwRef"]
         
         # if all preliminary tests pass
@@ -127,9 +125,6 @@ class Payment(RaveBase):
             txRef = responseJson["data"]["txRef"]
         else:
             txRef = responseJson["data"]["tx"]["txRef"]
-        # print("cool")
-        # print(responseJson) 
-        
 
         # Of all preliminary checks passed
         if not (responseJson["data"].get("tx", responseJson["data"]).get("chargeResponseCode", None) == "00"):
@@ -150,7 +145,6 @@ class Payment(RaveBase):
             shouldReturnRequest -- This determines whether a request is passed to _handleResponses\n
         """
         # Checking for required components
-        print(requiredParameters)
         try:
             checkIfParametersAreComplete(requiredParameters, paymentDetails)
         except: 
