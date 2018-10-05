@@ -1,4 +1,5 @@
 import requests
+import json
 from python_rave.rave_exceptions import ServerError, TransactionVerificationError, PreauthCaptureError, PreauthRefundVoidError
 from python_rave.rave_card import Card
 from python_rave.rave_misc import generateTransactionReference
@@ -23,8 +24,9 @@ class Preauth(Card):
 
         # Add the charge_type
         cardDetails.update({"charge_type":"preauth"})
-        return super(Preauth, self).charge(cardDetails, chargeWithToken)
+        return super(Preauth, self).charge(cardDetails, chargeWithToken=True)
     
+
     # capture payment
     def capture(self, flwRef):
         """ This is called to complete the transaction.\n
@@ -38,9 +40,9 @@ class Preauth(Card):
         headers ={
             "Content-Type":"application/json"
         }
-        endpoint = self._baseUrl + self._endpointMap["capture"]
-        response = requests.post(endpoint, headers=headers, data=payload)
-        self._handleChargeResponse(response, flwRef)
+        endpoint = self._baseUrl + self._endpointMap["preauth"]["capture"]
+        response = requests.post(endpoint, headers=headers, data=json.dumps(payload))
+        return self._handleChargeResponse(response, flwRef)
     
 
     def void(self, flwRef):
@@ -50,15 +52,16 @@ class Preauth(Card):
         """
         payload = {
             "SECKEY": self._getSecretKey(),
-            "flwRef": flwRef,
+            "ref": flwRef,
             "action":"void"
         }
+        print(payload)
         headers ={
             "Content-Type":"application/json"
         }
-        endpoint = self._baseUrl + self._endpointMap["refundorvoid"]
-        response = requests.post(endpoint, headers=headers, data=payload)
-        self._handleChargeResponse(response, endpoint)
+        endpoint = self._baseUrl + self._endpointMap["preauth"]["refundorvoid"]
+        response = requests.post(endpoint, headers=headers, data=json.dumps(payload))
+        return self._handleRefundorVoidResponse(response, endpoint)
     
     
     def refund(self, flwRef, amount=None):
@@ -69,15 +72,15 @@ class Preauth(Card):
         """
         payload = {
             "SECKEY": self._getSecretKey(),
-            "flwRef": flwRef,
+            "ref": flwRef,
             "action":"refund"
         }
         if amount:
-            payload.update({"amount", amount})
+            payload["amount"] = amount
 
         headers ={
             "Content-Type":"application/json"
         }
-        endpoint = self._baseUrl + self._endpointMap["refundorvoid"]
-        response = requests.post(endpoint, headers=headers, data=payload)
-        self._handleChargeResponse(response, endpoint)
+        endpoint = self._baseUrl + self._endpointMap["preauth"]["refundorvoid"]
+        response = requests.post(endpoint, headers=headers, data=json.dumps(payload))
+        return self._handleRefundorVoidResponse(response, endpoint)

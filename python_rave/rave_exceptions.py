@@ -111,3 +111,28 @@ class TransferFetchError(RaveError):
     
     def __str__(self):
         return "Transfer fetch failed with error: " + self.err["errMsg"]
+
+class PlanCreationError(RaveError):
+    """ Raised when creating a payment plan fails """
+    def __init__(self, err):
+        self.err = err
+
+    def __str__(self):
+        return "Plan Creation failed with error: " +self.err["errMsg"]
+
+class PlanStatusError(RaveError):
+    """ Raised when fetching transfer fails """
+    def __init__(self, type, err):
+        self.err = err
+        self.type = type
+    
+    def __str__(self):
+        return self.type +"ing plan failed with error: " + self.err["errMsg"]
+
+class SubaccountCreationError(RaveError):
+    """ Raised when creating a payment plan fails """
+    def __init__(self, err):
+        self.err = err
+
+    def __str__(self):
+        return "Subaccount Creation failed with error: " +self.err["errMsg"]

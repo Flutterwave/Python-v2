@@ -13,7 +13,10 @@ class RaveBase(object):
                 "charge": "flwv3-pug/getpaidx/api/charge",
                 "validate": "flwv3-pug/getpaidx/api/validatecharge",
                 "verify": "flwv3-pug/getpaidx/api/v2/verify",
-                "preauthSavedCard": "flwv3-pug/getpaidx/api/tokenized/charge",
+                "chargeSavedCard": "flwv3-pug/getpaidx/api/tokenized/charge",
+            },
+            "preauth": {
+                "charge": "flwv3-pug/getpaidx/api/tokenized/preauth_charge",
                 "capture": "flwv3-pug/getpaidx/api/capture",
                 "refundorvoid": "flwv3-pug/getpaidx/api/refundorvoid"
             },
@@ -21,6 +24,24 @@ class RaveBase(object):
                 "charge": "flwv3-pug/getpaidx/api/charge",
                 "validate": "flwv3-pug/getpaidx/api/validate",
                 "verify": "flwv3-pug/getpaidx/api/v2/verify"
+            },
+            "payment_plan": {
+                "create": "v2/gpx/paymentplans/create",
+                "fetch": "v2/gpx/paymentplans/query",
+                "list": "v2/gpx/paymentplans/query",
+                "cancel": "v2/gpx/paymentplans/",
+                "edit" :  "v2/gpx/paymentplans/"
+            },
+            "subscriptions": {
+                "fetch": "v2/gpx/subscriptions/query",
+                "list": "v2/gpx/subscriptions/query",
+                "cancel": "v2/gpx/subscriptions/",
+                "activate" :  "v2/gpx/subscriptions/"
+            },
+            "subaccount": {
+                "create": "v2/gpx/subaccounts/create",
+                "list": "v2/gpx/subaccounts/",
+                "fetch": "v2/gpx/subaccounts/get"
             },
             "transfer": {
                 "initiate": "v2/gpx/transfers/create",

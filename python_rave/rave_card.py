@@ -17,8 +17,8 @@ class Card(Payment):
         """ This handles charge responses """
         res =  self._preliminaryResponseChecks(response, CardChargeError, txRef=txRef)
 
-    
         responseJson = res["json"]
+        print(responseJson)
         flwRef = res["flwRef"]
 
         # Checking if there is auth url
@@ -34,6 +34,22 @@ class Card(Payment):
             return {"error": False,  "validationRequired": True, "txRef": txRef, "flwRef": flwRef, "suggestedAuth": suggestedAuth, "authUrl": authUrl}
         else:
             return {"error": False, "status": responseJson["status"],  "validationRequired": False, "txRef": txRef, "flwRef": flwRef, "suggestedAuth": None, "authUrl": authUrl}
+
+    
+    def _handleRefundorVoidResponse(self, response, txRef, request=None):
+        """ This handles charge responses """
+        res =  self._preliminaryResponseChecks(response, CardChargeError, txRef=txRef)
+
+        responseJson = res["json"]
+        print(responseJson)
+        flwRef = responseJson["data"]["data"]["authorizeId"]
+
+        # If all preliminary checks passed
+        if not (responseJson["data"]["data"].get("responsecode", None) == "RR"):
+            # Refund or Void could not be completed
+            return {"error": True, "status": responseJson["status"], "message": responseJson["message"], "flwRef": flwRef}
+        else:
+            return {"error": False, "status": responseJson["status"], "message": responseJson["message"], "flwRef": flwRef}
 
     
 
@@ -71,10 +87,15 @@ class Card(Payment):
         """
         # setting the endpoint
         if not chargeWithToken:
+            print("got here")
             endpoint = self._baseUrl + self._endpointMap["card"]["charge"]
             requiredParameters = ["cardno", "cvv", "expirymonth", "expiryyear", "amount", "email", "phonenumber", "firstname", "lastname", "IP"]
-        else:
-            endpoint = self._baseUrl + self._endpointMap["card"]["preauthSavedCard"]
+        else: 
+            if "charge_type" in cardDetails and cardDetails["charge_type"] == 'preauth':
+                endpoint = self._baseUrl + self._endpointMap["preauth"]["charge"]
+            else: 
+                endpoint = self._baseUrl + self._endpointMap["card"]["chargeSavedCard"]
+
             requiredParameters = ["currency", "token", "country", "amount", "email", "firstname", "lastname", "txRef", "IP"]
             # add token to requiredParameters
             # requiredParameters.append("token")

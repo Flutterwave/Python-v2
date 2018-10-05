@@ -78,7 +78,7 @@ class TestRavePaymentOptions(unittest.TestCase):
             self.rave.Account.charge(self.faulty_account_details) 
 
         # This test case checks that a user validates a transaction appropriately
-        self.assertEqual(self.rave.Account.validate(res["flwRef"], "12345")["error"], False)
+        self.assertEqual(self.rave.Account.validate(res["flwRef"], "1234")["error"], False)
         with self.assertRaises(TransactionValidationError):
             self.rave.Account.validate(res["flwRef"], "123") # a wrong otp to ensure TransactionValidationError is raised anytime a wrong otp is passed
 
@@ -106,8 +106,9 @@ class TestRavePaymentOptions(unittest.TestCase):
         with self.assertRaises(TransactionValidationError):
             self.rave.Card.validate("FLW-MOCK-5a039c016e64da9b226c2562dcd76756", "12345") # a wrong otp to ensure TransactionValidationError is raised anytime a wrong otp is passed
 
-        
-        self.assertEqual(self.rave.Card.verify(res["txRef"])["transactionComplete"], True)
+        verify_res = self.rave.Card.verify(res["txRef"])
+        print(verify_res)
+        self.assertEqual(verify_res["transactionComplete"], True)
         with self.assertRaises(TransactionVerificationError):
             self.rave.Card.verify("MC-8883838388881") # a wrong txRef to ensure TransactionVerificationError is raised anytime a wrong transaction reference is passed
 
