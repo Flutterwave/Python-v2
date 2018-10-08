@@ -1,6 +1,6 @@
 import requests, json, copy
 from python_rave.rave_base import RaveBase
-from python_rave.rave_exceptions import RaveError, IncompletePaymentDetailsError, AuthMethodNotSupportedError, TransactionChargeError, TransactionVerificationError, TransactionValidationError, ServerError, RefundError
+from python_rave.rave_exceptions import RaveError, IncompletePaymentDetailsError, AuthMethodNotSupportedError, TransactionChargeError, TransactionVerificationError, TransactionValidationError, ServerError, RefundError, PreauthCaptureError
 from python_rave.rave_misc import checkIfParametersAreComplete
 
 response_object = {
@@ -69,6 +69,22 @@ class Payment(RaveBase):
         
         responseJson = res["json"]
         flwRef = responseJson["data"]["flwRef"]
+        
+        # if all preliminary tests pass
+        if not (responseJson["data"].get("chargeResponseCode", None) == "00"):
+            return {"error": False,  "validationRequired": True, "txRef": txRef, "flwRef": flwRef}
+        else:
+            return {"error": False,  "validationRequired": False, "txRef": txRef, "flwRef": flwRef}
+    
+    def _handleCaptureResponse(self, response, request=None):
+        """ This handles transaction charge responses """
+
+        # If we cannot parse the json, it means there is a server error
+        res = self._preliminaryResponseChecks(response, PreauthCaptureError, txRef='')
+        
+        responseJson = res["json"]
+        flwRef = responseJson["data"]["flwRef"]
+        txRef = responseJson["data"]["txRef"]
         
         # if all preliminary tests pass
         if not (responseJson["data"].get("chargeResponseCode", None) == "00"):
@@ -225,8 +241,10 @@ class Payment(RaveBase):
             "txref": txRef,
             "SECKEY": self._getSecretKey()
         }
-
+        print("--------")
+        print(payload)
         response = requests.post(endpoint, headers=headers, data=json.dumps(payload))
+        print(response)
         return self._handleVerifyResponse(response, txRef)
 
     # Refund call

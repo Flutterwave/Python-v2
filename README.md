@@ -780,21 +780,57 @@ This is used to facilitate preauthorized card transactions. This inherits the Ca
 
 * ```.charge```
 
+* ```.capture```
+
 * ```.validate```
 
 * ```.verify```
 
-* ```.getTypeOfArgsRequired```
+* ```.refund```
 
-* ```.updatePayload```
+* ```.void```
+
+
+<br>
+
+**
+In order to ```preauthorize``` a card, you must have:
+    1. charged the card initially using ```rave.Card.charge(payload)```
+    2. saved the ```token``` returned to you for that card. A ```token``` looks like this ```flw-t1nf-5b0f12d565cd961f73c51370b1340f1f-m03k```
+**
+
+### ```.charge(cardDetails, chargeWithToken=True, hasFailed=False)```
+
+This is used to preauthorise a specific amount to be paid by a customer.
+
+**Note:** > it takes the same parameters as Card charge. However, the cardDetails object differs. See below for an example
+
+Once preauthorised successfully, you can then ```capture``` that ```held``` amount at a later time or date
+
+A sample charge call is:
+
+``` 
+payload = {
+    "token":"flw-t1nf-5b0f12d565cd961f73c51370b1340f1f-m03k",
+    "country":"NG",
+    "amount":1000,
+    "email":"user@gmail.com",
+    "firstname":"temi",
+    "lastname":"Oyekole",
+    "IP":"190.233.222.1",
+    "txRef":"MC-7666-YU",
+    "currency":"NGN"
+rave.Preauth.charge(payload)
+```
 
 <br>
 
 
-
 ### ```.capture(flwRef)```
 
-This is used to capture the funds held in the account. Similar to the validate call, it requires you to pass the ```flwRef```. The flwRef can be gotten from the by searching for the ```flwRef``` in the ```action``` (second returned variable) of the initial charge call.
+This is used to capture the funds held in the account. Similar to the validate call, it requires you to pass the ```flwRef``` of the transaction.
+
+>Please **NOTE** that the ```flwRef``` must be gotten from the response of the initial charge i.e after calling ```rave.Preauth.charge(payload)```
 
 
 A sample capture call is:
@@ -805,10 +841,13 @@ A sample capture call is:
 
 ### ```.void(flwRef)```
 
-This is used to void a preauth transaction. Similar to the validate call, it requires you to pass the ```flwRef```. The flwRef can be gotten from the by searching for the ```flwRef``` in the ```action``` (second returned variable) of the initial charge call.
+This is used to void a preauth transaction. Similar to the validate call, it requires you to pass the ```flwRef```. 
+
+>Please **NOTE** that the ```flwRef``` must be gotten from the response of the initial charge i.e after calling ```rave.Preauth.charge(payload)```
 
 
-A sample capture call is:
+
+A sample void call is:
 
 ```rave.Preauth.void(data["flwRef"]) ```
 
@@ -816,10 +855,13 @@ A sample capture call is:
 
 ### ```.refund(flwRef)```
 
-This is used to refund a preauth transaction. Similar to the validate call, it requires you to pass the ```flwRef```. The flwRef can be gotten from the by searching for the ```flwRef``` in the ```action``` (second returned variable) of the initial charge call.
+This is used to refund a preauth transaction. Similar to the validate call, it requires you to pass the ```flwRef```. 
+
+>Please **NOTE** that the ```flwRef``` must be gotten from the response of the initial charge i.e after calling ```rave.Preauth.charge(payload)```
 
 
-A sample capture call is:
+
+A sample void call is:
 
 ```rave.Preauth.refund(data["flwRef"]) ```
 

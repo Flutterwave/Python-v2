@@ -6,7 +6,8 @@ from python_rave.rave_misc import generateTransactionReference
 
 class Preauth(Card):
     """ This is the rave object for preauthorized transactions. It contains the following public functions:\n
-        .charge -- This is for making a ussd charge\n
+        .charge -- This is for preauthorising a specified amount\n
+        .capture -- This is for capturing a preauthorized amount\n
         .validate -- This is called if further action is required i.e. OTP validation\n
         .verify -- This checks the status of your transaction\n
     """
@@ -42,7 +43,7 @@ class Preauth(Card):
         }
         endpoint = self._baseUrl + self._endpointMap["preauth"]["capture"]
         response = requests.post(endpoint, headers=headers, data=json.dumps(payload))
-        return self._handleChargeResponse(response, flwRef)
+        return self._handleCaptureResponse(response, '')
     
 
     def void(self, flwRef):
