@@ -45,7 +45,6 @@ class PaymentPlan(RaveBase) :
             response = requests.post(endpoint, headers=self.headers, data=json.dumps(data))
         else:
             response = requests.get(endpoint, headers=self.headers)
-        print(response)
         # Checks if it can be parsed to json
         try:
             responseJson = response.json()

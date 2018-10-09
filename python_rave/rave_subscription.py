@@ -47,7 +47,6 @@ class Subscriptions(RaveBase) :
         if response.ok:
             return {"error": False, "returnedData": responseJson}
         else:
-            print(responseJson)
             raise PlanStatusError(type, {"error": True, "returnedData": str(responseJson) })
 
     #gets all subscriptions connected to a merchant's account

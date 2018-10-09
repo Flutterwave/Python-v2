@@ -1766,13 +1766,18 @@ except RaveExceptions.ServerError as e:
 ## Run Tests
 
 All of the SDK's test are written with python's ```unittest``` module. The tests currently test:
-```rave.Account.charge(payload)```
-```rave.Account.validate(flwRef,otp)```
-```rave.Account.verify(txRef)```
-```rave.Card.charge(payload)```
-```rave.card.charge(payload_for_saved_card, chargeWithToken)```
-```rave.Card.validate(flwRef,otp)```
-```rave.Card.verify(txRef)```
+```rave.Account```
+```rave.Card```
+```rave.Transfer```
+```rave.Preauth```
+```rave.Subaccount```
+```rave.Subscriptions```
+```rave.Paymentplan```
+
 They can be run like so:
 
 ```python test.py```
+
+>**NOTE:** If the test fails for creating a subaccount, just change the ```account_number``` ```account_bank```  and ```businesss_email``` to something different
+
+>**NOTE:** The test may fail for account validation - ``` Pending OTP validation``` depending of whether the service is down or not

@@ -18,7 +18,6 @@ class Card(Payment):
         res =  self._preliminaryResponseChecks(response, CardChargeError, txRef=txRef)
 
         responseJson = res["json"]
-        print(responseJson)
         flwRef = res["flwRef"]
 
         # Checking if there is auth url
@@ -41,7 +40,6 @@ class Card(Payment):
         res =  self._preliminaryResponseChecks(response, CardChargeError, txRef=txRef)
 
         responseJson = res["json"]
-        print(responseJson)
         flwRef = responseJson["data"]["data"]["authorizeId"]
 
         # If all preliminary checks passed
@@ -87,7 +85,6 @@ class Card(Payment):
         """
         # setting the endpoint
         if not chargeWithToken:
-            print("got here")
             endpoint = self._baseUrl + self._endpointMap["card"]["charge"]
             requiredParameters = ["cardno", "cvv", "expirymonth", "expiryyear", "amount", "email", "phonenumber", "firstname", "lastname", "IP"]
         else: 

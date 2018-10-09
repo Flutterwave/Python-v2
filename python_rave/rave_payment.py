@@ -241,10 +241,7 @@ class Payment(RaveBase):
             "txref": txRef,
             "SECKEY": self._getSecretKey()
         }
-        print("--------")
-        print(payload)
         response = requests.post(endpoint, headers=headers, data=json.dumps(payload))
-        print(response)
         return self._handleVerifyResponse(response, txRef)
 
     # Refund call

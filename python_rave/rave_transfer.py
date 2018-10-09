@@ -62,7 +62,6 @@ class Transfer(RaveBase):
         headers = {
             'content-type': 'application/json',
         }
-        # print(transferDetails)
         
         endpoint = self._baseUrl + self._endpointMap["transfer"]["initiate"]
         response = requests.post(endpoint, headers=headers, data=json.dumps(transferDetails))
