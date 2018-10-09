@@ -123,6 +123,10 @@ class Transfer(RaveBase):
         endpoint = self._baseUrl + self._endpointMap["transfer"]["fetch"] + "?seckey="+self._getSecretKey()+'&reference='+str(reference)
         return self._handleTransferStatusRequests(endpoint)
 
+    def allTransfers(self):
+        endpoint = self._baseUrl + self._endpointMap["transfer"]["fetch"] + "?seckey="+self._getSecretKey()
+        return self._handleTransferStatusRequests(endpoint)
+
     def getFee(self, currency=None):
         endpoint = self._baseUrl + self._endpointMap["transfer"]["fee"] + "?seckey="+self._getSecretKey() + "&currency="+str(currency)
         return self._handleTransferStatusRequests(endpoint)

@@ -12,12 +12,14 @@ try:
     
 #     res = rave.SubAccount.createSubaccount({
 # 	"account_bank": "044",
-# 	"account_number": "0690000031",
+# 	"account_number": "0690000032",
 # 	"business_name": "Jake Stores",
-# 	"business_email": "kwakj@services.com",
+# 	"business_email": "jdhhd@services.com",
 # 	"business_contact": "Amy Parkers",
 # 	"business_contact_mobile": "09083772",
 # 	"business_mobile": "0188883882",
+#     "split_type": "flat",
+#     "split_value": 3000,
 # 	"meta": [{"metaname": "MarketplaceID", "metavalue": "ggs-920900"}]
 # })
     res = rave.SubAccount.fetchSubaccount('RS_0A6C260E1A70934DE6EF2F8CEE46BBB3')

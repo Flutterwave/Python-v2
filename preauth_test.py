@@ -16,9 +16,10 @@ payload = {
 
 try:
     res = rave.Preauth.charge(payload)
+    # print(res)
     res = rave.Preauth.capture(res["flwRef"])
     res = rave.Preauth.verify(res["txRef"])
-    # print(res["transactionComplete"])
+    print(res)
 
 except RaveExceptions.TransactionChargeError as e:
     print(e)

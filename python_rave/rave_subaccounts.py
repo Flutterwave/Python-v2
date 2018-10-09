@@ -59,20 +59,20 @@ class SubAccount(RaveBase) :
             raise PlanStatusError(type, {"error": True, "returnedData": responseJson })
     
     #function to create a payment plan
-    #Params: planDetails - a dict containing amount, name, interval, duration
+    #Params: accountDetails - a dict containing account_bank, account_number, business_name, business_email, business_contact, business_contact_mobile, business_mobile, split_type, split_value
     #if duration is not passed, any subscribed customer will be charged #indefinitely
     def createSubaccount(self, accountDetails):
         # Performing shallow copy of planDetails to avoid public exposing payload with secret key
         accountDetails = copy.copy(accountDetails)
         accountDetails.update({"seckey": self._getSecretKey()})
-        requiredParameters = ["account_bank", "account_number", "business_name", "business_email", "business_contact", "business_contact_mobile", "business_mobile"]
+        requiredParameters = ["account_bank", "account_number", "business_name", "business_email", "business_contact", "business_contact_mobile", "business_mobile", "split_type", "split_value"]
         checkIfParametersAreComplete(requiredParameters, accountDetails)
 
         endpoint = self._baseUrl + self._endpointMap["subaccount"]["create"]
         response = requests.post(endpoint, headers=self.headers, data=json.dumps(accountDetails))
         return self._handleCreateResponse(response, accountDetails)
 
-    #gets all payment plans connected to a merchant's account
+    #gets all subaccounts connected to a merchant's account
     def allSubaccounts(self):
         endpoint = self._baseUrl + self._endpointMap["subaccount"]["list"] + "?seckey="+self._getSecretKey()
         return self._handleAccountStatusRequests("List", endpoint)

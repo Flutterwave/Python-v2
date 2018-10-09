@@ -87,10 +87,10 @@ class PaymentPlan(RaveBase) :
             return "You must pass either plan id or plan name in order to fetch a plan's details"
         return self._handlePlanStatusRequests("Fetch", endpoint)
     
-    def cancelPlan(self, id):
+    def cancelPlan(self, plan_id):
         if not id:
             return "Plan id was not supplied. Kindly supply one"
-        endpoint = self._baseUrl + self._endpointMap["payment_plan"]["cancel"] + str(id) + "/cancel"
+        endpoint = self._baseUrl + self._endpointMap["payment_plan"]["cancel"] + str(plan_id) + "/cancel"
         data = {"seckey": self._getSecretKey()}
         return self._handlePlanStatusRequests("Cancel", endpoint, isPostRequest=True, data=data)
     
@@ -98,9 +98,9 @@ class PaymentPlan(RaveBase) :
     # Params
     # id: payment plan id *required
     # newData: dict that contains the information to be updated i.e name and status-cancelled/active
-    def editPlan(self, id, newData={}):
+    def editPlan(self, plan_id, newData={}):
         if not id:
             return "Plan id was not supplied. Kindly supply one"
-        endpoint = self._baseUrl + self._endpointMap["payment_plan"]["edit"] + str(id) + "/edit"
+        endpoint = self._baseUrl + self._endpointMap["payment_plan"]["edit"] + str(plan_id) + "/edit"
         data = {"seckey": self._getSecretKey(), "name": newData.get("name", None), "status": newData.get("status", None)}
         return self._handlePlanStatusRequests("Edit", endpoint, isPostRequest=True, data=data)

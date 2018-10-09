@@ -90,7 +90,7 @@ class Payment(RaveBase):
         if not (responseJson["data"].get("chargeResponseCode", None) == "00"):
             return {"error": False,  "validationRequired": True, "txRef": txRef, "flwRef": flwRef}
         else:
-            return {"error": False,  "validationRequired": False, "txRef": txRef, "flwRef": flwRef}
+            return {"error": False, "status":responseJson["status"], "message": responseJson["message"],  "validationRequired": False, "txRef": txRef, "flwRef": flwRef}
 
 
     # This can be altered by implementing classes but this is the default behaviour

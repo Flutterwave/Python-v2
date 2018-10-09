@@ -64,20 +64,19 @@ class Subscriptions(RaveBase) :
             return "You must pass either plan id or plan name in order to fetch a plan's details"
         return self._handlePlanStatusRequests("Fetch", endpoint)
     
-    def cancelSubscription(self, id):
-        if not id:
-            return "Plan id was not supplied. Kindly supply one"
+    def cancelSubscription(self, subscription_id):
+        if not subscription_id:
+            return "Subscription id was not supplied. Kindly supply one"
         endpoint = self._baseUrl + self._endpointMap["subscriptions"]["cancel"] + str(id) + "/cancel"
         data = {"seckey": self._getSecretKey()}
         return self._handlePlanStatusRequests("Cancel", endpoint, isPostRequest=True, data=data)
     
-    # edits a payment plan
+    # activates a subscription plan
     # Params
-    # id: payment plan id *required
-    # newData: dict that contains the information to be updated i.e name and status-cancelled/active
-    def editPlan(self, id, newData={}):
-        if not id:
-            return "Plan id was not supplied. Kindly supply one"
-        endpoint = self._baseUrl + self._endpointMap["payment_plan"]["edit"] + str(id) + "/edit"
-        data = {"seckey": self._getSecretKey(), "name": newData.get("name", None), "status": newData.get("status", None)}
-        return self._handlePlanStatusRequests("Edit", endpoint, isPostRequest=True, data=data)
+    # id: subscription_id *required
+    def activateSubscription(self, subscription_id):
+        if not subscription_id:
+            return "Subscription id was not supplied. Kindly supply one"
+        endpoint = self._baseUrl + self._endpointMap["subscriptions"]["activate"] + str(subscription_id) + "/activate"
+        data = {"seckey": self._getSecretKey()}
+        return self._handlePlanStatusRequests("Activat", endpoint, isPostRequest=True, data=data)
