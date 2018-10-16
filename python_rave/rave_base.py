@@ -121,15 +121,9 @@ class RaveBase(object):
         key = self.__getEncryptionKey()
         cipher = DES3.new(key, DES3.MODE_ECB)
         plainText = "{}{}".format(plainText, "".join(chr(padDiff) * padDiff))
-<<<<<<< HEAD
-        encodeText = plainText.encode("utf-8")
-        encrypted = base64.b64encode(
-        cipher.encrypt(encodeText)).decode("utf-8")
-=======
         # cipher.encrypt - the C function that powers this doesn't accept plain string, rather it accepts byte strings, hence the need for the conversion below
         test = plainText.encode('utf-8')
         encrypted = base64.b64encode(cipher.encrypt(test)).decode("utf-8")
->>>>>>> 9b13b046f1809d7cf9f2799bf410fac00d5a92e6
         return encrypted
         
 

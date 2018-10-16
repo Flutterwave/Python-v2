@@ -105,21 +105,6 @@ class Payment(RaveBase):
 
         # sets flwref, amount, chargedAmount, status, chargeCode, responseMessage as variables from the verification response
         responseJson = res["json"]
-<<<<<<< HEAD
-        flwRef = responseJson["data"]["flwref"]
-        amount = responseJson["data"]["amount"]
-        chargedAmount = responseJson["data"]["chargedamount"]
-        status = responseJson["data"]["status"]
-        chargeCode = responseJson["data"]["chargecode"]
-        responseMessage = responseJson["data"]["acctmessage"]
-
-        # Check if the chargecode is 00
-        if not (responseJson["data"].get("chargecode", None) == "00"):
-            return {"status": status, "error": False, "transactionComplete": False, "amount": amount, "chargedAmount": chargedAmount, "chargecode" : chargeCode, "responsemessage" : responseMessage, "txRef": txRef, "flwRef": flwRef}
-        
-        else:
-            return {"status": status,  "error": False, "transactionComplete": True, "amount": amount, "chargedAmount": chargedAmount, "chargecode": chargeCode, "responsemessage": responseMessage, "txRef": txRef, "flwRef": flwRef}
-=======
         # retrieve necessary properties from response 
         verify_response["status"] = responseJson['status']
         verify_response['flwRef'], verify_response["txRef"], verify_response["vbvcode"], verify_response["vbvmessage"], verify_response["acctmessage"], verify_response["currency"], verify_response["chargecode"], verify_response["amount"], verify_response["chargedamount"] = Payment.retrieve(responseJson['data'], "flwref", "txref", "vbvcode", "vbvmessage", "acctmessage", "currency", "chargecode", "amount", "chargedamount")
@@ -142,7 +127,6 @@ class Payment(RaveBase):
         # else:
         #     return {"error": False, "transactionComplete": True, "txRef": txRef, "flwRef":flwRef}
 
->>>>>>> 9b13b046f1809d7cf9f2799bf410fac00d5a92e6
     
     # returns true if further action is required, false if it isn't    
     def _handleValidateResponse(self, response, flwRef, request=None):
