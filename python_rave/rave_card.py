@@ -16,7 +16,7 @@ class Card(Payment):
     def _handleChargeResponse(self, response, txRef, request=None):
         """ This handles charge responses """
         res =  self._preliminaryResponseChecks(response, CardChargeError, txRef=txRef)
-        
+
         responseJson = res["json"]
         flwRef = res["flwRef"]
 
@@ -32,7 +32,22 @@ class Card(Payment):
             suggestedAuth = responseJson["data"].get("suggested_auth", None)
             return {"error": False,  "validationRequired": True, "txRef": txRef, "flwRef": flwRef, "suggestedAuth": suggestedAuth, "authUrl": authUrl}
         else:
-            return {"error": False,  "validationRequired": False, "txRef": txRef, "flwRef": flwRef, "suggestedAuth": None, "authUrl": authUrl}
+            return {"error": False, "status": responseJson["status"],  "validationRequired": False, "txRef": txRef, "flwRef": flwRef, "suggestedAuth": None, "authUrl": authUrl}
+
+    
+    def _handleRefundorVoidResponse(self, response, txRef, request=None):
+        """ This handles charge responses """
+        res =  self._preliminaryResponseChecks(response, CardChargeError, txRef=txRef)
+
+        responseJson = res["json"]
+        flwRef = responseJson["data"]["data"]["authorizeId"]
+
+        # If all preliminary checks passed
+        if not (responseJson["data"]["data"].get("responsecode", None) == "RR"):
+            # Refund or Void could not be completed
+            return {"error": True, "status": responseJson["status"], "message": responseJson["message"], "flwRef": flwRef}
+        else:
+            return {"error": False, "status": responseJson["status"], "message": responseJson["message"], "flwRef": flwRef}
 
     
 
@@ -46,6 +61,7 @@ class Card(Payment):
 
         # Checking if there was a server error during the call (in this case html is returned instead of json)
         res =  self._preliminaryResponseChecks(response, TransactionVerificationError, txRef=txRef)
+<<<<<<< HEAD
 
         # sets flwref, amount, chargedAmount, status, chargeCode, responseMessage as variables from the verification response
         responseJson = res["json"]
@@ -56,6 +72,10 @@ class Card(Payment):
         chargeCode = responseJson["data"]["chargecode"]
         responseMessage = responseJson["data"]["vbvmessage"]
 
+=======
+        responseJson = res["json"]
+        flwRef = res["flwRef"]
+>>>>>>> 9b13b046f1809d7cf9f2799bf410fac00d5a92e6
         # Check if the call returned something other than a 200
         if not response.ok:
             errMsg = responseJson["data"].get("message", "Your call failed with no response")
@@ -66,7 +86,11 @@ class Card(Payment):
             return {"status": status, "error": False, "transactionComplete": False, "amount": amount, "chargedAmount": chargedAmount, "chargecode": chargeCode, "responsemessage": responseMessage, "txRef": txRef, "flwRef": flwRef, "cardToken": responseJson["data"]["card"]["card_tokens"][0]["embedtoken"]}
         
         else:
+<<<<<<< HEAD
             return {"status": status, "error": False, "transactionComplete": True, "amount": amount, "chargedAmount": chargedAmount, "chargecode": chargeCode, "responsemessage": responseMessage, "txRef": txRef, "flwRef": flwRef, "cardToken": responseJson["data"]["card"]["card_tokens"][0]["embedtoken"]}
+=======
+            return {"error":False, "transactionComplete": True, "txRef": txRef, "flwRef": flwRef, "amount":responseJson["data"]["amount"], "chargedAmount":responseJson["data"]["chargedamount"], "cardToken": responseJson["data"]["card"]["card_tokens"][0]["embedtoken"]}
+>>>>>>> 9b13b046f1809d7cf9f2799bf410fac00d5a92e6
 
     
     # Charge card function
@@ -76,17 +100,19 @@ class Card(Payment):
             cardDetails (dict) -- This is a dictionary comprising payload parameters.\n
             hasFailed (bool) -- This indicates whether the request had previously failed for timeout handling
         """
-
-        # Checking for required card components
-        requiredParameters = ["cardno", "cvv", "expirymonth", "expiryyear", "amount", "email", "phonenumber", "firstname", "lastname", "IP"]
-
         # setting the endpoint
         if not chargeWithToken:
             endpoint = self._baseUrl + self._endpointMap["card"]["charge"]
-        else:
-            endpoint = self._baseUrl + self._endpointMap["card"]["preauthSavedCard"]
+            requiredParameters = ["cardno", "cvv", "expirymonth", "expiryyear", "amount", "email", "phonenumber", "firstname", "lastname", "IP"]
+        else: 
+            if "charge_type" in cardDetails and cardDetails["charge_type"] == 'preauth':
+                endpoint = self._baseUrl + self._endpointMap["preauth"]["charge"]
+            else: 
+                endpoint = self._baseUrl + self._endpointMap["card"]["chargeSavedCard"]
+
+            requiredParameters = ["currency", "token", "country", "amount", "email", "firstname", "lastname", "txRef", "IP"]
             # add token to requiredParameters
-            requiredParameters.append("token")
+            # requiredParameters.append("token")
 
         if not ("txRef" in cardDetails):
             cardDetails.update({"txRef":generateTransactionReference()})

@@ -1,7 +1,21 @@
 import requests, json, copy
 from python_rave.rave_base import RaveBase
-from python_rave.rave_exceptions import RaveError, IncompletePaymentDetailsError, AuthMethodNotSupportedError, TransactionChargeError, TransactionVerificationError, TransactionValidationError, ServerError, RefundError
+from python_rave.rave_exceptions import RaveError, IncompletePaymentDetailsError, AuthMethodNotSupportedError, TransactionChargeError, TransactionVerificationError, TransactionValidationError, ServerError, RefundError, PreauthCaptureError
 from python_rave.rave_misc import checkIfParametersAreComplete
+
+response_object = {
+    "error": False,
+    "transactionComplete": False,
+    "flwRef": "",
+    "txRef": "",
+    "chargecode": '00',
+    "status": "",
+    "vbvcode": "",
+    "vbvmessage": "",
+    "acctmessage": "",
+    "currency": "",
+    "chargedamount": 00
+}
 
 # All payment subclasses are encrypted classes
 class Payment(RaveBase):
@@ -10,13 +24,26 @@ class Payment(RaveBase):
         # Instantiating the base class
         super(Payment, self).__init__(publicKey, secretKey, production, usingEnv)
 
+    @classmethod
+    def retrieve(cls, mapping, *keys): 
+        return (mapping[key] for key in keys) 
+
+    @classmethod
+    def deleteUnnecessaryKeys(cls,response_dict, *keys):
+        for key in keys:
+            del response_dict[key]
+        return response_dict
 
     def _preliminaryResponseChecks(self, response, TypeOfErrorToRaise, txRef=None, flwRef=None):
+        preliminary_error_response = copy.deepcopy(response_object)
+        preliminary_error_response = Payment.deleteUnnecessaryKeys(preliminary_error_response, "transactionComplete", "chargecode", "vbvmessage", "vbvcode", "acctmessage", "currency")
+
         # Check if we can obtain a json
         try:
             responseJson = response.json()
         except:
             raise ServerError({"error": True, "txRef": txRef, "flwRef": flwRef, "errMsg": response})
+
 
         # Check if the response contains data parameter
         if responseJson.get("data", None):
@@ -39,15 +66,31 @@ class Payment(RaveBase):
 
         # If we cannot parse the json, it means there is a server error
         res = self._preliminaryResponseChecks(response, TransactionChargeError, txRef=txRef)
-
+        
         responseJson = res["json"]
-        flwRef = res["flwRef"]
+        flwRef = responseJson["data"]["flwRef"]
         
         # if all preliminary tests pass
         if not (responseJson["data"].get("chargeResponseCode", None) == "00"):
             return {"error": False,  "validationRequired": True, "txRef": txRef, "flwRef": flwRef}
         else:
             return {"error": False,  "validationRequired": False, "txRef": txRef, "flwRef": flwRef}
+    
+    def _handleCaptureResponse(self, response, request=None):
+        """ This handles transaction charge responses """
+
+        # If we cannot parse the json, it means there is a server error
+        res = self._preliminaryResponseChecks(response, PreauthCaptureError, txRef='')
+        
+        responseJson = res["json"]
+        flwRef = responseJson["data"]["flwRef"]
+        txRef = responseJson["data"]["txRef"]
+        
+        # if all preliminary tests pass
+        if not (responseJson["data"].get("chargeResponseCode", None) == "00"):
+            return {"error": False,  "validationRequired": True, "txRef": txRef, "flwRef": flwRef}
+        else:
+            return {"error": False, "status":responseJson["status"], "message": responseJson["message"],  "validationRequired": False, "txRef": txRef, "flwRef": flwRef}
 
 
     # This can be altered by implementing classes but this is the default behaviour
@@ -57,11 +100,12 @@ class Payment(RaveBase):
              Parameters include:\n
             response (dict) -- This is the response Http object returned from the verify call
          """
-
+        verify_response = copy.deepcopy(response_object)
         res = self._preliminaryResponseChecks(response, TransactionVerificationError, txRef=txRef)
 
         # sets flwref, amount, chargedAmount, status, chargeCode, responseMessage as variables from the verification response
         responseJson = res["json"]
+<<<<<<< HEAD
         flwRef = responseJson["data"]["flwref"]
         amount = responseJson["data"]["amount"]
         chargedAmount = responseJson["data"]["chargedamount"]
@@ -75,6 +119,30 @@ class Payment(RaveBase):
         
         else:
             return {"status": status,  "error": False, "transactionComplete": True, "amount": amount, "chargedAmount": chargedAmount, "chargecode": chargeCode, "responsemessage": responseMessage, "txRef": txRef, "flwRef": flwRef}
+=======
+        # retrieve necessary properties from response 
+        verify_response["status"] = responseJson['status']
+        verify_response['flwRef'], verify_response["txRef"], verify_response["vbvcode"], verify_response["vbvmessage"], verify_response["acctmessage"], verify_response["currency"], verify_response["chargecode"], verify_response["amount"], verify_response["chargedamount"] = Payment.retrieve(responseJson['data'], "flwref", "txref", "vbvcode", "vbvmessage", "acctmessage", "currency", "chargecode", "amount", "chargedamount")
+
+        # Check if the chargecode is 00
+        if verify_response['chargecode'] == "00":
+            verify_response["error"] = False
+            verify_response["transactionComplete"] = True
+            return verify_response
+        
+        else:
+            verify_response["error"] = False
+            verify_response["transactionComplete"] = False
+            return verify_response
+        
+        # # Check if the chargecode is 00
+        # if not (responseJson["data"].get("chargecode", None) == "00"):
+        #     return {"error": False, "transactionComplete": False, "txRef": txRef, "flwRef":flwRef}
+        
+        # else:
+        #     return {"error": False, "transactionComplete": True, "txRef": txRef, "flwRef":flwRef}
+
+>>>>>>> 9b13b046f1809d7cf9f2799bf410fac00d5a92e6
     
     # returns true if further action is required, false if it isn't    
     def _handleValidateResponse(self, response, flwRef, request=None):
@@ -85,7 +153,10 @@ class Payment(RaveBase):
         res = self._preliminaryResponseChecks(response, TransactionValidationError, flwRef=flwRef)
 
         responseJson = res["json"]
-        txRef = res["txRef"]
+        if responseJson["data"].get("tx") == None:
+            txRef = responseJson["data"]["txRef"]
+        else:
+            txRef = responseJson["data"]["tx"]["txRef"]
 
         # Of all preliminary checks passed
         if not (responseJson["data"].get("tx", responseJson["data"]).get("chargeResponseCode", None) == "00"):
@@ -117,21 +188,24 @@ class Payment(RaveBase):
         # Adding PBFPubKey param to paymentDetails
         paymentDetails.update({"PBFPubKey": self._getPublicKey()})
 
-        # Encrypting payment details (_encrypt is inherited from RaveEncryption)
-        encryptedPaymentDetails = self._encrypt(json.dumps(paymentDetails))
-
         # Collating request headers
         headers = {
             'content-type': 'application/json',
         }
-        
-        # Collating the payload for the request
-        payload = {
-            "PBFPubKey": paymentDetails["PBFPubKey"],
-            "client": encryptedPaymentDetails,
-            "alg": "3DES-24"
-        }
-        response = requests.post(endpoint, headers=headers, data=json.dumps(payload))
+        if "token" in paymentDetails:
+            paymentDetails.update({"SECKEY": self._getSecretKey()})
+            response = requests.post(endpoint, headers=headers, data=json.dumps(paymentDetails))
+        else:
+            # Encrypting payment details (_encrypt is inherited from RaveEncryption)
+            encryptedPaymentDetails = self._encrypt(json.dumps(paymentDetails))
+            
+            # Collating the payload for the request
+            payload = {
+                "PBFPubKey": paymentDetails["PBFPubKey"],
+                "client": encryptedPaymentDetails,
+                "alg": "3DES-24"
+            }
+            response = requests.post(endpoint, headers=headers, data=json.dumps(payload))
         
         if shouldReturnRequest:
             return self._handleChargeResponse(response, paymentDetails["txRef"], paymentDetails)
@@ -183,7 +257,6 @@ class Payment(RaveBase):
             "txref": txRef,
             "SECKEY": self._getSecretKey()
         }
-
         response = requests.post(endpoint, headers=headers, data=json.dumps(payload))
         return self._handleVerifyResponse(response, txRef)
 
