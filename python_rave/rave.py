@@ -6,6 +6,9 @@ from python_rave.rave_ghmobile import GhMobile
 from python_rave.rave_mpesa import Mpesa
 from python_rave.rave_preauth import Preauth
 from python_rave.rave_transfer import Transfer
+from python_rave.rave_paymentplan import PaymentPlan
+from python_rave.rave_subaccounts import SubAccount
+from python_rave.rave_subscription import Subscriptions
 
 class Rave:
     
@@ -22,6 +25,9 @@ class Rave:
         # Creating member objects already initiated with the publicKey and secretKey
         self.Card = Card(publicKey, secretKey, production, usingEnv)
         self.Preauth = Preauth(publicKey, secretKey, production, usingEnv)
+        self.PaymentPlan = PaymentPlan(publicKey, secretKey, production, usingEnv)
+        self.SubAccount = SubAccount(publicKey, secretKey, production, usingEnv)
+        self.Subscriptions = Subscriptions(publicKey, secretKey, production, usingEnv)
         # These all use the account endpoint till further changes, the enpoint maps are defined in rave_base
         self.Account = Account(publicKey, secretKey, production, usingEnv)
         self.Ussd = Ussd(publicKey, secretKey, production, usingEnv)
@@ -29,4 +35,5 @@ class Rave:
         self.Mpesa = Mpesa(publicKey, secretKey, production, usingEnv)
         # Transfer endpoint
         self.Transfer = Transfer(publicKey, secretKey, production, usingEnv)
+        
         

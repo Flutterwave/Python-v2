@@ -1,18 +1,19 @@
 import requests, json, copy
 from python_rave.rave_base import RaveBase
 from python_rave.rave_misc import checkIfParametersAreComplete, generateTransactionReference
-from python_rave.rave_exceptions import InitiateTransferError, ServerError, TransferFetchError
+from python_rave.rave_exceptions import InitiateTransferError, ServerError, TransferFetchError, IncompletePaymentDetailsError
+
+
 class Transfer(RaveBase):
     def __init__(self, publicKey, secretKey, production, usingEnv):
         super(Transfer, self).__init__(publicKey, secretKey, production, usingEnv)
-    
     
     def _preliminaryResponseChecks(self, response, TypeOfErrorToRaise, reference):
         # Check if we can obtain a json
         try:
             responseJson = response.json()
         except:
-            raise ServerError({"error": True, "reference": txRef, "errMsg": response})
+            raise ServerError({"error": True, "reference": reference, "errMsg": response})
 
         # Check if the response contains data parameter
         if not responseJson.get("data", None):
@@ -21,7 +22,7 @@ class Transfer(RaveBase):
         # Check if it is returning a 200
         if not response.ok:
             errMsg = responseJson["data"].get("message", None)
-            raise TypeOfErrorToRaise({"error": True, "txRef": txRef, "flwRef": flwRef, "errMsg": errMsg})
+            raise TypeOfErrorToRaise({"error": True, "errMsg": errMsg})
 
         return responseJson
 
@@ -33,15 +34,15 @@ class Transfer(RaveBase):
             return {"error": False, "id": responseJson["data"].get("id", None), "data": responseJson["data"]}
         
         else:
-            raise InitiateTransferError({"error": True, data: responseJson["data"]})
+            raise InitiateTransferError({"error": True, "data": responseJson["data"]})
 
     def _handleBulkResponse(self, response, bulkDetails):
         responseJson = self._preliminaryResponseChecks(response, InitiateTransferError, None)
 
         if responseJson["status"] == "success":
-            return {"error": False, "id": responseJson["data"].get("id", None), "data": responseJson["data"]}
+            return {"error": False, "status": responseJson["status"], "message":responseJson["message"], "id": responseJson["data"].get("id", None), "data": responseJson["data"]}
         else:
-            raise InitiateTransferError({"error": True, data: responseJson["data"]})
+            raise InitiateTransferError({"error": True, "data": responseJson["data"]})
 
             
     def initiate(self, transferDetails):
@@ -117,16 +118,22 @@ class Transfer(RaveBase):
             raise TransferFetchError({"error": True, "returnedData": responseJson })
 
     # Not elegant but supports python 2 and 3
-    def fetch(self, id=None, q=None, reference=None, page=None, status=None, batch_id=None):
-        endpoint = self._baseUrl + self._endpointMap["transfer"]["fetch"] + "?seckey="+self._getSecretKey()+"&id="+str(id)+"&q="+str(q)+"&reference="+str(reference)+"&page="+str(page)+"&status="+str(status)+"&batch_id="+str(batch_id)
+    def fetch(self, reference=None):
+        endpoint = self._baseUrl + self._endpointMap["transfer"]["fetch"] + "?seckey="+self._getSecretKey()+'&reference='+str(reference)
+        return self._handleTransferStatusRequests(endpoint)
+
+    def allTransfers(self):
+        endpoint = self._baseUrl + self._endpointMap["transfer"]["fetch"] + "?seckey="+self._getSecretKey()
         return self._handleTransferStatusRequests(endpoint)
 
     def getFee(self, currency=None):
         endpoint = self._baseUrl + self._endpointMap["transfer"]["fee"] + "?seckey="+self._getSecretKey() + "&currency="+str(currency)
         return self._handleTransferStatusRequests(endpoint)
         
-    def getBalance(self, currency=None):
-        endpoint = self._baseUrl + self._endpointMap["transfer"]["balance"] 
+    def getBalance(self, currency):
+        if not currency: # i made currency compulsory because if it is not assed in, an error message is returned from the server
+            raise IncompletePaymentDetailsError("currency", ["currency"])
+        endpoint =  self._baseUrl + self._endpointMap["transfer"]["balance"] 
         data = {
             "seckey": self._getSecretKey(),
             "currency": currency

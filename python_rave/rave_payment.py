@@ -1,6 +1,6 @@
 import requests, json, copy
 from python_rave.rave_base import RaveBase
-from python_rave.rave_exceptions import RaveError, IncompletePaymentDetailsError, AuthMethodNotSupportedError, TransactionChargeError, TransactionVerificationError, TransactionValidationError, ServerError, RefundError
+from python_rave.rave_exceptions import RaveError, IncompletePaymentDetailsError, AuthMethodNotSupportedError, TransactionChargeError, TransactionVerificationError, TransactionValidationError, ServerError, RefundError, PreauthCaptureError
 from python_rave.rave_misc import checkIfParametersAreComplete
 
 response_object = {
@@ -40,7 +40,6 @@ class Payment(RaveBase):
 
         # Check if we can obtain a json
         try:
-            # print(response)
             responseJson = response.json()
         except:
             raise ServerError({"error": True, "txRef": txRef, "flwRef": flwRef, "errMsg": response})
@@ -69,7 +68,6 @@ class Payment(RaveBase):
         res = self._preliminaryResponseChecks(response, TransactionChargeError, txRef=txRef)
         
         responseJson = res["json"]
-        # print(responseJson)
         flwRef = responseJson["data"]["flwRef"]
         
         # if all preliminary tests pass
@@ -77,6 +75,22 @@ class Payment(RaveBase):
             return {"error": False,  "validationRequired": True, "txRef": txRef, "flwRef": flwRef}
         else:
             return {"error": False,  "validationRequired": False, "txRef": txRef, "flwRef": flwRef}
+    
+    def _handleCaptureResponse(self, response, request=None):
+        """ This handles transaction charge responses """
+
+        # If we cannot parse the json, it means there is a server error
+        res = self._preliminaryResponseChecks(response, PreauthCaptureError, txRef='')
+        
+        responseJson = res["json"]
+        flwRef = responseJson["data"]["flwRef"]
+        txRef = responseJson["data"]["txRef"]
+        
+        # if all preliminary tests pass
+        if not (responseJson["data"].get("chargeResponseCode", None) == "00"):
+            return {"error": False,  "validationRequired": True, "txRef": txRef, "flwRef": flwRef}
+        else:
+            return {"error": False, "status":responseJson["status"], "message": responseJson["message"],  "validationRequired": False, "txRef": txRef, "flwRef": flwRef}
 
 
     # This can be altered by implementing classes but this is the default behaviour
@@ -127,9 +141,6 @@ class Payment(RaveBase):
             txRef = responseJson["data"]["txRef"]
         else:
             txRef = responseJson["data"]["tx"]["txRef"]
-        # print("cool")
-        # print(responseJson) 
-        
 
         # Of all preliminary checks passed
         if not (responseJson["data"].get("tx", responseJson["data"]).get("chargeResponseCode", None) == "00"):
@@ -150,7 +161,6 @@ class Payment(RaveBase):
             shouldReturnRequest -- This determines whether a request is passed to _handleResponses\n
         """
         # Checking for required components
-        print(requiredParameters)
         try:
             checkIfParametersAreComplete(requiredParameters, paymentDetails)
         except: 
@@ -231,7 +241,6 @@ class Payment(RaveBase):
             "txref": txRef,
             "SECKEY": self._getSecretKey()
         }
-
         response = requests.post(endpoint, headers=headers, data=json.dumps(payload))
         return self._handleVerifyResponse(response, txRef)
 

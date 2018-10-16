@@ -17,9 +17,7 @@ class Card(Payment):
         """ This handles charge responses """
         res =  self._preliminaryResponseChecks(response, CardChargeError, txRef=txRef)
 
-    
         responseJson = res["json"]
-        # print(responseJson)
         flwRef = res["flwRef"]
 
         # Checking if there is auth url
@@ -37,6 +35,21 @@ class Card(Payment):
             return {"error": False, "status": responseJson["status"],  "validationRequired": False, "txRef": txRef, "flwRef": flwRef, "suggestedAuth": None, "authUrl": authUrl}
 
     
+    def _handleRefundorVoidResponse(self, response, txRef, request=None):
+        """ This handles charge responses """
+        res =  self._preliminaryResponseChecks(response, CardChargeError, txRef=txRef)
+
+        responseJson = res["json"]
+        flwRef = responseJson["data"]["data"]["authorizeId"]
+
+        # If all preliminary checks passed
+        if not (responseJson["data"]["data"].get("responsecode", None) == "RR"):
+            # Refund or Void could not be completed
+            return {"error": True, "status": responseJson["status"], "message": responseJson["message"], "flwRef": flwRef}
+        else:
+            return {"error": False, "status": responseJson["status"], "message": responseJson["message"], "flwRef": flwRef}
+
+    
 
     # This can be altered by implementing classes but this is the default behaviour
     # Returns True and the data if successful
@@ -50,7 +63,6 @@ class Card(Payment):
         res =  self._preliminaryResponseChecks(response, TransactionVerificationError, txRef=txRef)
         responseJson = res["json"]
         flwRef = res["flwRef"]
-        # print(responseJson)
         # Check if the call returned something other than a 200
         if not response.ok:
             errMsg = responseJson["data"].get("message", "Your call failed with no response")
@@ -71,16 +83,16 @@ class Card(Payment):
             cardDetails (dict) -- This is a dictionary comprising payload parameters.\n
             hasFailed (bool) -- This indicates whether the request had previously failed for timeout handling
         """
-
-        print(cardDetails)
         # setting the endpoint
         if not chargeWithToken:
-            print("got here1")
             endpoint = self._baseUrl + self._endpointMap["card"]["charge"]
             requiredParameters = ["cardno", "cvv", "expirymonth", "expiryyear", "amount", "email", "phonenumber", "firstname", "lastname", "IP"]
-        else:
-            print("got here")
-            endpoint = self._baseUrl + self._endpointMap["card"]["preauthSavedCard"]
+        else: 
+            if "charge_type" in cardDetails and cardDetails["charge_type"] == 'preauth':
+                endpoint = self._baseUrl + self._endpointMap["preauth"]["charge"]
+            else: 
+                endpoint = self._baseUrl + self._endpointMap["card"]["chargeSavedCard"]
+
             requiredParameters = ["currency", "token", "country", "amount", "email", "firstname", "lastname", "txRef", "IP"]
             # add token to requiredParameters
             # requiredParameters.append("token")
