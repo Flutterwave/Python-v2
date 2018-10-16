@@ -173,8 +173,8 @@ from python_rave import Rave, RaveExceptions, Misc
 rave = Rave("ENTER_YOUR_PUBLIC_KEY", "ENTER_YOUR_SECRET_KEY", usingEnv = False)
 # account payload
 payload = {
-  "accountbank": "232",# get the bank code from the bank list endpoint.
-  "accountnumber": "0061333471",
+  "accountbank": "044",  # get the bank code from the bank list endpoint.
+  "accountnumber": "0690000031",
   "currency": "NGN",
   "country": "NG",
   "amount": "100",
@@ -189,7 +189,7 @@ try:
         print(res["authUrl"])
 
     elif res["validationRequired"]:
-        rave.Account.validate(res["flwRef"], "1234")
+        rave.Account.validate(res["flwRef"], "12345")
 
     res = rave.Account.verify(res["txRef"])
     print(res)
@@ -1188,7 +1188,9 @@ try:
         ]
     })
     print(res)
-    rave.Transfer.getBalance()
+
+    balanceres = rave.Transfer.getBalance("NGN")
+    print(balanceres)
 
 except RaveExceptions.IncompletePaymentDetailsError as e:
     print(e)
@@ -1602,7 +1604,7 @@ try:
     "split_type": "flat",
     "split_value": 3000,
 	"meta": [{"metaname": "MarketplaceID", "metavalue": "ggs-920900"}]
-# })
+    })
     res = rave.SubAccount.fetchSubaccount('RS_0A6C260E1A70934DE6EF2F8CEE46BBB3')
     print(res)
 

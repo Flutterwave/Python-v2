@@ -1,2 +1,11 @@
 *.pyc
+account.py
 card.py
+mpesa.py
+paymentplan.py
+subaccount.py
+subscription.py
+test.py
+ussd.py
+preauth.py
+ghmoney.py
