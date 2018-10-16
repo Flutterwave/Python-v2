@@ -13,10 +13,6 @@ To install, run
 
 ``` pip install python_rave```
 
-## Prerequisite
-
-``` pip install pycryptodome ```
-
 Note: This is currently under active development
 ## Import Package
 The base class for this package is 'Rave'. To use this class, add:
@@ -193,7 +189,7 @@ try:
         print(res["authUrl"])
 
     elif res["validationRequired"]:
-        rave.Account.validate(res["flwRef"], "12345")
+        rave.Account.validate(res["flwRef"], "1234")
 
     res = rave.Account.verify(res["txRef"])
     print(res)
@@ -464,7 +460,7 @@ try:
         res = rave.Card.charge(payload)
 
     if res["validationRequired"]:
-        rave.Card.validate(res["flwRef"], "12345")
+        rave.Card.validate(res["flwRef"], "")
 
     res = rave.Card.verify(res["txRef"])
     print(res["transactionComplete"])
@@ -1784,8 +1780,4 @@ They can be run like so:
 
 >**NOTE:** If the test fails for creating a subaccount, just change the ```account_number``` ```account_bank```  and ```businesss_email``` to something different
 
-<<<<<<< HEAD
-```
-=======
 >**NOTE:** The test may fail for account validation - ``` Pending OTP validation``` depending of whether the service is down or not
->>>>>>> 9b13b046f1809d7cf9f2799bf410fac00d5a92e6

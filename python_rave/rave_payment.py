@@ -103,7 +103,7 @@ class Payment(RaveBase):
         verify_response = copy.deepcopy(response_object)
         res = self._preliminaryResponseChecks(response, TransactionVerificationError, txRef=txRef)
 
-        # sets flwref, amount, chargedAmount, status, chargeCode, responseMessage as variables from the verification response
+
         responseJson = res["json"]
         # retrieve necessary properties from response 
         verify_response["status"] = responseJson['status']
