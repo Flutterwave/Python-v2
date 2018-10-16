@@ -5,7 +5,7 @@ mpesa.py
 paymentplan.py
 subaccount.py
 subscription.py
-test.py
+transfer.py
 ussd.py
 preauth.py
 ghmoney.py
