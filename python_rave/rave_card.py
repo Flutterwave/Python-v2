@@ -62,7 +62,7 @@ class Card(Payment):
         # Checking if there was a server error during the call (in this case html is returned instead of json)
         res =  self._preliminaryResponseChecks(response, TransactionVerificationError, txRef=txRef)
         responseJson = res["json"]
-        flwRef = res["flwRef"]
+        flwRef = responseJson["data"]["flwref"]
         # Check if the call returned something other than a 200
         if not response.ok:
             errMsg = responseJson["data"].get("message", "Your call failed with no response")
@@ -70,10 +70,10 @@ class Card(Payment):
         
         # if the chargecode is not 00
         elif not (responseJson["data"].get("chargecode", None) == "00"):
-            return {"error": False, "transactionComplete": False, "txRef": txRef, "flwRef":flwRef, "cardToken": responseJson["data"]["card"]["card_tokens"][0]["embedtoken"]}
+            return {"error": False, "transactionComplete": False, "txRef": txRef, "flwRef":flwRef, "cardToken": responseJson["data"]["card"]["card_tokens"][0]["embedtoken"], "vbvmessage": responseJson["data"]["vbvmessage"], "chargemessage": responseJson["data"]["chargemessage"]}
         
         else:
-            return {"error":False, "transactionComplete": True, "txRef": txRef, "flwRef": flwRef, "amount":responseJson["data"]["amount"], "chargedAmount":responseJson["data"]["chargedamount"], "cardToken": responseJson["data"]["card"]["card_tokens"][0]["embedtoken"]}
+            return {"error":False, "transactionComplete": True, "txRef": txRef, "flwRef": flwRef, "amount":responseJson["data"]["amount"], "chargedAmount":responseJson["data"]["chargedamount"], "cardToken": responseJson["data"]["card"]["card_tokens"][0]["embedtoken"], "vbvmessage": responseJson["data"]["vbvmessage"], "chargemessage": responseJson["data"]["chargemessage"]}
 
     
     # Charge card function
