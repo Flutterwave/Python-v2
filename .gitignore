@@ -1,1 +1,4 @@
 *.pyc
+account.py
+card.py
+preauth.py
