@@ -21,8 +21,8 @@ class Ussd(Payment):
         res =  self._preliminaryResponseChecks(response, UssdChargeError, txRef=txRef)
 
         responseJson = res["json"]
-        flwRef = res["flwRef"]
-
+        flwRef = responseJson["data"]["flwRef"]
+        print(res)
         # Charge response code of 00 means successful, 02 means failed. Here we check if the code is not 00
         if not (responseJson["data"].get("chargeResponseCode", None) == "00"):
             # If it is we return that further action is required
