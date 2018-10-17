@@ -1,6 +1,5 @@
 *.pyc
-*.vscode
+.vscode
 account.py
 card.py
 preauth.py
-
