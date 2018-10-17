@@ -48,7 +48,12 @@ class Card(Payment):
         res =  self._preliminaryResponseChecks(response, TransactionVerificationError, txRef=txRef)
 
         responseJson = res["json"]
-        flwRef = res["flwRef"]
+        flwRef = responseJson["data"]["flwref"]
+        amount = responseJson["data"]["amount"]
+        chargedamount = responseJson["data"]["chargedamount"]
+        chargecode = responseJson["data"]["chargecode"]
+        responseMessage = responseJson["data"]["vbvmessage"]
+        # print(responseJson)
 
         # Check if the call returned something other than a 200
         if not response.ok:
@@ -60,7 +65,7 @@ class Card(Payment):
             return {"error": False, "transactionComplete": False, "txRef": txRef, "flwRef":flwRef, "cardToken": responseJson["data"]["card"]["card_tokens"][0]["embedtoken"]}
         
         else:
-            return {"error":False, "transactionComplete": True, "txRef": txRef, "flwRef": flwRef, "cardToken": responseJson["data"]["card"]["card_tokens"][0]["embedtoken"]}
+            return {"error":False, "transactionComplete": True, "txRef": txRef, "flwRef": flwRef, "amount": amount, "chargedamount": chargedamount, "chargecode": chargecode, "vbvmessage": responseMessage, "cardToken": responseJson["data"]["card"]["card_tokens"][0]["embedtoken"]}
 
     
     # Charge card function
