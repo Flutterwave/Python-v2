@@ -926,7 +926,7 @@ except RaveExceptions.TransactionVerificationError as e:
 
 ```
 from python_rave import Rave, Misc, RaveExceptions
-rave = Rave("FLWPUBK-ba0a57153f497c03bf34a9e296aa9439-X", "FLWSECK-327b3874ca8e75640a1198a1b75c0b0b-X", usingEnv = False)
+rave = Rave("ENTER_YOUR_PUBLIC_KEY", "ENTER_YOUR_SECRET_KEY", usingEnv = False)
 
 # Payload with pin
 payload = {
