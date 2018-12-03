@@ -20,7 +20,6 @@ class Account(Payment):
         res =  self._preliminaryResponseChecks(response, AccountChargeError, txRef=txRef)
 
         responseJson = res["json"]
-
         # change - added data before flwRef
         flwRef = responseJson['data']["flwRef"]
         
@@ -35,7 +34,7 @@ class Account(Payment):
                 return {"error": False, "validationRequired": True, "txRef": txRef, "flwRef": flwRef, "authUrl": None}
 
         else:
-            return {"error": False, "validationRequired": False, "txRef": txRef, "flwRef": flwRef, "authUrl": None}
+            return {"error": False, "validationRequired": False, "txRef": txRef, "flwRef": flwRef, "authUrl": None, "validateInstructions": responseJson['data']["validateInstructions"]}
     
 
 

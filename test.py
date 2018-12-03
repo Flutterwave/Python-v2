@@ -7,8 +7,9 @@ from python_rave.rave_exceptions import RaveError, IncompletePaymentDetailsError
 class TestRavePaymentOptions(unittest.TestCase):
     def setUp(self):
         self.account_details = {
-            "accountbank":"044",
-            "accountnumber":"0690000031",
+            "accountbank":"101",
+            "currency": "NGN",
+            "accountnumber":"5900002567",
             "amount":"500",
             "country":"NG",
             "email":"varisiv@gmail.com",
@@ -17,6 +18,7 @@ class TestRavePaymentOptions(unittest.TestCase):
         }
         self.faulty_account_details = {
             "accountbank":"044",
+            "currency": "NGN",
             "accountnumber":"0690000031",
             "amount":"invalid_amount",
             "country":"NG",
@@ -29,6 +31,7 @@ class TestRavePaymentOptions(unittest.TestCase):
             "cvv": "470",
             "expirymonth": "10",
             "expiryyear": "22",
+            "currency": "NGN",
             "amount": "100",
             "email": "user@gmail.com",
             "phonenumber": "0902620185",
@@ -40,6 +43,7 @@ class TestRavePaymentOptions(unittest.TestCase):
             "cardno": "5399838383838381",
             "cvv": "470",
             "expirymonth": "10",
+            "currency": "NGN",
             "expiryyear": "22",
             "phonenumber": "0902620185",
             "firstname": "temi",
@@ -50,6 +54,7 @@ class TestRavePaymentOptions(unittest.TestCase):
             "token":"flw-t1nf-5b0f12d565cd961f73c51370b1340f1f-m03k",
             "country":"NG",
             "amount":1000,
+            "currency": "NGN",
             "email":"user@gmail.com",
             "firstname":"temi",
             "lastname":"Oyekole",
@@ -61,6 +66,7 @@ class TestRavePaymentOptions(unittest.TestCase):
             "token":"flw-t1nf-5b0f12d565cd961f73c51370b1340f1f-m03k",
             "country":"NG",
             "amount":1000,
+            "currency": "NGN",
             "firstname":"temi",
             "lastname":"Oyekole",
             "IP":"190.233.222.1",
@@ -74,6 +80,18 @@ class TestRavePaymentOptions(unittest.TestCase):
             "amount": 500,
             "narration": "New transfer",
             "currency": "NGN",
+            "beneficiary_name": "Mark Cuban",
+            "meta": [
+                {
+                "AccountNumber": "09182972BH",
+                "RoutingNumber": "0000000002993",
+                "SwiftCode": "ABJG190",
+                "BankName": "BANK OF AMERICA, N.A., SAN FRANCISCO, CA",
+                "BeneficiaryName": "Mark Cuban",
+                "BeneficiaryAddress": "San Francisco, 4 Newton",
+                "BeneficiaryCountry": "US"
+                }
+            ]
         }
         self.faulty_transferDetails = {
             "account_bank": "044",
@@ -86,12 +104,24 @@ class TestRavePaymentOptions(unittest.TestCase):
             "title":"May Staff Salary",
             "bulk_data":[
                 {
-                    "Ban":"044",
+                    "Bank":"044",
                     "Account Number": "0690000032",
                     "Amount":500,
                     "Currency":"NGN",
                     "Narration":"Bulk transfer 1",
-                    "reference": "mk-82973029"
+                    "reference": "mk-82973029",
+                    "beneficiary_name": "Mark Cuban",
+                    "meta": [
+                        {
+                        "AccountNumber": "09182972BH",
+                        "RoutingNumber": "0000000002993",
+                        "SwiftCode": "ABJG190",
+                        "BankName": "BANK OF AMERICA, N.A., SAN FRANCISCO, CA",
+                        "BeneficiaryName": "Mark Cuban",
+                        "BeneficiaryAddress": "San Francisco, 4 Newton",
+                        "BeneficiaryCountry": "US"
+                        }
+                    ]
                 },
                 {
                     "Bank":"044",
@@ -99,7 +129,19 @@ class TestRavePaymentOptions(unittest.TestCase):
                     "Amount":500,
                     "Currency":"NGN",
                     "Narration":"Bulk transfer 2",
-                    "reference": "mk-283874750"
+                    "reference": "mk-283874750",
+                    "beneficiary_name": "Mark Cuban",
+                    "meta": [
+                        {
+                        "AccountNumber": "09182972BH",
+                        "RoutingNumber": "0000000002993",
+                        "SwiftCode": "ABJG190",
+                        "BankName": "BANK OF AMERICA, N.A., SAN FRANCISCO, CA",
+                        "BeneficiaryName": "Mark Cuban",
+                        "BeneficiaryAddress": "San Francisco, 4 Newton",
+                        "BeneficiaryCountry": "US"
+                        }
+                    ]
                 }
             ]
         }
@@ -124,6 +166,7 @@ class TestRavePaymentOptions(unittest.TestCase):
         self.subaccountDetails = {
             "account_bank": "044",
             "account_number": "0690000037",
+            "currency": "NGN",
             "business_name": "Jake Stores",
             "business_email": "jdhhd@services.com",
             "business_contact": "Amy Parkers",
@@ -136,6 +179,7 @@ class TestRavePaymentOptions(unittest.TestCase):
 
         self.faulty_subaccountDetails_1 = {
             "business_email": "jdhhd@services.com",
+            "currency": "NGN",
             "business_contact": "Amy Parkers",
             "business_contact_mobile": "09083772",
             "business_mobile": "0188883882",
@@ -148,6 +192,7 @@ class TestRavePaymentOptions(unittest.TestCase):
             "account_bank": "044",
             "account_number": "0690000032",
             "business_name": "Jake Stores",
+            "currency": "NGN",
             "business_email": "jdhhd@services.com",
             "business_contact": "Amy Parkers",
             "business_contact_mobile": "09083772",
@@ -191,6 +236,18 @@ class TestRavePaymentOptions(unittest.TestCase):
             "txRef":"MC-7666-YU",
             "currency":"NGN",
         }
+
+        self.ugDetails = {
+            "amount": "50",
+            "network": "UGX",
+            "email": "user@example.com",
+            "phonenumber": "08075376980",
+            "firstname": "temi",
+            "lastname": "desola",
+            "IP": "355426087298442",
+            "redirect_url": "https://rave-webhook.herokuapp.com/receivepayment",
+            "device_fingerprint": "69e6b7f0b72037aa8428b70fbe03986c"
+        }
         
 
         self.rave = Rave("FLWPUBK-ba0a57153f497c03bf34a9e296aa9439-X", "FLWSECK-327b3874ca8e75640a1198a1b75c0b0b-X", usingEnv = False)
@@ -198,7 +255,7 @@ class TestRavePaymentOptions(unittest.TestCase):
     def test_account(self):
         # This test case checks that on initiating a payment, the user is requested to validate the payment
         res = self.rave.Account.charge(self.account_details)
-        self.assertEqual(res["validationRequired"], True)
+        self.assertEqual(res["validationRequired"], False)
         with self.assertRaises(AccountChargeError):
             self.rave.Account.charge(self.faulty_account_details) 
 
@@ -212,7 +269,7 @@ class TestRavePaymentOptions(unittest.TestCase):
             self.rave.Account.verify("MC-8883838388881") # a wrong txRef to ensure TransactionVerificationError is raised anytime a wrong transaction reference is passed
         
     def test_card(self):
-        
+
         res = self.rave.Card.charge(self.card_details)
         self.assertIsNotNone(res["suggestedAuth"])
         with self.assertRaises(IncompletePaymentDetailsError):
@@ -278,7 +335,10 @@ class TestRavePaymentOptions(unittest.TestCase):
         self.assertEqual(res["data"]["is_approved"], 1)
         self.assertEqual(res["error"], False)
 
-        with self.assertRaises(InitiateTransferError):
+        # with self.assertRaises(InitiateTransferError):
+        #     self.rave.Transfer.initiate(self.faulty_transferDetails)
+        
+        with self.assertRaises(IncompletePaymentDetailsError):
             self.rave.Transfer.initiate(self.faulty_transferDetails)
         
         #initiation - bulk transfer
@@ -379,5 +439,11 @@ class TestRavePaymentOptions(unittest.TestCase):
         self.assertIsNotNone(res["returnedData"]["status"])
         self.assertEqual(res["returnedData"]["status"], "success")
         self.assertEqual(res["error"], False)
+
+    def test_ugmobile(self):
+        #charge
+        res = self.rave.UGMobile.charge(self.ugDetails)
+        print(res)
+        
 if __name__ == '__main__':
     unittest.main()

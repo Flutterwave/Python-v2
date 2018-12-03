@@ -59,7 +59,6 @@ class Preauth(Card):
         headers ={
             "Content-Type":"application/json"
         }
-        print(payload)
         endpoint = self._baseUrl + self._endpointMap["preauth"]["refundorvoid"]
         response = requests.post(endpoint, headers=headers, data=json.dumps(payload))
         return self._handleRefundorVoidResponse(response, endpoint)

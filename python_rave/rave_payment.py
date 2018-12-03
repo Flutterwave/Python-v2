@@ -72,9 +72,12 @@ class Payment(RaveBase):
         
         # if all preliminary tests pass
         if not (responseJson["data"].get("chargeResponseCode", None) == "00"):
-            return {"error": False,  "validationRequired": True, "txRef": txRef, "flwRef": flwRef}
+            if responseJson["data"].get("currency", 'None') == 'UGX':
+                return {"error": False, "status": responseJson["status"],  "validationRequired": True, "txRef": txRef, "flwRef": flwRef}
+
+            return {"error": False, "status": responseJson["status"],"validationRequired": True, "txRef": txRef, "flwRef": flwRef}
         else:
-            return {"error": False,  "validationRequired": False, "txRef": txRef, "flwRef": flwRef}
+            return {"error": True,  "validationRequired": False, "txRef": txRef, "flwRef": flwRef}
     
     def _handleCaptureResponse(self, response, request=None):
         """ This handles transaction charge responses """
@@ -116,7 +119,7 @@ class Payment(RaveBase):
             return verify_response
         
         else:
-            verify_response["error"] = False
+            verify_response["error"] = True # changed to True on 15/10/2018
             verify_response["transactionComplete"] = False
             return verify_response
         
