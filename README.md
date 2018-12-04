@@ -351,7 +351,7 @@ This call returns a dict with ```txRef```, ```flwRef``` and ```transactionComple
 Sample
 ```{'flwRef': None, 'cardToken': u'flw-t1nf-5b0f12d565cd961f73c51370b1340f1f-m03k', 'chargedAmount': 100, 'amount': 100, 'transactionComplete': True, 'error': False, 'txRef': u'MC-1538095718251'}```
 
-#### Please note that after successfully charging a card successfully on rave, if you wish to save the card for further charges, In your verify payment response you will find an object: "embedtoken": "flw-t0-f6f915f53a094671d98560272572993e-m03k".  This is the token you will use for card tokenization. Details are provided below.
+#### Please note that after charging a card successfully on rave, if you wish to save the card for further charges, In your verify payment response you will find an object: "cardtoken": "flw-t0-f6f915f53a094671d98560272572993e-m03k".  This is the token you will use for card tokenization. Details are provided below.
 
 If your call could not be completed successfully, a ```TransactionVerificationError``` is raised.
 
@@ -988,7 +988,23 @@ This is used to initiate and manage payouts
 
 ### ```.initiate(transferDetails)```
 
-This initiates a transfer to a customer's account. When a transfer is initiated, it comes with a status NEW this means the transfer has been queued for processing
+This initiates a transfer to a customer's account. When a transfer is initiated, it comes with a status NEW this means the transfer has been queued for processing.
+
+**Please note that you must pass ```beneficiary_name``` as part of the initiate call. Else an error will be thrown.**
+>Also if you are doing international transfers, you must pass a meta parameter as part of your payload as shown below:
+```
+"meta": [
+    {
+      "AccountNumber": "09182972BH",
+      "RoutingNumber": "0000000002993",
+      "SwiftCode": "ABJG190",
+      "BankName": "BANK OF AMERICA, N.A., SAN FRANCISCO, CA",
+      "BeneficiaryName": "Mark Cuban",
+      "BeneficiaryAddress": "San Francisco, 4 Newton",
+      "BeneficiaryCountry": "US"
+    }
+]
+```
 
 A sample initiate call is:
 
