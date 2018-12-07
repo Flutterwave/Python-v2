@@ -19,7 +19,7 @@ class UGMobile(Payment):
         endpoint = self._baseUrl + self._endpointMap["account"]["charge"]
         
         # It is faster to add boilerplate than to check if each one is present
-        accountDetails.update({"payment_type": "mobilemoneyuganda", "country":"NG", "is_mobile_money_ug":"1", "currency":"UGX"})
+        accountDetails.update({"payment_type": "mobilemoneyuganda", "country":"NG", "is_mobile_money_ug":"1", "currency":"UGX", "network": "UGX"})
         
         # If transaction reference is not set 
         if not ("txRef" in accountDetails):
