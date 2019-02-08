@@ -1,6 +1,6 @@
 import requests, json, copy
 from python_rave.rave_base import RaveBase
-from python_rave.rave_misc import checkIfParametersAreComplete, generateTransactionReference
+from python_rave.rave_misc import checkIfParametersAreComplete, generateTransactionReference, checkTransferParameters
 from python_rave.rave_exceptions import InitiateTransferError, ServerError, TransferFetchError, IncompletePaymentDetailsError
 
 
@@ -55,8 +55,10 @@ class Transfer(RaveBase):
         transferDetails.update({"seckey": self._getSecretKey()})
 
         # These are the parameters required to initiate a transfer
-        requiredParameters = ["amount", "currency"]
+        requiredParameters = ["meta","amount", "currency","beneficiary_name"]
+
         checkIfParametersAreComplete(requiredParameters, transferDetails)
+        checkTransferParameters(requiredParameters, transferDetails)
 
         # Collating request headers
         headers = {
@@ -82,6 +84,8 @@ class Transfer(RaveBase):
         requiredParameters = ["title", "bulk_data"]
 
         checkIfParametersAreComplete(requiredParameters, bulkDetails)
+        
+        checkTransferParameters(requiredParameters, bulkDetails)
 
         endpoint = self._baseUrl + self._endpointMap["transfer"]["bulk"]
         # Collating request headers

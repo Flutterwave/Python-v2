@@ -351,7 +351,7 @@ This call returns a dict with ```txRef```, ```flwRef``` and ```transactionComple
 Sample
 ```{'flwRef': None, 'cardToken': u'flw-t1nf-5b0f12d565cd961f73c51370b1340f1f-m03k', 'chargedAmount': 100, 'amount': 100, 'transactionComplete': True, 'error': False, 'txRef': u'MC-1538095718251'}```
 
-#### Please note that after successfully charging a card successfully on rave, if you wish to save the card for further charges, In your verify payment response you will find an object: "embedtoken": "flw-t0-f6f915f53a094671d98560272572993e-m03k".  This is the token you will use for card tokenization. Details are provided below.
+#### Please note that after charging a card successfully on rave, if you wish to save the card for further charges, In your verify payment response you will find an object: "cardtoken": "flw-t0-f6f915f53a094671d98560272572993e-m03k".  This is the token you will use for card tokenization. Details are provided below.
 
 If your call could not be completed successfully, a ```TransactionVerificationError``` is raised.
 
@@ -691,6 +691,111 @@ except RaveExceptions.TransactionVerificationError as e:
 
 
 <br><br>
+
+## ```rave.UGMobile```
+This is used to facilitate Ghana mobile money transactions.
+
+**Functions included:**
+
+* ```.charge```
+
+
+* ```.verify```
+
+<br>
+
+### ```.charge(payload)```
+This is called to start an Ghana mobile money transaction. The payload should be a dictionary containing account information. It should have the parameters:
+
+* ```amount```,
+
+* ```email```, 
+
+* ```phonenumber```,
+
+* ```IP```,
+
+* ```redirect_url```
+
+Optionally, you can add a custom transaction reference using the ```txRef``` parameter. Note that if you do not specify one, it would be automatically generated. We do provide a function for generating transaction references in the Misc library (add link).
+
+
+A sample call is:
+
+``` res = rave.UGMobile.charge(payload) ```
+
+#### Returns
+
+This call returns a dictionary. A sample response is:
+
+ ```{'error': False, 'status': 'success', 'validationRequired': True, 'txRef': 'MC-1544013787279', 'flwRef': 'flwm3s4m0c1544013788481'}```
+
+ This call raises an ```TransactionChargeError``` if there was a problem processing your transaction. The ```TransactionChargeError``` contains some information about your transaction. You can handle this as such:
+
+```
+try: 
+    #Your charge call
+except RaveExceptions.TransactionChargeError as e:
+    print(e.err["errMsg"])
+    print(e.err["flwRef"])
+
+```
+
+A sample ``` e.err ``` contains:
+
+```{'error': True, 'txRef': 'MC-1530911537060', 'flwRef': None, 'errMsg': None}```
+
+
+<br>
+
+### ```.verify(txRef)```
+
+You can call this to check if your transaction was completed successfully. You have to pass the transaction reference generated at the point of charging. This is the ```txRef``` in the ```res``` parameter returned any of the calls (```charge``` or ```validate```). 
+
+A sample verify call is:
+
+``` res = rave.UGMobile.verify(data["txRef"]) ```
+
+#### Returns
+
+This call returns a dict with ```txRef```, ```flwRef``` and ```transactionComplete``` which indicates whether the transaction was completed successfully. 
+
+If your call could not be completed successfully, a ```TransactionVerificationError``` is raised.
+
+<br>
+
+### Complete UGMobile charge flow
+
+```
+from python_rave import Rave, RaveExceptions, Misc
+rave = Rave("ENTER_YOUR_PUBLIC_KEY", "ENTER_YOUR_SECRET_KEY", usingEnv = False)
+
+# mobile payload
+payload = {
+  "amount": "50",
+  "email": "",
+  "phonenumber": "xxxxxxxx",
+  "redirect_url": "https://rave-webhook.herokuapp.com/receivepayment",
+  "IP":""
+}
+
+try:
+  res = rave.UGMobile.charge(payload)
+  res = rave.UGMobile.verify(res["txRef"])
+  print(res)
+
+except RaveExceptions.TransactionChargeError as e:
+  print(e.err)
+  print(e.err["flwRef"])
+
+except RaveExceptions.TransactionVerificationError as e:
+  print(e.err["errMsg"])
+  print(e.err["txRef"])
+
+
+```
+<br><br>
+
 ## ```rave.Ussd```
 This is used to facilitate USSD transactions.
 
@@ -988,7 +1093,23 @@ This is used to initiate and manage payouts
 
 ### ```.initiate(transferDetails)```
 
-This initiates a transfer to a customer's account. When a transfer is initiated, it comes with a status NEW this means the transfer has been queued for processing
+This initiates a transfer to a customer's account. When a transfer is initiated, it comes with a status NEW this means the transfer has been queued for processing.
+
+**Please note that you must pass ```beneficiary_name``` as part of the initiate call. Else an error will be thrown.**
+>Also if you are doing international transfers, you must pass a meta parameter as part of your payload as shown below:
+```
+"meta": [
+    {
+      "AccountNumber": "09182972BH",
+      "RoutingNumber": "0000000002993",
+      "SwiftCode": "ABJG190",
+      "BankName": "BANK OF AMERICA, N.A., SAN FRANCISCO, CA",
+      "BeneficiaryName": "Mark Cuban",
+      "BeneficiaryAddress": "San Francisco, 4 Newton",
+      "BeneficiaryCountry": "US"
+    }
+]
+```
 
 A sample initiate call is:
 

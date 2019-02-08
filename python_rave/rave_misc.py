@@ -14,6 +14,36 @@ def generateTransactionReference(merchantId=None):
     else:
         return "MC-"+str(timestamp)
 
+
+def checkTransferParameters(requiredParameters, paymentDetails):
+    # Transfer specific meta parameters
+    requiredTransferMetaParams = ['AccountNumber','RoutingNumber', 'BankName', 'BeneficiaryName','BeneficiaryAddress', 'BeneficiaryCountry']
+    excludedCurrencies = ["NGN", "GHS", "KES", "UGX", "TZS"]
+    #end Transfer specific meta parameters
+
+    # International transfer check block
+    if "bulk_data" in requiredParameters:
+        for i in paymentDetails["bulk_data"]:
+            if "debit_currency" not in i:
+                if i["Currency"] not in excludedCurrencies:
+                    if "meta" in i:
+                        for j in requiredTransferMetaParams:
+                            if j not in i["meta"][0]:
+                                raise IncompletePaymentDetailsError(i, requiredTransferMetaParams)
+                    else:
+                        raise IncompletePaymentDetailsError("meta", requiredParameters)
+    else:
+        if "debit_currency" not in paymentDetails:
+            if paymentDetails["currency"] not in excludedCurrencies:
+                if "meta" in paymentDetails:
+                    for i in requiredTransferMetaParams:
+                        if i not in paymentDetails["meta"][0]:
+                            raise IncompletePaymentDetailsError(i, requiredTransferMetaParams)
+                else:
+                    raise IncompletePaymentDetailsError("meta", requiredParameters)
+
+    #end international transfer check block
+
 # If parameters are complete, returns true. If not returns false with parameter missing
 def checkIfParametersAreComplete(requiredParameters, paymentDetails):
     """ This returns true/false depending on if the paymentDetails match the required parameters """
