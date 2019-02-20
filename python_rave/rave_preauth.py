@@ -25,7 +25,7 @@ class Preauth(Card):
 
         # Add the charge_type
         cardDetails.update({"charge_type":"preauth"})
-        return super(Preauth, self).charge(cardDetails, chargeWithToken=True)
+        return super(Preauth, self).charge(cardDetails, chargeWithToken=False)
     
 
     # capture payment
@@ -41,6 +41,7 @@ class Preauth(Card):
         headers ={
             "Content-Type":"application/json"
         }
+        print(json.dumps(payload))
         endpoint = self._baseUrl + self._endpointMap["preauth"]["capture"]
         response = requests.post(endpoint, headers=headers, data=json.dumps(payload))
         return self._handleCaptureResponse(response, '')

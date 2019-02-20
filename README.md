@@ -233,6 +233,10 @@ This is called to start a card transaction. The payload should be a dictionary c
 
 * ```cvv```, 
 
+* ```currency```, 
+
+* ```country```, 
+
 * ```expirymonth```, 
 
 * ```expiryyear```, 
@@ -693,7 +697,7 @@ except RaveExceptions.TransactionVerificationError as e:
 <br><br>
 
 ## ```rave.UGMobile```
-This is used to facilitate Ghana mobile money transactions.
+This is used to facilitate Uganda mobile money transactions.
 
 **Functions included:**
 
@@ -782,6 +786,110 @@ payload = {
 try:
   res = rave.UGMobile.charge(payload)
   res = rave.UGMobile.verify(res["txRef"])
+  print(res)
+
+except RaveExceptions.TransactionChargeError as e:
+  print(e.err)
+  print(e.err["flwRef"])
+
+except RaveExceptions.TransactionVerificationError as e:
+  print(e.err["errMsg"])
+  print(e.err["txRef"])
+
+
+```
+<br><br>
+
+## ```rave.ZBMobile```
+This is used to facilitate Ghana mobile money transactions.
+
+**Functions included:**
+
+* ```.charge```
+
+
+* ```.verify```
+
+<br>
+
+### ```.charge(payload)```
+This is called to start an Zambian mobile money transaction. The payload should be a dictionary containing account information. It should have the parameters:
+
+* ```amount```,
+
+* ```email```, 
+
+* ```phonenumber```,
+
+* ```IP```,
+
+* ```redirect_url```
+
+Optionally, you can add a custom transaction reference using the ```txRef``` parameter. Note that if you do not specify one, it would be automatically generated. We do provide a function for generating transaction references in the Misc library (add link).
+
+
+A sample call is:
+
+``` res = rave.ZBMobile.charge(payload) ```
+
+#### Returns
+
+This call returns a dictionary. A sample response is:
+
+ ```{'error': False, 'status': 'success', 'validationRequired': True, 'txRef': 'MC-1544013787279', 'flwRef': 'flwm3s4m0c1544013788481'}```
+
+ This call raises an ```TransactionChargeError``` if there was a problem processing your transaction. The ```TransactionChargeError``` contains some information about your transaction. You can handle this as such:
+
+```
+try: 
+    #Your charge call
+except RaveExceptions.TransactionChargeError as e:
+    print(e.err["errMsg"])
+    print(e.err["flwRef"])
+
+```
+
+A sample ``` e.err ``` contains:
+
+```{'error': True, 'txRef': 'MC-1530911537060', 'flwRef': None, 'errMsg': None}```
+
+
+<br>
+
+### ```.verify(txRef)```
+
+You can call this to check if your transaction was completed successfully. You have to pass the transaction reference generated at the point of charging. This is the ```txRef``` in the ```res``` parameter returned any of the calls (```charge``` or ```validate```). 
+
+A sample verify call is:
+
+``` res = rave.UGMobile.verify(data["txRef"]) ```
+
+#### Returns
+
+This call returns a dict with ```txRef```, ```flwRef``` and ```transactionComplete``` which indicates whether the transaction was completed successfully. 
+
+If your call could not be completed successfully, a ```TransactionVerificationError``` is raised.
+
+<br>
+
+### Complete ZBMobile charge flow
+
+```
+from python_rave import Rave, RaveExceptions, Misc
+rave = Rave("ENTER_YOUR_PUBLIC_KEY", "ENTER_YOUR_SECRET_KEY", usingEnv = False)
+
+# mobile payload
+payload = {
+  "amount": "50",
+  "email": "",
+  "phonenumber": "xxxxxxxx",
+  "redirect_url": "https://rave-webhook.herokuapp.com/receivepayment",
+  "IP":""
+}
+
+try:
+  res = rave.ZBMobile.charge(payload)
+  res = rave.ZBMobile.verify(res["txRef"])
   print(res)
 
 except RaveExceptions.TransactionChargeError as e:

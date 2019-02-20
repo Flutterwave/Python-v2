@@ -74,9 +74,9 @@ class Payment(RaveBase):
         # if all preliminary tests pass
         if not (responseJson["data"].get("chargeResponseCode", None) == "00"):
             if responseJson["data"].get("currency", 'None') == 'UGX':
-                return {"error": False, "status": responseJson["status"],  "validationRequired": True, "txRef": txRef, "flwRef": flwRef}
+                return {"error": False, "status": responseJson["status"],  "validationRequired": True, "txRef": txRef, "flwRef": flwRef, "chargeResponseMessage": responseJson["data"]["chargeResponseMessage"]}
 
-            return {"error": False, "status": responseJson["status"],"validationRequired": True, "txRef": txRef, "flwRef": flwRef}
+            return {"error": False, "status": responseJson["status"],"validationRequired": True, "txRef": txRef, "flwRef": flwRef, "chargeResponseMessage": responseJson["data"]["chargeResponseMessage"]}
         else:
             return {"error": True,  "validationRequired": False, "txRef": txRef, "flwRef": flwRef}
     
@@ -182,6 +182,7 @@ class Payment(RaveBase):
         }
         if "token" in paymentDetails:
             paymentDetails.update({"SECKEY": self._getSecretKey()})
+            # print(json.dumps(paymentDetails))
             response = requests.post(endpoint, headers=headers, data=json.dumps(paymentDetails))
         else:
             # Encrypting payment details (_encrypt is inherited from RaveEncryption)
