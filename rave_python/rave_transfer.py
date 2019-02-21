@@ -1,7 +1,7 @@
 import requests, json, copy
-from python_rave.rave_base import RaveBase
-from python_rave.rave_misc import checkIfParametersAreComplete, generateTransactionReference, checkTransferParameters
-from python_rave.rave_exceptions import InitiateTransferError, ServerError, TransferFetchError, IncompletePaymentDetailsError
+from rave_python.rave_base import RaveBase
+from rave_python.rave_misc import checkIfParametersAreComplete, generateTransactionReference, checkTransferParameters
+from rave_python.rave_exceptions import InitiateTransferError, ServerError, TransferFetchError, IncompletePaymentDetailsError
 
 
 class Transfer(RaveBase):
@@ -55,7 +55,7 @@ class Transfer(RaveBase):
         transferDetails.update({"seckey": self._getSecretKey()})
 
         # These are the parameters required to initiate a transfer
-        requiredParameters = ["meta","amount", "currency","beneficiary_name"]
+        requiredParameters = ["amount", "currency","beneficiary_name"]
 
         checkIfParametersAreComplete(requiredParameters, transferDetails)
         checkTransferParameters(requiredParameters, transferDetails)

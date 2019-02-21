@@ -1,6 +1,6 @@
-from python_rave.rave_exceptions import RaveError, IncompletePaymentDetailsError, CardChargeError, TransactionVerificationError, ServerError
-from python_rave.rave_payment import Payment
-from python_rave.rave_misc import generateTransactionReference
+from rave_python.rave_exceptions import RaveError, IncompletePaymentDetailsError, CardChargeError, TransactionVerificationError, ServerError
+from rave_python.rave_payment import Payment
+from rave_python.rave_misc import generateTransactionReference
 
 class Card(Payment):
     """ This is the rave object for card transactions. It contains the following public functions:\n
@@ -62,7 +62,7 @@ class Card(Payment):
         # Checking if there was a server error during the call (in this case html is returned instead of json)
         res =  self._preliminaryResponseChecks(response, TransactionVerificationError, txRef=txRef)
         responseJson = res["json"]
-        # print(responseJson)
+
         flwRef = responseJson["data"]["flwref"]
         amount = responseJson["data"]["amount"]
         chargedamount = responseJson["data"]["chargedamount"]

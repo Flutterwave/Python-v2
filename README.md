@@ -1,4 +1,4 @@
-# Python_Rave
+# Rave_Python
 
 ## Introduction
 This is a Python wrapper around the [API](https://flutterwavedevelopers.readme.io/v2.0/reference) for [Rave by Flutterwave](https://rave.flutterwave.com).
@@ -6,18 +6,24 @@ This is a Python wrapper around the [API](https://flutterwavedevelopers.readme.i
 * Card Payments
 * Bank Account Payments
 * Ghana Mobile Money Payments
-* Mpesa
+* Mpesa Payments
+* Uganda Mobile Money Payments
+* Zambia Mobile Money Payments
+* Subaccounts
+* Transfer
+* Subscription (Recurring Payments)
+* Payment Plan
 * USSD Payments
 ## Installation
 To install, run
 
-``` pip install python_rave```
+``` pip install rave_python```
 
 Note: This is currently under active development
 ## Import Package
 The base class for this package is 'Rave'. To use this class, add:
 
-``` from python_rave import Rave ```
+``` from rave_python import Rave ```
 
 ## Initialization
 
@@ -38,7 +44,7 @@ To initialize in production, simply set the ```production``` flag to ```True```.
 ``` rave = Rave("YOUR_PUBLIC_KEY", production=True)```
 
 # Rave Objects
-This is the documentation for all of the components of python_rave
+This is the documentation for all of the components of rave_python
 
 
 ## ```rave.Account```
@@ -169,7 +175,7 @@ except RaveExceptions.TransactionVerificationError as e:
 ### Complete account flow
 
 ```
-from python_rave import Rave, RaveExceptions, Misc
+from rave_python import Rave, RaveExceptions, Misc
 rave = Rave("ENTER_YOUR_PUBLIC_KEY", "ENTER_YOUR_SECRET_KEY", usingEnv = False)
 # account payload
 payload = {
@@ -433,7 +439,7 @@ except RaveExceptions.CardChargeError as e:
 
 ```
 
-from python_rave import Rave
+from rave_python import Rave
 rave = Rave("YOUR_PUBLIC_KEY", "YOUR_SECRET_KEY", usingEnv = False)
 
 # Payload with pin
@@ -557,7 +563,7 @@ If your call could not be completed successfully, a ```TransactionVerificationEr
 ### Complete Mpesa charge flow
 
 ```
-from python_rave import Rave, RaveExceptions, Misc
+from rave_python import Rave, RaveExceptions, Misc
 rave = Rave("ENTIRE_YOUR_PUBLIC_KEY", "ENTIRE_YOUR_SECRET_KEY", usingEnv = False)
 
 # mobile payload
@@ -664,7 +670,7 @@ If your call could not be completed successfully, a ```TransactionVerificationEr
 ### Complete GhMobile charge flow
 
 ```
-from python_rave import Rave, RaveExceptions, Misc
+from rave_python import Rave, RaveExceptions, Misc
 rave = Rave("ENTER_YOUR_PUBLIC_KEY", "ENTER_YOUR_SECRET_KEY", usingEnv = False)
 
 # mobile payload
@@ -771,7 +777,7 @@ If your call could not be completed successfully, a ```TransactionVerificationEr
 ### Complete UGMobile charge flow
 
 ```
-from python_rave import Rave, RaveExceptions, Misc
+from rave_python import Rave, RaveExceptions, Misc
 rave = Rave("ENTER_YOUR_PUBLIC_KEY", "ENTER_YOUR_SECRET_KEY", usingEnv = False)
 
 # mobile payload
@@ -875,7 +881,7 @@ If your call could not be completed successfully, a ```TransactionVerificationEr
 ### Complete ZBMobile charge flow
 
 ```
-from python_rave import Rave, RaveExceptions, Misc
+from rave_python import Rave, RaveExceptions, Misc
 rave = Rave("ENTER_YOUR_PUBLIC_KEY", "ENTER_YOUR_SECRET_KEY", usingEnv = False)
 
 # mobile payload
@@ -957,7 +963,7 @@ A sample verify call is:
 ### Complete USSD charge flow
 
 ```
-from python_rave import Rave, RaveExceptions, Misc
+from rave_python import Rave, RaveExceptions, Misc
 rave = Rave("YOUR_PUBLIC KEY", "YOUR_SECRET_KEY", production=True, usingEnv = False)
 
 zenithPayload = {
@@ -1138,7 +1144,7 @@ except RaveExceptions.TransactionVerificationError as e:
 ### Complete preauth charge flow
 
 ```
-from python_rave import Rave, Misc, RaveExceptions
+from rave_python import Rave, Misc, RaveExceptions
 rave = Rave("ENTER_YOUR_PUBLIC_KEY", "ENTER_YOUR_SECRET_KEY", usingEnv = False)
 
 # Payload with pin
@@ -1228,6 +1234,7 @@ res = rave.Transfer.initiate({
     "amount": 500,
     "narration": "New transfer",
     "currency": "NGN",
+    "beneficiary_name": "Kwame Adew"
     })
 print(res)
 ```
@@ -1399,7 +1406,7 @@ This call returns a dictionary. A sample response is:
 ### Complete transfer flow
 
 ```
-from python_rave import Rave, RaveExceptions
+from rave_python import Rave, RaveExceptions
 try:
     rave = Rave("ENTER_YOUR_PUBLIC_KEY", "ENTER_YOUR_SECRET_KEY", usingEnv = False)
 
@@ -1409,6 +1416,7 @@ try:
     "amount": 500,
     "narration": "New transfer",
     "currency": "NGN",
+    "beneficiary_name": "Kwame Adew"
     })
 
     res2 = rave.Transfer.bulk({
@@ -1650,7 +1658,7 @@ except RaveExceptions.PlanStatusError as e:
 ### Complete PaymentPlan flow
 
 ```
-from python_rave import Rave, Misc, RaveExceptions
+from rave_python import Rave, Misc, RaveExceptions
 rave = Rave("YOUR_PUBLIC_KEY", "YOUR_PRIVATE_KEY", usingEnv = False)
 try:
 
@@ -1818,7 +1826,7 @@ except RaveExceptions.PlanStatusError as e:
 ### Complete SubAccount flow
 
 ```
-from python_rave import Rave, Misc, RaveExceptions
+from rave_python import Rave, Misc, RaveExceptions
 rave = Rave("YOUR_PUBLIC_KEY", "YOUR_PRIVATE_KEY", usingEnv = False)
 try:
    
@@ -1975,7 +1983,7 @@ except RaveExceptions.PlanStatusError as e:
 ### Complete Subscriptions flow
 
 ```
-from python_rave import Rave, Misc, RaveExceptions
+from rave_python import Rave, Misc, RaveExceptions
 rave = Rave("YOUR_PUBLIC_KEY", "YOUR_PRIVATE_KEY", usingEnv = False)
 try:
    

@@ -1,7 +1,7 @@
 import requests, json, copy
-from python_rave.rave_base import RaveBase
-from python_rave.rave_exceptions import RaveError, IncompletePaymentDetailsError, AuthMethodNotSupportedError, TransactionChargeError, TransactionVerificationError, TransactionValidationError, ServerError, RefundError, PreauthCaptureError
-from python_rave.rave_misc import checkIfParametersAreComplete
+from rave_python.rave_base import RaveBase
+from rave_python.rave_exceptions import RaveError, IncompletePaymentDetailsError, AuthMethodNotSupportedError, TransactionChargeError, TransactionVerificationError, TransactionValidationError, ServerError, RefundError, PreauthCaptureError
+from rave_python.rave_misc import checkIfParametersAreComplete
 
 response_object = {
     "error": False,

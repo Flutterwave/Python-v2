@@ -1,7 +1,7 @@
 import requests, json, copy
-from python_rave.rave_base import RaveBase
-from python_rave.rave_misc import checkIfParametersAreComplete, generateTransactionReference
-from python_rave.rave_exceptions import  ServerError, IncompletePaymentDetailsError, SubaccountCreationError, PlanStatusError
+from rave_python.rave_base import RaveBase
+from rave_python.rave_misc import checkIfParametersAreComplete, generateTransactionReference
+from rave_python.rave_exceptions import  ServerError, IncompletePaymentDetailsError, SubaccountCreationError, PlanStatusError
 
 class SubAccount(RaveBase) :
     def __init__(self, publicKey, secretKey, production, usingEnv):

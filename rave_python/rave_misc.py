@@ -1,6 +1,6 @@
 """ Miscallaneous helper functions """
 import time
-from python_rave.rave_exceptions import IncompletePaymentDetailsError, AuthMethodNotSupportedError
+from rave_python.rave_exceptions import IncompletePaymentDetailsError, AuthMethodNotSupportedError
 # Helper function to generate unique transaction reference
 def generateTransactionReference(merchantId=None):
     """ This is a helper function for generating unique transaction  references.\n

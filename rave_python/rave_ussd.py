@@ -1,7 +1,7 @@
-from python_rave.rave_exceptions import UssdChargeError, ServerError
+from rave_python.rave_exceptions import UssdChargeError, ServerError
 
-from python_rave.rave_payment import Payment
-from python_rave.rave_misc import generateTransactionReference
+from rave_python.rave_payment import Payment
+from rave_python.rave_misc import generateTransactionReference
 import json
 
 class Ussd(Payment):
