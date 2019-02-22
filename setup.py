@@ -4,14 +4,14 @@ with open("README.md", "r") as fh:
     long_description = fh.read()
 
 setuptools.setup(
-    name="python_rave",
-    version="1.0.10-alpha",
-    author="Tofunmi Kupoluyi",
-    author_email="tofunmi@flutterwavego.com",
-    description="A python wrapper for Flutterwave's Rave",
+    name="rave_python",
+    version="1.0.0",
+    author="Flutterwave",
+    author_email="developers@flutterwavego.com",
+    description="Official Rave Python Wrapper By Flutterwave",
     long_description=long_description,
     long_description_content_type="text/markdown",
-    url="https://github.com/TofunmiKupoluyi/python_rave",
+    url="https://github.com/Flutterwave/rave-python",
     packages=setuptools.find_packages(),
     classifiers=(
         "Programming Language :: Python :: 3",

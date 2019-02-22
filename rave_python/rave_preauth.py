@@ -1,8 +1,8 @@
 import requests
 import json
-from python_rave.rave_exceptions import ServerError, TransactionVerificationError, PreauthCaptureError, PreauthRefundVoidError
-from python_rave.rave_card import Card
-from python_rave.rave_misc import generateTransactionReference
+from rave_python.rave_exceptions import ServerError, TransactionVerificationError, PreauthCaptureError, PreauthRefundVoidError
+from rave_python.rave_card import Card
+from rave_python.rave_misc import generateTransactionReference
 
 class Preauth(Card):
     """ This is the rave object for preauthorized transactions. It contains the following public functions:\n
@@ -25,7 +25,10 @@ class Preauth(Card):
 
         # Add the charge_type
         cardDetails.update({"charge_type":"preauth"})
-        return super(Preauth, self).charge(cardDetails, chargeWithToken=False)
+        if not chargeWithToken:
+            return super(Preauth, self).charge(cardDetails, chargeWithToken=False)
+        else:
+            return super(Preauth, self).charge(cardDetails, chargeWithToken=True)
     
 
     # capture payment
@@ -41,7 +44,6 @@ class Preauth(Card):
         headers ={
             "Content-Type":"application/json"
         }
-        print(json.dumps(payload))
         endpoint = self._baseUrl + self._endpointMap["preauth"]["capture"]
         response = requests.post(endpoint, headers=headers, data=json.dumps(payload))
         return self._handleCaptureResponse(response, '')

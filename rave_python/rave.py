@@ -1,17 +1,17 @@
-from python_rave.rave_base import RaveBase
-from python_rave.rave_card import Card
-from python_rave.rave_account import Account
-from python_rave.rave_ussd import Ussd
-from python_rave.rave_ghmobile import GhMobile
-from python_rave.rave_ghmobile import GhMobile
-from python_rave.rave_ugmobile import UGMobile
-from python_rave.rave_zbmobile import ZBMobile
-from python_rave.rave_mpesa import Mpesa
-from python_rave.rave_preauth import Preauth
-from python_rave.rave_transfer import Transfer
-from python_rave.rave_paymentplan import PaymentPlan
-from python_rave.rave_subaccounts import SubAccount
-from python_rave.rave_subscription import Subscriptions
+from rave_python.rave_base import RaveBase
+from rave_python.rave_card import Card
+from rave_python.rave_account import Account
+from rave_python.rave_ussd import Ussd
+from rave_python.rave_ghmobile import GhMobile
+from rave_python.rave_ghmobile import GhMobile
+from rave_python.rave_ugmobile import UGMobile
+from rave_python.rave_zbmobile import ZBMobile
+from rave_python.rave_mpesa import Mpesa
+from rave_python.rave_preauth import Preauth
+from rave_python.rave_transfer import Transfer
+from rave_python.rave_paymentplan import PaymentPlan
+from rave_python.rave_subaccounts import SubAccount
+from rave_python.rave_subscription import Subscriptions
 
 class Rave:
     

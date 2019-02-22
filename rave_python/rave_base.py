@@ -1,5 +1,5 @@
 import os, hashlib, warnings, requests, json
-from python_rave.rave_exceptions import ServerError, RefundError
+from rave_python.rave_exceptions import ServerError, RefundError
 import base64
 from Crypto.Cipher import DES3
 class RaveBase(object):
