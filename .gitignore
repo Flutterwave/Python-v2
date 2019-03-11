@@ -11,6 +11,7 @@ transfer.py
 ussd.py
 uganda.py
 zambia.py
+test_tokenized.py
 build/
 dist/
 rave_python.egg-info/
