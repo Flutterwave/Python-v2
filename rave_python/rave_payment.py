@@ -62,7 +62,7 @@ class Payment(RaveBase):
         
         return {"json": responseJson, "flwRef": flwRef, "txRef": txRef}
 
-    def _handleChargeResponse(self, response, txRef, request=None):
+    def _handleChargeResponse(self, response, txRef, request=None, isMpesa=False):
         """ This handles transaction charge responses """
 
         # If we cannot parse the json, it means there is a server error
@@ -70,15 +70,18 @@ class Payment(RaveBase):
         
         responseJson = res["json"]
         flwRef = responseJson["data"]["flwRef"]
-        
-        # if all preliminary tests pass
-        if not (responseJson["data"].get("chargeResponseCode", None) == "00"):
-            if responseJson["data"].get("currency", 'None') == 'UGX':
-                return {"error": False, "status": responseJson["status"],  "validationRequired": True, "txRef": txRef, "flwRef": flwRef, "chargeResponseMessage": responseJson["data"]["chargeResponseMessage"]}
 
-            return {"error": False, "status": responseJson["status"],"validationRequired": True, "txRef": txRef, "flwRef": flwRef, "chargeResponseMessage": responseJson["data"]["chargeResponseMessage"]}
+        if isMpesa:
+            return {"error": False, "status": responseJson["status"],"txRef": txRef, "flwRef": flwRef, "narration": responseJson["data"]["narration"]}
         else:
-            return {"error": True,  "validationRequired": False, "txRef": txRef, "flwRef": flwRef}
+            # if all preliminary tests pass
+            if not (responseJson["data"].get("chargeResponseCode", None) == "00"):
+                if responseJson["data"].get("currency", 'None') == 'UGX':
+                    return {"error": False, "status": responseJson["status"],  "validationRequired": True, "txRef": txRef, "flwRef": flwRef, "chargeResponseMessage": responseJson["data"]["chargeResponseMessage"]}
+
+                return {"error": False, "status": responseJson["status"],"validationRequired": True, "txRef": txRef, "flwRef": flwRef, "chargeResponseMessage": responseJson["data"]["chargeResponseMessage"]}
+            else:
+                return {"error": True,  "validationRequired": False, "txRef": txRef, "flwRef": flwRef}
     
     def _handleCaptureResponse(self, response, request=None):
         """ This handles transaction charge responses """
@@ -156,7 +159,7 @@ class Payment(RaveBase):
 
 
     # Charge function (hasFailed is a flag that indicates there is a timeout), shouldReturnRequest indicates whether to send the request back to the _handleResponses function
-    def charge(self, paymentDetails, requiredParameters, endpoint, shouldReturnRequest=False):
+    def charge(self, paymentDetails, requiredParameters, endpoint, shouldReturnRequest=False, isMpesa=False):
         """ This is the base charge call. It is usually overridden by implementing classes.\n
              Parameters include:\n
             paymentDetails (dict) -- These are the parameters passed to the function for processing\n
@@ -197,8 +200,12 @@ class Payment(RaveBase):
             response = requests.post(endpoint, headers=headers, data=json.dumps(payload))
         
         if shouldReturnRequest:
+            if isMpesa:
+                return self._handleChargeResponse(response, paymentDetails["txRef"], paymentDetails, True)
             return self._handleChargeResponse(response, paymentDetails["txRef"], paymentDetails)
         else:
+            if isMpesa:
+                return self._handleChargeResponse(response, paymentDetails["txRef"], paymentDetails, True)
             return self._handleChargeResponse(response, paymentDetails["txRef"])
        
 
