@@ -10,8 +10,8 @@ class Account(Payment):
         .validate -- This is called if further action is required i.e. OTP validation\n
         .verify -- This checks the status of your transaction\n
     """
-    def __init__(self, publicKey, secretKey, production, usingEnv):
-            super(Account, self).__init__(publicKey, secretKey, production, usingEnv)
+    def __init__(self, publicKey, secretKey, usingEnv):
+            super(Account, self).__init__(publicKey, secretKey, usingEnv)
 
 
     def _handleChargeResponse(self, response, txRef, request=None):

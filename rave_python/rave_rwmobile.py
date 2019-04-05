@@ -2,15 +2,15 @@ from rave_python.rave_payment import Payment
 from rave_python.rave_misc import generateTransactionReference
 import json
 
-class ZBMobile(Payment):
+class RWMobile(Payment):
     
     def __init__(self, publicKey, secretKey, usingEnv):
-        super(ZBMobile, self).__init__(publicKey, secretKey, usingEnv)
+        super(RWMobile, self).__init__(publicKey, secretKey, usingEnv)
 
 
     # Charge mobile money function
     def charge(self, accountDetails, hasFailed=False):
-        """ This is the ghMobile charge call.
+        """ This is the RWMobile charge call.
              Parameters include:\n
             accountDetails (dict) -- These are the parameters passed to the function for processing\n
             hasFailed (boolean) -- This is a flag to determine if the attempt had previously failed due to a timeout\n
@@ -18,7 +18,7 @@ class ZBMobile(Payment):
 
         endpoint = self._baseUrl + self._endpointMap["account"]["charge"]
         # It is faster to add boilerplate than to check if each one is present
-        accountDetails.update({"payment_type": "mobilemoneyzambia", "country":"NG", "is_mobile_money_ug":"1", "currency":"ZMW", "network": "MTN"})
+        accountDetails.update({"payment_type": "mobilemoneygh", "country":"NG", "is_mobile_money_gh":"1", "currency":"RWF", "network": "RWF"})
         
         # If transaction reference is not set 
         if not ("txRef" in accountDetails):
@@ -28,5 +28,5 @@ class ZBMobile(Payment):
             accountDetails.update({"orderRef": generateTransactionReference()})
         # Checking for required account components
         requiredParameters = ["amount", "email", "phonenumber", "network", "IP", "redirect_url"]
-        return super(ZBMobile, self).charge(accountDetails, requiredParameters, endpoint)
+        return super(RWMobile, self).charge(accountDetails, requiredParameters, endpoint)
 

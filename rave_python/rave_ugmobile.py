@@ -4,8 +4,8 @@ import json
 
 class UGMobile(Payment):
     
-    def __init__(self, publicKey, secretKey, production, usingEnv):
-        super(UGMobile, self).__init__(publicKey, secretKey, production, usingEnv)
+    def __init__(self, publicKey, secretKey, usingEnv):
+        super(UGMobile, self).__init__(publicKey, secretKey, usingEnv)
 
 
     # Charge mobile money function

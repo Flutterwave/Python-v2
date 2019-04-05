@@ -5,8 +5,8 @@ from rave_python.rave_exceptions import InitiateTransferError, ServerError, Tran
 
 
 class Transfer(RaveBase):
-    def __init__(self, publicKey, secretKey, production, usingEnv):
-        super(Transfer, self).__init__(publicKey, secretKey, production, usingEnv)
+    def __init__(self, publicKey, secretKey, usingEnv):
+        super(Transfer, self).__init__(publicKey, secretKey, usingEnv)
     
     def _preliminaryResponseChecks(self, response, TypeOfErrorToRaise, reference):
         # Check if we can obtain a json
@@ -138,10 +138,12 @@ class Transfer(RaveBase):
         if not currency: # i made currency compulsory because if it is not assed in, an error message is returned from the server
             raise IncompletePaymentDetailsError("currency", ["currency"])
         endpoint =  self._baseUrl + self._endpointMap["transfer"]["balance"] 
+        print (endpoint)
         data = {
             "seckey": self._getSecretKey(),
             "currency": currency
         }
+        print (data)
         return self._handleTransferStatusRequests(endpoint, data=data, isPostRequest=True)
 
     

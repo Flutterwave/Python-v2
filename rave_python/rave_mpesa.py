@@ -4,8 +4,8 @@ import json
 
 class Mpesa(Payment):
     
-    def __init__(self, publicKey, secretKey, production, usingEnv):
-        super(Mpesa, self).__init__(publicKey, secretKey, production, usingEnv)
+    def __init__(self, publicKey, secretKey, usingEnv):
+        super(Mpesa, self).__init__(publicKey, secretKey, usingEnv)
 
     # Charge mobile money function
     def charge(self, accountDetails, hasFailed=False):

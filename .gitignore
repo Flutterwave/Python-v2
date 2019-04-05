@@ -11,7 +11,11 @@ transfer.py
 ussd.py
 uganda.py
 zambia.py
+rwanda.py
 test_tokenized.py
+charge_saved_card.py
+payment_plan.py
+.env
 build/
 dist/
 rave_python.egg-info/

@@ -4,8 +4,8 @@ import json
 
 class GhMobile(Payment):
     
-    def __init__(self, publicKey, secretKey, production, usingEnv):
-        super(GhMobile, self).__init__(publicKey, secretKey, production, usingEnv)
+    def __init__(self, publicKey, secretKey, usingEnv):
+        super(GhMobile, self).__init__(publicKey, secretKey, usingEnv)
 
 
     # Charge mobile money function

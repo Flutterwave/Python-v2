@@ -4,11 +4,11 @@ from rave_python.rave_misc import checkIfParametersAreComplete, generateTransact
 from rave_python.rave_exceptions import  ServerError, IncompletePaymentDetailsError, PlanCreationError, PlanStatusError
 
 class PaymentPlan(RaveBase) :
-    def __init__(self, publicKey, secretKey, production, usingEnv):
+    def __init__(self, publicKey, secretKey, usingEnv):
         self.headers = {
             'content-type': 'application/json'
         }
-        super(PaymentPlan, self).__init__(publicKey, secretKey, production, usingEnv)
+        super(PaymentPlan, self).__init__(publicKey, secretKey, usingEnv)
     
     def _preliminaryResponseChecks(self, response, TypeOfErrorToRaise, name):
         # Check if we can obtain a json

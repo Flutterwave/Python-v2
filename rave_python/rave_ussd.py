@@ -5,12 +5,12 @@ from rave_python.rave_misc import generateTransactionReference
 import json
 
 class Ussd(Payment):
-    def __init__(self, publicKey, secretKey, production, usingEnv):
+    def __init__(self, publicKey, secretKey, usingEnv):
         """ This is the rave object for ussd transactions. It contains the following public functions:\n
         .charge -- This is for making a ussd charge\n
         .verify -- This checks the status of your transaction\n
         """
-        super(Ussd, self).__init__(publicKey, secretKey, production, usingEnv)
+        super(Ussd, self).__init__(publicKey, secretKey, usingEnv)
         
 
     def _handleChargeResponse(self, response, txRef, request):

@@ -8,8 +8,8 @@ class Card(Payment):
         .validate -- This is called if further action is required i.e. OTP validation\n
         .verify -- This checks the status of your transaction\n
     """
-    def __init__(self, publicKey, secretKey, production, usingEnv):
-        super(Card, self).__init__(publicKey, secretKey, production, usingEnv)
+    def __init__(self, publicKey, secretKey, usingEnv):
+        super(Card, self).__init__(publicKey, secretKey, usingEnv)
 
 
     # returns true if further action is required, false if it isn't    

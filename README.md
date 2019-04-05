@@ -9,6 +9,7 @@ This is a Python wrapper around the [API](https://flutterwavedevelopers.readme.i
 * Mpesa Payments
 * Uganda Mobile Money Payments
 * Zambia Mobile Money Payments
+* Rwanda Mobile Money Payments
 * Subaccounts
 * Transfer
 * Subscription (Recurring Payments)
@@ -27,21 +28,46 @@ The base class for this package is 'Rave'. To use this class, add:
 
 ## Initialization
 
-#### To instantiate in sandbox:
-To use Rave, instantiate the Rave class with your public key. We recommend that you store your secret key in an environment variable named, ```RAVE_SECRET_KEY```. Instantiating your rave object is therefore as simple as:
+####  To instantiate without environment variables (Test Mode):
 
-``` rave = Rave("YOUR_PUBLIC_KEY")```
+- You need to get your **`TEST`** Public and Secret Keys on your account by clicking this link >>> [Rave Account](https://rave.flutterwave.com/dashboard/settings/apis), click on the `Live Mode` Toggle button to switch to Test account and `Test Mode` Toggle button to switch to live.
 
-####  To instantiate without environment variables (Sandbox):
-If you choose not to store your secret key in an environment variable, we do provide a ```usingEnv``` flag which can be set to ```False```, but please be warned, do not use this package without environment variables in production
+This is shown in the screenshots displayed below:
+
+<img src="https://res.cloudinary.com/flutterwavedeveloper/image/upload/v1553697793/rave-react-native/rave-test-account.png" style="text-align: center; max-height: 400;" alt="Rave Test Account">
+
+- To use Rave in your project, instantiate the Rave class with your `public key` and `secret key`. We recommend that you store your `public key` and `secret key` in an environment variable as ```RAVE_PUBLIC_KEY``` and ```RAVE_SECRET_KEY``` respectively.
+
+- If you choose not to store your secret key in an environment variable, we do provide a ```usingEnv``` flag which can be set to ```False```.
 
 ``` rave = Rave("YOUR_PUBLIC_KEY", "YOUR_SECRET_KEY", usingEnv = False) ```
 
+#### To set up environment variable
 
-#### To instantiate in production:
-To initialize in production, simply set the ```production``` flag to ```True```. It is highly discouraged but if you choose to not use environment variables, you can do so in the same way mentioned above.
+- Run this command `pip install -U python-dotenv`.
+- Enter this command `touch .env` to create `.env` file.
+- your `.env` should contain these:
+    ```python
+        RAVE_PUBLIC_KEY=FLWPUBK_TEST-YOUR-PUBLIC-KEY-X
+        RAVE_SECRET_KEY=FLWSECK_TEST-YOUR-SECRET-KEY-X
+    ```
+- Then call instance of the Rave class like this:
+    ``` rave = Rave("", "", usingEnv=True) ```
 
-``` rave = Rave("YOUR_PUBLIC_KEY", production=True)```
+####  To instantiate in production with environment variables (Live Mode):
+
+- You can get your **`LIVE`** Public and Secret Keys on your account by clicking this link >>> [Rave Account](https://rave.flutterwave.com/dashboard/settings/apis).
+
+This is shown in the screenshots displayed below:
+
+<img src="https://res.cloudinary.com/flutterwavedeveloper/image/upload/v1553697794/rave-react-native/rave-live-account.png" style="text-align: center; max-height: 400;" alt="Rave Live Account">
+
+Please note that for best practices, it is advisable do not use this package without environment variables in production.
+
+- To use rave in production with environment variables, store your `public key` and `secret key` in an environment variable as ```RAVE_PUBLIC_KEY``` and ```RAVE_SECRET_KEY```.
+
+Call instance of the Rave class like this:
+    ``` rave = Rave("", "", usingEnv=True) ```
 
 # Rave Objects
 This is the documentation for all of the components of rave_python
@@ -90,7 +116,7 @@ This call returns a dictionary. A sample response is:
 
  This call raises an ```AccountChargeError``` if there was a problem processing your transaction. The ```AccountChargeError``` contains some information about your transaction. You can handle this as such:
 
-```
+```python
 try: 
     #Your charge call
 except RaveExceptions.AccountChargeError as e:
@@ -127,7 +153,7 @@ This call raises a ```TransactionValidationError``` if the OTP is not correct or
 
 To handle this, write:
 
-```
+```python
 try:
     # Your charge call
 except RaveExceptions.TransactionValidationError as e:
@@ -160,7 +186,7 @@ Sample
 ```{'status': u'success', 'vbvcode': u'N/A', 'chargedamount': 500, 'vbvmessage': u'N/A', 'error': False, 'flwRef': u'ACHG-1538093023787', 'currency': u'NGN', 'amount': 500, 'transactionComplete': True, 'acctmessage': u'Approved Or Completed Successfully', 'chargecode': u'00', 'txRef': u'MC-1538093008498'}```
 
 If your call could not be completed successfully or if a wrong ```txRef``` is passed, a ```TransactionVerificationError``` is raised. You can handle that as such
-```
+```python
 try: 
     #Your charge call
 except RaveExceptions.TransactionVerificationError as e:
@@ -174,7 +200,7 @@ except RaveExceptions.TransactionVerificationError as e:
 
 ### Complete account flow
 
-```
+```python
 from rave_python import Rave, RaveExceptions, Misc
 rave = Rave("ENTER_YOUR_PUBLIC_KEY", "ENTER_YOUR_SECRET_KEY", usingEnv = False)
 # account payload
@@ -274,7 +300,7 @@ This call returns a dictionary. A sample response is:
 
  This call raises an ```CardChargeError``` if there was a problem processing your transaction. The ```CardChargeError``` contains some information about your transaction. You can handle this as such:
 
-```
+```python
 try: 
     #Your charge call
 except RaveExceptions.CardChargeError as e:
@@ -332,7 +358,7 @@ This call raises a ```TransactionValidationError``` if the OTP is not correct or
 
 To handle this, write:
 
-```
+```python
 try:
     # Your charge call
 except RaveExceptions.TransactionValidationError as e:
@@ -403,7 +429,7 @@ This call returns a dictionary. A sample response is:
 
  This call raises a ```CardChargeError``` if a wrong token or email is passed or if there was a problem processing your transaction. The ```CardChargeError``` contains some information about your transaction. You can handle this as such:
 
- ```
+ ```python
 try: 
     #Your charge call
 except RaveExceptions.CardChargeError as e:
@@ -426,7 +452,7 @@ Once this is done, call ```rave.Card.verify``` passing in the ```txRef``` return
 
 ```rave.Card.verify``` raises a ```TransactionVerificationError``` if an invalid ```txRef`` is supplied. You can handle this as such:
 
- ```
+ ```python
 try: 
     #Your charge call
 except RaveExceptions.CardChargeError as e:
@@ -437,7 +463,7 @@ except RaveExceptions.CardChargeError as e:
 
 ### Complete card charge flow
 
-```
+```python
 
 from rave_python import Rave
 rave = Rave("YOUR_PUBLIC_KEY", "YOUR_SECRET_KEY", usingEnv = False)
@@ -528,7 +554,7 @@ This call returns a dictionary. A sample response is:
 
  This call raises an ```TransactionChargeError``` if there was a problem processing your transaction. The ```TransactionChargeError``` contains some information about your transaction. You can handle this as such:
 
-```
+```python
 try: 
     #Your charge call
 except RaveExceptions.TransactionChargeError as e:
@@ -562,7 +588,7 @@ If your call could not be completed successfully, a ```TransactionVerificationEr
 
 ### Complete Mpesa charge flow
 
-```
+```python
 from rave_python import Rave, RaveExceptions, Misc
 rave = Rave("ENTIRE_YOUR_PUBLIC_KEY", "ENTIRE_YOUR_SECRET_KEY", usingEnv = False)
 
@@ -635,7 +661,7 @@ This call returns a dictionary. A sample response is:
 
  This call raises an ```TransactionChargeError``` if there was a problem processing your transaction. The ```TransactionChargeError``` contains some information about your transaction. You can handle this as such:
 
-```
+```python
 try: 
     #Your charge call
 except RaveExceptions.TransactionChargeError as e:
@@ -669,7 +695,7 @@ If your call could not be completed successfully, a ```TransactionVerificationEr
 
 ### Complete GhMobile charge flow
 
-```
+```python
 from rave_python import Rave, RaveExceptions, Misc
 rave = Rave("ENTER_YOUR_PUBLIC_KEY", "ENTER_YOUR_SECRET_KEY", usingEnv = False)
 
@@ -742,7 +768,7 @@ This call returns a dictionary. A sample response is:
 
  This call raises an ```TransactionChargeError``` if there was a problem processing your transaction. The ```TransactionChargeError``` contains some information about your transaction. You can handle this as such:
 
-```
+```python
 try: 
     #Your charge call
 except RaveExceptions.TransactionChargeError as e:
@@ -776,7 +802,7 @@ If your call could not be completed successfully, a ```TransactionVerificationEr
 
 ### Complete UGMobile charge flow
 
-```
+```python
 from rave_python import Rave, RaveExceptions, Misc
 rave = Rave("ENTER_YOUR_PUBLIC_KEY", "ENTER_YOUR_SECRET_KEY", usingEnv = False)
 
@@ -846,7 +872,7 @@ This call returns a dictionary. A sample response is:
 
  This call raises an ```TransactionChargeError``` if there was a problem processing your transaction. The ```TransactionChargeError``` contains some information about your transaction. You can handle this as such:
 
-```
+```python
 try: 
     #Your charge call
 except RaveExceptions.TransactionChargeError as e:
@@ -868,7 +894,7 @@ You can call this to check if your transaction was completed successfully. You h
 
 A sample verify call is:
 
-``` res = rave.UGMobile.verify(data["txRef"]) ```
+``` res = rave.ZBMobile.verify(data["txRef"]) ```
 
 #### Returns
 
@@ -880,7 +906,7 @@ If your call could not be completed successfully, a ```TransactionVerificationEr
 
 ### Complete ZBMobile charge flow
 
-```
+```python
 from rave_python import Rave, RaveExceptions, Misc
 rave = Rave("ENTER_YOUR_PUBLIC_KEY", "ENTER_YOUR_SECRET_KEY", usingEnv = False)
 
@@ -896,6 +922,116 @@ payload = {
 try:
   res = rave.ZBMobile.charge(payload)
   res = rave.ZBMobile.verify(res["txRef"])
+  print(res)
+
+except RaveExceptions.TransactionChargeError as e:
+  print(e.err)
+  print(e.err["flwRef"])
+
+except RaveExceptions.TransactionVerificationError as e:
+  print(e.err["errMsg"])
+  print(e.err["txRef"])
+
+
+```
+<br><br>
+
+
+## ```rave.RWMobile```
+This is used to facilitate Ghana mobile money transactions.
+
+**Functions included:**
+
+* ```.charge```
+
+
+* ```.verify```
+
+<br>
+
+### ```.charge(payload)```
+This is called to start an Rwanda mobile money transaction. The payload should be a dictionary containing account information. It should have the parameters:
+
+* ```amount```,
+
+* ```email```, 
+
+* ```phonenumber```,
+
+* ```IP```,
+
+* ```redirect_url```
+
+Optionally, you can add a custom transaction reference using the ```txRef``` parameter. Note that if you do not specify one, it would be automatically generated. We do provide a function for generating transaction references in the Misc library (add link).
+
+
+A sample call is:
+
+``` res = rave.RWMobile.charge(payload) ```
+
+#### Returns
+
+This call returns a dictionary. A sample response is:
+
+ ```{'error': False, 'status': 'success', 'validationRequired': True, 'txRef': 'MC-1544013787279', 'flwRef': 'flwm3s4m0c1544013788481'}```
+
+ This call raises an ```TransactionChargeError``` if there was a problem processing your transaction. The ```TransactionChargeError``` contains some information about your transaction. You can handle this as such:
+
+```python
+try: 
+    #Your charge call
+except RaveExceptions.TransactionChargeError as e:
+    print(e.err["errMsg"])
+    print(e.err["flwRef"])
+
+```
+
+A sample ``` e.err ``` contains:
+
+```{'error': True, 'txRef': 'MC-1530911537060', 'flwRef': None, 'errMsg': None}```
+
+
+<br>
+
+### ```.verify(txRef)```
+
+You can call this to check if your transaction was completed successfully. You have to pass the transaction reference generated at the point of charging. This is the ```txRef``` in the ```res``` parameter returned any of the calls (```charge``` or ```validate```). 
+
+A sample verify call is:
+
+``` res = rave.RWMobile.verify(data["txRef"]) ```
+
+#### Returns
+
+```python
+{'error': False, 'transactionComplete': True, 'flwRef': 'flwm3s4m0c1554474117957', 'txRef': 'MC-1554474113094', 'chargecode': '00',
+'status': 'success', 'vbvcode': 'N/A', 'vbvmessage': 'N/A', 'acctmessage': None, 'currency': 'RWF', 'chargedamount': 50, 'chargemessage': 'Pending Payment Validation', 'amount': 50}
+```
+
+This call returns a dict with ```txRef```, ```flwRef``` and ```transactionComplete``` which indicates whether the transaction was completed successfully. 
+
+If your call could not be completed successfully, a ```TransactionVerificationError``` is raised.
+
+<br>
+
+### Complete RWMobile charge flow
+
+```python
+from rave_python import Rave, RaveExceptions, Misc
+rave = Rave("ENTER_YOUR_PUBLIC_KEY", "ENTER_YOUR_SECRET_KEY", usingEnv = False)
+
+# rwanda mobile payload
+payload = {
+  "amount": "50",
+  "email": "",
+  "phonenumber": "xxxxxxxx",
+  "redirect_url": "https://rave-webhook.herokuapp.com/receivepayment",
+  "IP":""
+}
+
+try:
+  res = rave.RWMobile.charge(payload)
+  res = rave.RWMobile.verify(res["txRef"])
   print(res)
 
 except RaveExceptions.TransactionChargeError as e:
@@ -962,9 +1098,9 @@ A sample verify call is:
 
 ### Complete USSD charge flow
 
-```
+```python
 from rave_python import Rave, RaveExceptions, Misc
-rave = Rave("YOUR_PUBLIC KEY", "YOUR_SECRET_KEY", production=True, usingEnv = False)
+rave = Rave("YOUR_PUBLIC KEY", "YOUR_SECRET_KEY", usingEnv = False)
 
 zenithPayload = {
   "accountbank": "057",
@@ -1028,7 +1164,7 @@ Once preauthorised successfully, you can then ```capture``` that ```held``` amou
 
 A sample charge call is:
 
-``` 
+```python
 payload = {
     "token":"flw-t1nf-5b0f12d565cd961f73c51370b1340f1f-m03k",
     "country":"NG",
@@ -1081,7 +1217,7 @@ This call returns a dictionary. A sample response is:
 
  This call raises an ```PreauthCaptureError``` if there was a problem processing your transaction. The ```PreauthCaptureError``` contains some information about your transaction. You can handle this as such:
 
-```
+```python
 try: 
     #Your charge call
 except RaveExceptions.PreauthCaptureError as e:
@@ -1130,7 +1266,7 @@ This call returns a dictionary. A sample response is:
 
  This call raises an ```TransactionVerificationError``` if there was a problem processing your transaction. The ```TransactionVerificationError``` contains some information about your transaction. You can handle this as such:
 
-```
+```python
 try: 
     #Your charge call
 except RaveExceptions.TransactionVerificationError as e:
@@ -1143,7 +1279,7 @@ except RaveExceptions.TransactionVerificationError as e:
 
 ### Complete preauth charge flow
 
-```
+```python
 from rave_python import Rave, Misc, RaveExceptions
 rave = Rave("ENTER_YOUR_PUBLIC_KEY", "ENTER_YOUR_SECRET_KEY", usingEnv = False)
 
@@ -1211,7 +1347,7 @@ This initiates a transfer to a customer's account. When a transfer is initiated,
 
 **Please note that you must pass ```beneficiary_name``` as part of the initiate call. Else an error will be thrown.**
 >Also if you are doing international transfers, you must pass a meta parameter as part of your payload as shown below:
-```
+```python
 "meta": [
     {
       "AccountNumber": "09182972BH",
@@ -1227,7 +1363,7 @@ This initiates a transfer to a customer's account. When a transfer is initiated,
 
 A sample initiate call is:
 
-``` 
+```python
 res = rave.Transfer.initiate({
     "account_bank": "044",
     "account_number": "0690000044",
@@ -1243,13 +1379,13 @@ print(res)
 
 This call returns a dictionary. A sample response is:
 
- ```
+ ```python
  {'error': False, 'id': 2671, 'data': {'id': 2671, 'account_number': '0690000044', 'bank_code': '044', 'fullname': 'Mercedes Daniel', 'date_created': '2018-10-09T08:37:20.000Z', 'currency': 'NGN', 'amount': 500, 'fee': 45, 'status': 'NEW', 'reference': 'MC-1539074239367', 'meta': None, 'narration': 'New transfer', 'complete_message': '', 'requires_approval': 0, 'is_approved': 1, 'bank_name': 'ACCESS BANK NIGERIA'}} 
  ```
 
  This call raises an ```IncompletePaymentDetailsError``` if there was a problem processing your transaction. The ```IncompletePaymentDetailsError``` contains some information about your transaction. You can handle this as such:
 
-```
+```python
 try: 
     #Your charge call
 except RaveExceptions.IncompletePaymentDetailsError as e:
@@ -1263,7 +1399,7 @@ This initiates a bulk transfer to the customers specified in the ```bulkDetails`
 
 A sample bulk call is:
 
-``` 
+```python
 res2 = rave.Transfer.bulk({
     "title":"May Staff Salary",
     "bulk_data":[
@@ -1291,13 +1427,13 @@ res2 = rave.Transfer.bulk({
 
 This call returns a dictionary. A sample response is:
 
- ```
+ ```python
  {'error': False, 'status': 'success', 'message': 'BULK-TRANSFER-CREATED', 'id': 499, 'data': {'id': 499, 'date_created': '2018-10-09T09:13:54.000Z', 'approver': 'N/A'}}
  ```
 
  This call raises an ```InitiateTransferError``` if there was a problem processing your transaction. The ```InitiateTransferError``` contains some information about your transaction. You can handle this as such:
 
-```
+```python
 try: 
     #Your charge call
 except RaveExceptions.InitiateTransferError as e:
@@ -1311,7 +1447,7 @@ This allows you retrieve a single transfer. You may or may not pass in a ```refe
 
 A sample fetch call is:
 
-``` 
+```python
 res2 = rave.Transfer.fetch("mk-82973029")
 ```
 
@@ -1319,14 +1455,14 @@ res2 = rave.Transfer.fetch("mk-82973029")
 
 This call returns a dictionary. A sample response is:
 
- ```
+ ```python
  {'error': False, 'returnedData': {'status': 'success', 'message': 'QUERIED-TRANSFERS', 'data': {'page_info': {'total': 0, 'current_page': 0, 'total_pages': 0}, 'transfers': []}}}
 
  ```
 
  This call raises an ```TransferFetchError``` if there was a problem processing your transaction. The ```TransferFetchError``` contains some information about your transaction. You can handle this as such:
 
-```
+```python
 try: 
     #Your charge call
 except RaveExceptions.TransferFetchError as e:
@@ -1340,7 +1476,7 @@ This allows you retrieve all transfers.
 
 A sample allTransfers call is:
 
-``` 
+```python
 res2 = rave.Transfer.allTransfers("")
 ```
 
@@ -1348,14 +1484,14 @@ res2 = rave.Transfer.allTransfers("")
 
 This call returns a dictionary. A sample response is:
 
- ```
+ ```python
  {'error': False, 'returnedData': {'status': 'success', 'message': 'QUERIED-TRANSFERS', 'data': {'page_info': {'total': 19, 'current_page': 1, 'total_pages': 2}, 'transfers': [{'id': 2676, 'account_number': '0690000044', 'bank_code': '044', 'fullname': 'Mercedes Daniel', 'date_created': '2018-10-09T09:37:12.000Z', 'currency': 'NGN', 'debit_currency': None, 'amount': 500, 'fee': 45, 'status': 'PENDING', 'reference': 'MC-1539077832148', 'meta': None, 'narration': 'New transfer', 'approver': None, 'complete_message': '', 'requires_approval': 0, 'is_approved': 1, 'bank_name': 'ACCESS BANK NIGERIA'}, {'id': 2673, 'account_number': '0690000044', 'bank_code': '044', 'fullname': 'Mercedes Daniel', 'date_created': '2018-10-09T09:31:37.000Z', 'currency': 'NGN', 'debit_currency': None, 'amount': 500, 'fee': 45, 'status': 'FAILED', 'reference': 'MC-1539077498173', 'meta': None, 'narration': 'New transfer', 'approver': None, 'complete_message': 'DISBURSE FAILED: Insufficient funds', 'requires_approval': 0, 'is_approved': 1, 'bank_name': 'ACCESS BANK NIGERIA'}, {'id': 2672, 'account_number': '0690000034', 'bank_code': '044', 'fullname': 'Ade Bond', 'date_created': '2018-10-09T09:13:56.000Z', 'currency': 'NGN', 'debit_currency': None, 'amount': 500, 'fee': 45, 'status': 'FAILED', 'reference': None, 'meta': None, 'narration': 'Bulk transfer 2', 'approver': None, 'complete_message': 'DISBURSE FAILED: Insufficient funds', 'requires_approval': 0, 'is_approved': 1, 'bank_name': 'ACCESS BANK NIGERIA'}]}}}
 
  ```
 
  This call raises an ```TransferFetchError``` if there was a problem processing your transaction. The ```TransferFetchError``` contains some information about your transaction. You can handle this as such:
 
-```
+```python
 try: 
     #Your charge call
 except RaveExceptions.TransferFetchError as e:
@@ -1369,7 +1505,7 @@ This allows you get transfer rates for all Rave supported currencies. You may or
 
 A sample getFee call is:
 
-``` 
+```python
 res2 = rave.Transfer.getFee("EUR")
 ```
 
@@ -1377,7 +1513,7 @@ res2 = rave.Transfer.getFee("EUR")
 
 This call returns a dictionary. A sample response is:
 
- ```
+ ```python
 {'error': False, 'returnedData': {'status': 'success', 'message': 'TRANSFER-FEES', 'data': [{'id': 6, 'fee_type': 'value', 'currency': 'EUR', 'fee': 35, 'createdAt': None, 'updatedAt': None, 'deletedAt': None, 'AccountId': 1}]}}
 
  ```
@@ -1388,7 +1524,7 @@ This allows you get your balance in a specified. You may or may not pass in a ``
 
 A sample fetch call is:
 
-``` 
+```python
 res2 = rave.Transfer.Balance("EUR")
 ```
 
@@ -1396,7 +1532,7 @@ res2 = rave.Transfer.Balance("EUR")
 
 This call returns a dictionary. A sample response is:
 
- ```
+ ```python
 {'error': False, 'returnedData': {'status': 'success', 'message': 'WALLET-BALANCE', 'data': {'Id': 27122, 'ShortName': 'EUR', 'WalletNumber': '3855000502677', 'AvailableBalance': 0, 'LedgerBalance': 0}}}
  ```
 
@@ -1405,7 +1541,7 @@ This call returns a dictionary. A sample response is:
 
 ### Complete transfer flow
 
-```
+```python
 from rave_python import Rave, RaveExceptions
 try:
     rave = Rave("ENTER_YOUR_PUBLIC_KEY", "ENTER_YOUR_SECRET_KEY", usingEnv = False)
@@ -1471,7 +1607,7 @@ This allows a customer to create a payment plan. It requires a dict ```planDetai
 >name: This is what would appear on the subscription reminder email
 
 >interval: This are the charge intervals possible values are:
-```
+```python
 daily;
 weekly;
 monthly;
@@ -1496,7 +1632,7 @@ More information can be found [here](https://developer.flutterwave.com/v2.0/refe
 
 A sample createPlan call is:
 
-``` 
+```python
  res = rave.PaymentPlan.createPlan({
     "amount": 1,
     "duration": 5,
@@ -1510,13 +1646,13 @@ print(res)
 
 This call returns a dictionary. A sample response is:
 
- ```
+ ```python
  {'error': False, 'id': 890, 'data': {'id': 890, 'name': 'Ultimate Play', 'amount': 1, 'interval': 'dai', 'duration': 5, 'status': 'active', 'currency': 'NGN', 'plan_token': 'rpp_af8ea4d5d785d08f47d8', 'date_created': '2018-10-09T10:03:00.000Z'}}
  ```
 
  This call raises an ```IncompletePaymentDetailsError``` if there was a problem processing your transaction. The ```IncompletePaymentDetailsError``` contains some information about your transaction. You can handle this as such:
 
-```
+```python
 try: 
     #Your charge call
 except RaveExceptions.IncompletePaymentDetailsError as e:
@@ -1530,7 +1666,7 @@ This allows you retrieve all payment plans.
 
 A sample allPlans call is:
 
-``` 
+```python 
 res2 = rave.Transfer.allPlans()
 ```
 
@@ -1538,14 +1674,14 @@ res2 = rave.Transfer.allPlans()
 
 This call returns a dictionary. A sample response is:
 
- ```
+ ```python
  {'error': False, 'returnedData': {'status': 'success', 'message': 'QUERIED-PAYMENTPLANS', 'data': {'page_info': {'total': 12, 'current_page': 1, 'total_pages': 2}, 'paymentplans': [{'id': 890, 'name': 'Ultimate Play', 'amount': 1, 'interval': 'dai', 'duration': 5, 'status': 'active', 'currency': 'NGN', 'plan_token': 'rpp_af8ea4d5d785d08f47d8', 'date_created': '2018-10-09T10:03:00.000Z'}, {'id': 885, 'name': 'N/A', 'amount': 0, 'interval': 'daily', 'duration': 0, 'status': 'cancelled', 'currency': 'NGN', 'plan_token': 'rpp_19c8a7af7a06351fd78b', 'date_created': '2018-10-05T17:16:15.000Z'}]}}}
 
  ```
 
  This call raises an ```PlanStatusError``` if there was a problem processing your transaction. The ```PlanStatusError``` contains some information about your transaction. You can handle this as such:
 
-```
+```python
 try: 
     #Your charge call
 except RaveExceptions.PlanStatusError as e:
@@ -1563,7 +1699,7 @@ This allows you fetch a payment plan. You may or may not pass in a ```plan_id```
 
 A sample fetchPlan call is:
 
-``` 
+```python 
 res2 = rave.Transfer.fetchPlan(900)
 ```
 
@@ -1571,13 +1707,13 @@ res2 = rave.Transfer.fetchPlan(900)
 
 This call returns a dictionary. A sample response is:
 
- ```
+ ```python
  {'error': False, 'returnedData': {'status': 'success', 'message': 'QUERIED-PAYMENTPLANS', 'data': {'page_info': {'total': 1, 'current_page': 1, 'total_pages': 1}, 'paymentplans': [{'id': 890, 'name': 'Ultimate Play', 'amount': 1, 'interval': 'dai', 'duration': 5, 'status': 'active', 'currency': 'NGN', 'plan_token': 'rpp_af8ea4d5d785d08f47d8', 'date_created': '2018-10-09T10:03:00.000Z'}]}}}
  ```
 
  This call raises an ```PlanStatusError``` if there was a problem processing your transaction. The ```PlanStatusError``` contains some information about your transaction. You can handle this as such:
 
-```
+```python
 try: 
     #Your charge call
 except RaveExceptions.PlanStatusError as e:
@@ -1593,7 +1729,7 @@ This allows you cancel a payment plan. It requires that you pass in an ```plan_i
 
 A sample cancelPlan call is:
 
-``` 
+```python 
 res2 = rave.Transfer.cancelPlan(900)
 ```
 
@@ -1601,13 +1737,13 @@ res2 = rave.Transfer.cancelPlan(900)
 
 This call returns a dictionary. A sample response is:
 
- ```
+ ```python
  {'error': False, 'returnedData': {'status': 'success', 'message': 'PLAN-CANCELED', 'data': {'id': 890, 'name': 'Ultimate Play', 'uuid': 'rpp_af8ea4d5d785d08f47d8', 'status': 'cancelled', 'start': None, 'stop': None, 'initial_charge_amount': None, 'currency': 'NGN', 'amount': 1, 'duration': 5, 'interval': 'dai', 'createdAt': '2018-10-09T10:03:00.000Z', 'updatedAt': '2018-10-09T10:17:14.000Z', 'deletedAt': None, 'AccountId': 5949, 'paymentpageId': None}}}
  ```
 
  This call raises an ```PlanStatusError``` if there was a problem processing your transaction. The ```PlanStatusError``` contains some information about your transaction. You can handle this as such:
 
-```
+```python
 try: 
     #Your charge call
 except RaveExceptions.PlanStatusError as e:
@@ -1628,7 +1764,7 @@ This allows you edit a payment plan. It requires that you pass in an ```plan_id`
 
 A sample cancelPlan call is:
 
-``` 
+```python 
 res = rave.PaymentPlan.editPlan(880, {
         "name": "Jack's Plan",
         "status": "active"
@@ -1639,13 +1775,13 @@ res = rave.PaymentPlan.editPlan(880, {
 
 This call returns a dictionary. A sample response is:
 
- ```
+ ```python
  {'error': False, 'returnedData': {'status': 'success', 'message': 'PLAN-EDITED', 'data': {'id': 880, 'name': "Jack's Plan", 'uuid': 'rpp_237e94690d8e7089c07b', 'status': 'active', 'start': None, 'stop': None, 'initial_charge_amount': None, 'currency': 'NGN', 'amount': 1, 'duration': 5, 'interval': 'dai', 'createdAt': '2018-10-05T17:13:16.000Z', 'updatedAt': '2018-10-09T10:25:25.000Z', 'deletedAt': None, 'AccountId': 5949, 'paymentpageId': None}}}
  ```
 
  This call raises an ```PlanStatusError``` if there was a problem processing your transaction. The ```PlanStatusError``` contains some information about your transaction. You can handle this as such:
 
-```
+```python
 try: 
     #Your charge call
 except RaveExceptions.PlanStatusError as e:
@@ -1657,7 +1793,7 @@ except RaveExceptions.PlanStatusError as e:
 
 ### Complete PaymentPlan flow
 
-```
+```python
 from rave_python import Rave, Misc, RaveExceptions
 rave = Rave("YOUR_PUBLIC_KEY", "YOUR_PRIVATE_KEY", usingEnv = False)
 try:
@@ -1730,7 +1866,7 @@ More information can be found [here](https://developer.flutterwave.com/v2.0/refe
 
 A sample createsubAccount call is:
 
-``` 
+```python 
  res = rave.SubAccount.createSubaccount({
 	"account_bank": "044",
 	"account_number": "0690000031",
@@ -1749,13 +1885,13 @@ A sample createsubAccount call is:
 
 This call returns a dictionary. A sample response is:
 
- ```
+ ```python
  {'error': False, 'id': 114, 'data': {'id': 114, 'account_number': '0690000032', 'account_bank': '044', 'business_name': 'Jake Stores', 'fullname': 'Pastor Bright', 'date_created': '2018-10-09T10:43:02.000Z', 'meta': [{'metaname': 'MarketplaceID', 'metavalue': 'ggs-920900'}], 'split_ratio': 1, 'split_type': 'flat', 'split_value': 3000, 'subaccount_id': 'RS_8279B1518A139DD3238328747F322418', 'bank_name': 'ACCESS BANK NIGERIA'}}
  ```
 
  This call raises an ```.SubaccountCreationError``` if there was a problem processing your transaction. The ```.SubaccountCreationError``` contains some information about your transaction. You can handle this as such:
 
-```
+```python
 try: 
     #Your charge call
 except RaveExceptions..SubaccountCreationError as e:
@@ -1769,7 +1905,7 @@ This allows you retrieve all subaccounts
 
 A sample allSubaccounts call is:
 
-``` 
+```python 
 res2 = rave.SubAccount.allSubaccounts()
 ```
 
@@ -1777,14 +1913,14 @@ res2 = rave.SubAccount.allSubaccounts()
 
 This call returns a dictionary. A sample response is:
 
- ```
+ ```python
  {'error': False, 'returnedData': {'status': 'success', 'message': 'SUBACCOUNTS', 'data': {'page_info': {'total': 3, 'current_page': 1, 'total_pages': 1}, 'subaccounts': [{'id': 114, 'account_number': '0690000032', 'account_bank': '044', 'business_name': 'Jake Stores', 'fullname': 'Pastor Bright', 'date_created': '2018-10-09T10:43:02.000Z', 'meta': [{'metaname': 'MarketplaceID', 'metavalue': 'ggs-920900'}], 'split_ratio': 1, 'split_type': 'flat', 'split_value': 3000, 'subaccount_id': 'RS_8279B1518A139DD3238328747F322418', 'bank_name': 'ACCESS BANK NIGERIA'}, {'id': 107, 'account_number': '0690000031', 'account_bank': '044', 'business_name': 'Jake Stores', 'fullname': 'Forrest Green', 'date_created': '2018-10-05T18:30:09.000Z', 'meta': [{'metaname': 'MarketplaceID', 'metavalue': 'ggs-920900'}], 'split_ratio': 1, 'split_type': 'flat', 'split_value': 100, 'subaccount_id': 'RS_41FFE616A1FA7EA56C85E57F593056F7', 'bank_name': 'ACCESS BANK NIGERIA'}]}}}
 
  ```
 
  This call raises an ```PlanStatusError``` if there was a problem processing your transaction. The ```PlanStatusError``` contains some information about your transaction. You can handle this as such:
 
-```
+```python
 try: 
     #Your charge call
 except RaveExceptions.PlanStatusError as e:
@@ -1801,7 +1937,7 @@ This allows you fetch a subaccount. You may or may not pass in a ```subaccount_i
 
 A sample fetchSubaccount call is:
 
-``` 
+```python 
 res2 = rave.SubAccount.fetchSubaccount(900)
 ```
 
@@ -1809,13 +1945,13 @@ res2 = rave.SubAccount.fetchSubaccount(900)
 
 This call returns a dictionary. A sample response is:
 
- ```
+ ```python
  {'error': False, 'returnedData': {'status': 'success', 'message': 'SUBACCOUNT', 'data': {'id': 106, 'account_number': '0690000035', 'account_bank': '044', 'business_name': 'JK Services', 'fullname': 'Peter Crouch', 'date_created': '2018-10-05T18:24:21.000Z', 'meta': [{'metaname': 'MarketplaceID', 'metavalue': 'ggs-920900'}], 'split_ratio': 1, 'split_type': 'flat', 'split_value': 100, 'subaccount_id': 'RS_0A6C260E1A70934DE6EF2F8CEE46BBB3', 'bank_name': 'ACCESS BANK NIGERIA'}}}
  ```
 
  This call raises an ```PlanStatusError``` if there was a problem processing your transaction. The ```PlanStatusError``` contains some information about your transaction. You can handle this as such:
 
-```
+```python
 try: 
     #Your charge call
 except RaveExceptions.PlanStatusError as e:
@@ -1825,7 +1961,7 @@ except RaveExceptions.PlanStatusError as e:
 
 ### Complete SubAccount flow
 
-```
+```python
 from rave_python import Rave, Misc, RaveExceptions
 rave = Rave("YOUR_PUBLIC_KEY", "YOUR_PRIVATE_KEY", usingEnv = False)
 try:
@@ -1878,7 +2014,7 @@ This allows you retrieve all subscriptions
 
 A sample allSubaccounts call is:
 
-``` 
+```python 
 res2 = rave.Subscriptions.allSubscriptions()
 ```
 
@@ -1886,13 +2022,13 @@ res2 = rave.Subscriptions.allSubscriptions()
 
 This call returns a dictionary. A sample response is:
 
- ```
+ ```python
  {'error': False, 'returnedData': {'status': 'success', 'message': 'SUBSCRIPTIONS-FETCHED', 'data': {'page_info': {'total': 0, 'current_page': 0, 'total_pages': 0}, 'plansubscriptions': []}}}
  ```
 
  This call raises an ```PlanStatusError``` if there was a problem processing your transaction. The ```PlanStatusError``` contains some information about your transaction. You can handle this as such:
 
-```
+```python
 try: 
     #Your charge call
 except RaveExceptions.PlanStatusError as e:
@@ -1911,7 +2047,7 @@ This allows you fetch a subscription. You may or may not pass in a ```subscripti
 
 A sample fetchSubaccount call is:
 
-``` 
+```python 
 res2 = rave.Subscriptions.fetchSubscription(900)
 ```
 
@@ -1919,13 +2055,13 @@ res2 = rave.Subscriptions.fetchSubscription(900)
 
 This call returns a dictionary. A sample response is:
 
- ```
+ ```python
  {'error': False, 'returnedData': {'status': 'success', 'message': 'SUBSCRIPTIONS-FETCHED', 'data': {'page_info': {'total': 0, 'current_page': 0, 'total_pages': 0}, 'plansubscriptions': []}}}
  ```
 
  This call raises an ```PlanStatusError``` if there was a problem processing your transaction. The ```PlanStatusError``` contains some information about your transaction. You can handle this as such:
 
-```
+```python
 try: 
     #Your charge call
 except RaveExceptions.PlanStatusError as e:
@@ -1933,22 +2069,22 @@ except RaveExceptions.PlanStatusError as e:
     print(e.err["flwRef"])
 ```
 
-### ```.cancelSubscription(subscription_id)```
+### ```.cancelSubscription(transaction_id)```
 
 This allows you cancel a subscription.
 
->subscription_id: This is the subscription ID. It can be gotten from the Rave Dashboard
+>transaction_id: This is the transaction ID `(txid)` which can be gotten from the successful subscription charge response or your Rave Dashboard.
 
 
 A sample cancelSubscription call is:
 
-``` 
+```python 
 res2 = rave.Subscriptions.cancelSubscription(900)
 ```
 
  This call raises an ```PlanStatusError``` if there was a problem processing your transaction. The ```PlanStatusError``` contains some information about your transaction. You can handle this as such:
 
-```
+```python
 try: 
     #Your charge call
 except RaveExceptions.PlanStatusError as e:
@@ -1957,22 +2093,22 @@ except RaveExceptions.PlanStatusError as e:
 ```
 
 
-### ```.activateSubscription(subscription_id)```
+### ```.activateSubscription(transaction_id)```
 
 This allows you activate a subscription.
 
->subscription_id: This is the subscription ID. It can be gotten from the Rave Dashboard
+>transaction_id: This is the transaction ID `(txid)` which can be gotten from the successful subscription charge response or your Rave Dashboard.
 
 
 A sample activateSubscription call is:
 
-``` 
+```python 
 res2 = rave.Subscriptions.activateSubscription(900)
 ```
 
  This call raises an ```PlanStatusError``` if there was a problem processing your transaction. The ```PlanStatusError``` contains some information about your transaction. You can handle this as such:
 
-```
+```python
 try: 
     #Your charge call
 except RaveExceptions.PlanStatusError as e:
@@ -1982,7 +2118,7 @@ except RaveExceptions.PlanStatusError as e:
 
 ### Complete Subscriptions flow
 
-```
+```python
 from rave_python import Rave, Misc, RaveExceptions
 rave = Rave("YOUR_PUBLIC_KEY", "YOUR_PRIVATE_KEY", usingEnv = False)
 try:

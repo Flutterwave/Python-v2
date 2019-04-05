@@ -21,9 +21,9 @@ response_object = {
 # All payment subclasses are encrypted classes
 class Payment(RaveBase):
     """ This is the base class for all the payments """
-    def __init__(self, publicKey, secretKey, production, usingEnv):
+    def __init__(self, publicKey, secretKey, usingEnv):
         # Instantiating the base class
-        super(Payment, self).__init__(publicKey, secretKey, production, usingEnv)
+        super(Payment, self).__init__(publicKey, secretKey, usingEnv)
 
     @classmethod
     def retrieve(cls, mapping, *keys): 
