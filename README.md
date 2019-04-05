@@ -34,7 +34,7 @@ The base class for this package is 'Rave'. To use this class, add:
 
 This is shown in the screenshots displayed below:
 
-<img src="https://res.cloudinary.com/flutterwavedeveloper/image/upload/v1553697793/rave-react-native/rave-test-account.png" style="text-align: center; max-height: 400;" alt="Rave Test Account">
+<img src="https://res.cloudinary.com/flutterwavedeveloper/image/upload/v1554490083/rave-react-native/rave-test-account.png" style="text-align: center; max-height: 400;" alt="Rave Test Account">
 
 - To use Rave in your project, instantiate the Rave class with your `public key` and `secret key`. We recommend that you store your `public key` and `secret key` in an environment variable as ```RAVE_PUBLIC_KEY``` and ```RAVE_SECRET_KEY``` respectively.
 
