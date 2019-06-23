@@ -13,7 +13,7 @@ This is a Python wrapper around the [API](https://flutterwavedevelopers.readme.i
 * Transfer
 * Subscription (Recurring Payments)
 * Payment Plan
-* USSD Payments
+* USSD Payments (Still In Beta Mode)
 ## Installation
 To install, run
 
@@ -910,88 +910,6 @@ except RaveExceptions.TransactionVerificationError as e:
 ```
 <br><br>
 
-## ```rave.Ussd```
-This is used to facilitate USSD transactions.
-
-**Functions included:**
-
-* ```.charge```
-
-
-* ```.verify```
-
-<br>
-
-### ```.charge(payload)```
-This is called to start a USSD transaction. The payload should be a dictionary containing payment information. It should have the parameters:
-
-* ```accountbank```,
-
-* ```accountnumber```, 
-
-* ```amount```, 
-
-* ```email```,
-
-* ```phonenumber```,
-
-* ```IP```
-
-Optionally, you can add a custom transaction reference using the ```txRef``` parameter. Note that if you do not specify one, it would be automatically generated. We do provide a function for generating transaction references in the Misc library (add link).
-
-
-A sample call is:
-
-``` furtherActionRequired, action = rave.Ussd.charge(payload) ```
-
-#### Returns
-
-This call returns two responses. The first variable indicates whether further action is required to complete the transaction. The second variable is what was returned from the server on the call.
-
-<br>
-
-### ```.verify(txRef)```
-
-You can call this to check if your transaction was completed successfully. You have to pass the transaction reference generated at the point of charging. This is the ```txRef``` in the ```action``` parameter returned any of the calls (```charge``` or ```validate```). 
-
-A sample verify call is:
-
-``` success, data = rave.Ussd.verify(data["txRef"]) ```
-
-<br>
-
-### Complete USSD charge flow
-
-```
-from rave_python import Rave, RaveExceptions, Misc
-rave = Rave("YOUR_PUBLIC KEY", "YOUR_SECRET_KEY", production=True, usingEnv = False)
-
-zenithPayload = {
-  "accountbank": "057",
-  "accountnumber": "0691008392",#collect the customers account number for Zenith
-  "currency": "NGN",
-  "country": "NG",
-  "amount": "10",
-  "email": "desola.ade1@gmail.com",
-  "phonenumber": "0902620185", 
-  "IP": "355426087298442",
-}
-
-furtherActionNeeded, action = rave.Ussd.charge(zenithPayload)
-if furtherActionNeeded:
-  completed = False
-  while not completed:
-    try:
-      completed = rave.Ussd.verify(zenithPayload["txRef"])
-    except RaveExceptions.TransactionVerificationError:
-      print(action)
-    
-success, data = rave.Ussd.verify(zenithPayload["txRef"])
-print(success)
-
-```
-
-<br><br>
 ## ```rave.Preauth```
 This is used to facilitate preauthorized card transactions. This inherits the Card class so any task you can do on Card, you can do with preauth.
 
@@ -2000,6 +1918,9 @@ except RaveExceptions.ServerError as e:
 
 ```
 
+## ```rave.Ussd```
+
+>**NOTE:** This payment option is still in beta mode
 
 <br>
 ## Run Tests
