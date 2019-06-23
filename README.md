@@ -1920,7 +1920,7 @@ except RaveExceptions.ServerError as e:
 
 ## ```rave.Ussd```
 
->**NOTE:** This payment option is still in beta mode
+>**NOTE:** This payment option is still in beta mode.
 
 <br>
 ## Run Tests
