@@ -19,3 +19,4 @@ rwanda.py
 build/
 dist/
 rave_python.egg-info/
+.env
