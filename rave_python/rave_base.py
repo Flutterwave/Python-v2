@@ -2,24 +2,12 @@ import os, hashlib, warnings, requests, json
 from rave_python.rave_exceptions import ServerError, RefundError
 import base64
 from Crypto.Cipher import DES3
-from dotenv import load_dotenv
-load_dotenv()
-
-# OR, the same with increased verbosity:
-load_dotenv(verbose=True)
-
-# OR, explicitly providing path to '.env'
-from pathlib import Path  # python3 only
-env_path = Path('.') / '.env'
-load_dotenv(dotenv_path=env_path)
-
-
 class RaveBase(object):
     """ This is the core of the implementation. It contains the encryption and initialization functions. It also contains all direct rave functions that require publicKey or secretKey (refund) """
-    def __init__(self, publicKey=None, secretKey=None, usingEnv=True):
+    def __init__(self, publicKey=None, secretKey=None, production=False, usingEnv=True):
 
         # config variables (protected)
-        self._baseUrlMap = "https://api.ravepay.co/"
+        self._baseUrlMap = ["https://ravesandboxapi.flutterwave.com/", "https://api.ravepay.co/"]
         self._endpointMap = {
             "card": {
                 "charge": "flwv3-pug/getpaidx/api/charge",
@@ -72,11 +60,11 @@ class RaveBase(object):
         # 
         # If we are using environment variables to store secretKey
         if(usingEnv):  
-            self.__publicKey = os.getenv("RAVE_PUBLIC_KEY")
-            self.__secretKey = os.getenv("RAVE_SECRET_KEY")
+            self.__publicKey = publicKey
+            self.__secretKey = os.getenv("RAVE_SECRET_KEY", None)
 
             if (not self.__publicKey) or (not self.__secretKey):
-                raise ValueError("Please set your RAVE_PUBLIC_KEY and RAVE_SECRET_KEY environment variables. Otherwise, pass publicKey and secretKey as arguments and set usingEnv to false")
+                raise ValueError("Please set your RAVE_SECRET_KEY environment variable. Otherwise, pass publicKey and secretKey as arguments and set usingEnv to false")
 
         # If we are not using environment variables
         else:
@@ -91,7 +79,10 @@ class RaveBase(object):
                 warnings.warn("Though you can use the usingEnv flag to pass secretKey as an argument, it is advised to store it in an environment variable, especially in production.", SyntaxWarning)
 
         # Setting instance variables
-        self._baseUrl = self._baseUrlMap
+        # 
+        # production/non-production variables (protected)
+        self._isProduction = production 
+        self._baseUrl = self._baseUrlMap[production]
 
         # encryption key (protected)
         self._encryptionKey = self.__getEncryptionKey()

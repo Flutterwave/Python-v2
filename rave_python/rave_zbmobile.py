@@ -4,8 +4,8 @@ import json
 
 class ZBMobile(Payment):
     
-    def __init__(self, publicKey, secretKey, usingEnv):
-        super(ZBMobile, self).__init__(publicKey, secretKey, usingEnv)
+    def __init__(self, publicKey, secretKey, production, usingEnv):
+        super(ZBMobile, self).__init__(publicKey, secretKey, production, usingEnv)
 
 
     # Charge mobile money function

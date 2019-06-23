@@ -12,8 +12,8 @@ class Preauth(Card):
         .verify -- This checks the status of your transaction\n
     """
 
-    def __init__(self, publicKey, secretKey, usingEnv):
-        super(Preauth, self).__init__(publicKey, secretKey, usingEnv)
+    def __init__(self, publicKey, secretKey, production, usingEnv):
+        super(Preauth, self).__init__(publicKey, secretKey, production, usingEnv)
 
     # Initiate preauth
     def charge(self, cardDetails, chargeWithToken=False, hasFailed=False):

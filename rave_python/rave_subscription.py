@@ -4,11 +4,11 @@ from rave_python.rave_misc import checkIfParametersAreComplete, generateTransact
 from rave_python.rave_exceptions import  ServerError, IncompletePaymentDetailsError, PlanCreationError, PlanStatusError
 
 class Subscriptions(RaveBase) :
-    def __init__(self, publicKey, secretKey, usingEnv):
+    def __init__(self, publicKey, secretKey, production, usingEnv):
         self.headers = {
             'content-type': 'application/json'
         }
-        super(Subscriptions, self).__init__(publicKey, secretKey, usingEnv)
+        super(Subscriptions, self).__init__(publicKey, secretKey, production, usingEnv)
     
     def _preliminaryResponseChecks(self, response, TypeOfErrorToRaise, name):
         # Check if we can obtain a json
@@ -63,19 +63,19 @@ class Subscriptions(RaveBase) :
             return "You must pass either plan id or plan name in order to fetch a plan's details"
         return self._handlePlanStatusRequests("Fetch", endpoint)
     
-    def cancelSubscription(self, transaction_id):
-        if not transaction_id:
+    def cancelSubscription(self, subscription_id):
+        if not subscription_id:
             return "Subscription id was not supplied. Kindly supply one"
-        endpoint = self._baseUrl + self._endpointMap["subscriptions"]["cancel"] + str(transaction_id) + "/cancel/?fetch_by_tx=1"
+        endpoint = self._baseUrl + self._endpointMap["subscriptions"]["cancel"] + str(id) + "/cancel"
         data = {"seckey": self._getSecretKey()}
         return self._handlePlanStatusRequests("Cancel", endpoint, isPostRequest=True, data=data)
     
     # activates a subscription plan
     # Params
-    # id: transaction_id *required
-    def activateSubscription(self, transaction_id):
-        if not transaction_id:
+    # id: subscription_id *required
+    def activateSubscription(self, subscription_id):
+        if not subscription_id:
             return "Subscription id was not supplied. Kindly supply one"
-        endpoint = self._baseUrl + self._endpointMap["subscriptions"]["activate"] + str(transaction_id) + "/activate?fetch_by_tx=1"
+        endpoint = self._baseUrl + self._endpointMap["subscriptions"]["activate"] + str(subscription_id) + "/activate"
         data = {"seckey": self._getSecretKey()}
         return self._handlePlanStatusRequests("Activat", endpoint, isPostRequest=True, data=data)
