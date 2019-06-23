@@ -16,3 +16,4 @@ charge_saved_card.py
 build/
 dist/
 rave_python.egg-info/
+.env
