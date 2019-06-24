@@ -3,9 +3,9 @@ from rave_python.rave_card import Card
 from rave_python.rave_account import Account
 from rave_python.rave_ussd import Ussd
 from rave_python.rave_ghmobile import GhMobile
-from rave_python.rave_ghmobile import GhMobile
 from rave_python.rave_ugmobile import UGMobile
 from rave_python.rave_zbmobile import ZBMobile
+from rave_python.rave_rwmobile import RWMobile
 from rave_python.rave_mpesa import Mpesa
 from rave_python.rave_preauth import Preauth
 from rave_python.rave_transfer import Transfer
