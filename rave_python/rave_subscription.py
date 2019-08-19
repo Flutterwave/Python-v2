@@ -66,7 +66,7 @@ class Subscriptions(RaveBase) :
     def cancelSubscription(self, subscription_id):
         if not subscription_id:
             return "Subscription id was not supplied. Kindly supply one"
-        endpoint = self._baseUrl + self._endpointMap["subscriptions"]["cancel"] + str(id) + "/cancel"
+        endpoint = self._baseUrl + self._endpointMap["subscriptions"]["cancel"] + str(subscription_id) + "/cancel"
         data = {"seckey": self._getSecretKey()}
         return self._handlePlanStatusRequests("Cancel", endpoint, isPostRequest=True, data=data)
     
