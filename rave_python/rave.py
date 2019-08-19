@@ -24,6 +24,7 @@ class Rave:
             rave.GhMobile -- For Ghana mobile money transactions\n
             rave.UGMobile -- For Uganda mobile money transactions\n
             rave.ZBMobile -- For Zambia mobile money transactions\n
+            rave.RWMobile -- For Rwanda mobile money transactions\n
             rave.Mpesa -- For mpesa transactions\n
         """
         
@@ -39,6 +40,7 @@ class Rave:
         self.GhMobile = GhMobile(publicKey, secretKey, production, usingEnv)
         self.ZBMobile = ZBMobile(publicKey, secretKey, production, usingEnv)
         self.UGMobile = UGMobile(publicKey, secretKey, production, usingEnv)
+        self.RWMobile = RWMobile(publicKey, secretKey, production, usingEnv)
         self.Mpesa = Mpesa(publicKey, secretKey, production, usingEnv)
         # Transfer endpoint
         self.Transfer = Transfer(publicKey, secretKey, production, usingEnv)
