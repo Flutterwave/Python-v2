@@ -95,14 +95,16 @@ class Card(Payment):
         # setting the endpoint
         if not chargeWithToken:
             endpoint = self._baseUrl + self._endpointMap["card"]["charge"]
-            requiredParameters = ["cardno", "cvv", "expirymonth", "expiryyear", "amount", "email", "phonenumber", "firstname", "lastname", "IP"]
+            requiredParameters = ["cardno", "cvv", "expirymonth", "expiryyear", "amount", "email", "IP"]
+            optionalParameters = ["phonenumber", "firstname", "lastname"]
         else: 
             if "charge_type" in cardDetails and cardDetails["charge_type"] == 'preauth':
                 endpoint = self._baseUrl + self._endpointMap["preauth"]["charge"]
             else: 
                 endpoint = self._baseUrl + self._endpointMap["card"]["chargeSavedCard"]
 
-            requiredParameters = ["currency", "token", "country", "amount", "email", "firstname", "lastname", "txRef", "IP"]
+            requiredParameters = ["currency", "token", "country", "amount", "email", "txRef", "IP"]
+            optionalParameters = ["firstname", "lastname"]
             # add token to requiredParameters
             # requiredParameters.append("token")
 
@@ -110,7 +112,7 @@ class Card(Payment):
             cardDetails.update({"txRef":generateTransactionReference()})
 
         
-        return super(Card, self).charge(cardDetails, requiredParameters, endpoint)
+        return super(Card, self).charge(cardDetails, requiredParameters, optionalParameters, endpoint)
     
 
     def validate(self, flwRef, otp):
