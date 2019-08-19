@@ -72,7 +72,7 @@ class Payment(RaveBase):
         flwRef = responseJson["data"]["flwRef"]
 
         if isMpesa:
-            return {"error": False, "status": responseJson["status"],"txRef": txRef, "flwRef": flwRef, "narration": responseJson["data"]["narration"]}
+            return {"error": False, "status": responseJson["status"], "validationRequired": True, "txRef": txRef, "flwRef": flwRef, "narration": responseJson["data"]["narration"]}
         else:
             # if all preliminary tests pass
             if not (responseJson["data"].get("chargeResponseCode", None) == "00"):
