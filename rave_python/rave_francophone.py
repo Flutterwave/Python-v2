@@ -1,3 +1,4 @@
+from rave_python.rave_exceptions import RaveError, IncompletePaymentDetailsError, AccountChargeError, TransactionVerificationError, TransactionValidationError, ServerError
 from rave_python.rave_payment import Payment
 from rave_python.rave_misc import generateTransactionReference
 import json
@@ -8,6 +9,28 @@ class Francophone(Payment):
         super(Francophone, self).__init__(publicKey, secretKey, production, usingEnv)
 
 
+    # returns true if further action is required, false if it isn't    
+    def _handleChargeResponse(self, response, txRef, request=None):
+        """ This handles charge responses """
+        res =  self._preliminaryResponseChecks(response, CardChargeError, txRef=txRef)
+
+        responseJson = res["json"]
+        flwRef = res["flwRef"]
+
+        # Checking if there is auth url
+        if responseJson["data"].get("authurl", "N/A") == "N/A":
+            authUrl = None
+        else:
+            authUrl = responseJson["data"]["authurl"]
+
+        # If all preliminary checks passed
+        if not (responseJson["data"].get("chargeResponseCode", None) == "00"):
+            # Otherwise we return that further action is required, along with the response
+            suggestedAuth = responseJson["data"].get("suggested_auth", None)
+            return {"error": False,  "validationRequired": True, "txRef": txRef, "flwRef": flwRef, "suggestedAuth": suggestedAuth, "authUrl": authUrl}
+        else:
+            return {"error": False, "status": responseJson["status"],  "validationRequired": False, "txRef": txRef, "flwRef": flwRef, "suggestedAuth": None, "authUrl": authUrl}
+    
     # Charge mobile money function
     def charge(self, accountDetails, hasFailed=False):
         """ This is the charge call for central francophone countries.

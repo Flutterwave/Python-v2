@@ -33,6 +33,14 @@ class AccountChargeError(RaveError):
     def __str__(self):
         return "Your account charge call failed with message: "+self.err["errMsg"]
 
+class MobileChargeError(RaveError):
+    """ Raised when mobile money charge has failed """
+    def __init__(self, err):
+        self.err = err
+
+    def __str__(self):
+        return "Your mobile money charge call failed with message: "+self.err["errMsg"]
+
 class UssdChargeError(RaveError):
     """ Raised when ussd charge has failed """
     def __init__(self, err):
