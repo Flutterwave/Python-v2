@@ -703,7 +703,7 @@ except RaveExceptions.TransactionVerificationError as e:
 
 <br><br>
 
-## ```rave.FrancoMobile```
+## ```rave.Francophone```
 This is used to facilitate mobile money transactions in Ivory Coast, Senegal and Mali.
 
 **Functions included:**
