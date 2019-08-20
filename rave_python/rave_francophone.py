@@ -18,7 +18,7 @@ class Francophone(Payment):
 
         endpoint = self._baseUrl + self._endpointMap["account"]["charge"]
         # It is faster to add boilerplate than to check if each one is present
-        accountDetails.update({"payment_type": "mobilemoneyfrancophone", "is_mobile_money_franco":"1", "currency":"XAF"})
+        accountDetails.update({"payment_type": "mobilemoneyfrancophone", "is_mobile_money_franco":"1", "currency":"XOF"})
         
         # If transaction reference is not set 
         if not ("txRef" in accountDetails):
