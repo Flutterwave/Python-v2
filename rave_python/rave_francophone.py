@@ -1,4 +1,4 @@
-from rave_python.rave_exceptions import RaveError, IncompletePaymentDetailsError, AccountChargeError, TransactionVerificationError, TransactionValidationError, ServerError
+from rave_python.rave_exceptions import RaveError, IncompletePaymentDetailsError, MobileChargeError, TransactionVerificationError, TransactionValidationError, ServerError
 from rave_python.rave_payment import Payment
 from rave_python.rave_misc import generateTransactionReference
 import json
@@ -12,24 +12,24 @@ class Francophone(Payment):
     # returns true if further action is required, false if it isn't    
     def _handleChargeResponse(self, response, txRef, request=None):
         """ This handles charge responses """
-        res =  self._preliminaryResponseChecks(response, CardChargeError, txRef=txRef)
+        res =  self._preliminaryResponseChecks(response, MobileChargeError, txRef=txRef)
 
         responseJson = res["json"]
         flwRef = res["flwRef"]
 
-        # Checking if there is auth url
-        if responseJson["data"].get("authurl", "N/A") == "N/A":
-            authUrl = None
+        # Checking if there is redirect url
+        if responseJson["data"].get("redirect_url", "N/A") == "N/A":
+            redirectUrl = None
         else:
-            authUrl = responseJson["data"]["authurl"]
+            redirectUrl = responseJson["data"]["redirect_url"]
 
         # If all preliminary checks passed
         if not (responseJson["data"].get("chargeResponseCode", None) == "00"):
             # Otherwise we return that further action is required, along with the response
             suggestedAuth = responseJson["data"].get("suggested_auth", None)
-            return {"error": False,  "validationRequired": True, "txRef": txRef, "flwRef": flwRef, "suggestedAuth": suggestedAuth, "authUrl": authUrl}
+            return {"error": False,  "validationRequired": True, "txRef": txRef, "flwRef": flwRef, "suggestedAuth": suggestedAuth, "redirectUrl": redirectUrl}
         else:
-            return {"error": False, "status": responseJson["status"],  "validationRequired": False, "txRef": txRef, "flwRef": flwRef, "suggestedAuth": None, "authUrl": authUrl}
+            return {"error": False, "status": responseJson["status"],  "validationRequired": False, "txRef": txRef, "flwRef": flwRef, "suggestedAuth": None, "redirectUrl": redirectUrl}
     
     # Charge mobile money function
     def charge(self, accountDetails, hasFailed=False):
