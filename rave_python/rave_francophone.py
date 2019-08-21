@@ -2,6 +2,7 @@ from rave_python.rave_exceptions import RaveError, IncompletePaymentDetailsError
 from rave_python.rave_payment import Payment
 from rave_python.rave_misc import generateTransactionReference
 import json
+import webbrowser
 
 class Francophone(Payment):
     
@@ -52,4 +53,3 @@ class Francophone(Payment):
         # Checking for required account components
         requiredParameters = ["amount", "email", "phonenumber", "IP", "redirect_url"]
         return super(Francophone, self).charge(accountDetails, requiredParameters, endpoint)
-

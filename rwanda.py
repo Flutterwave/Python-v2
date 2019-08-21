@@ -1,5 +1,5 @@
 from rave_python import Rave, RaveExceptions, Misc
-rave = Rave("FLWPUBK_TEST-*********************-X", "FLWSECK_TEST-**************************-X", usingEnv = False)
+rave = Rave("FLWPUBK_TEST-*********************-X", "FLWSECK_TEST-**************************-X", production = True, usingEnv = False)
 
 # mobile payload
 payload = {

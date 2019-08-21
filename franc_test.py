@@ -1,6 +1,6 @@
 from rave_python import Rave, RaveExceptions, Misc
 
-rave = Rave("FLWPUBK_TEST-*********************-X", "FLWSECK_TEST-**************************-X", production=False, usingEnv = False)
+rave = Rave("FLWPUBK_TEST-*********************-X", "FLWSECK_TEST-**************************-X", usingEnv = False)
 
 payload = {
   "amount": "50",
