@@ -1,11 +1,12 @@
 from rave_python import Rave, RaveExceptions, Misc
 
-rave = Rave("FLWPUBK-8bf84c62ed00abccc4ce37e12638ad63-X", "FLWSECK-370389724fd2d6573c1a4295ad61814f-X", production=True, usingEnv = False)
+rave = Rave("FLWPUBK_TEST-dc4f2335f2c3a75e9b723d81414fc131-X", "FLWSECK_TEST-ea98d7c9a29c80779060fa435fb8efdb-X", production=False, usingEnv = False)
 
 payload = {
   "amount": "50",
   "email": "vokuduj@webmail24.top",
   "phonenumber": "243546576879",
+  "country": "NG",
   "redirect_url": "https://flutterwaveprodv2.com/flwcinetpay/paymentServlet?reference=FLW844881566221068736",
   "IP":""
 }
@@ -15,11 +16,9 @@ try:
   print (res)
   res = rave.Francophone.verify(res["txRef"])
   print(res)
+  
 
-except RaveExceptions.TransactionChargeError as e:
+except RaveExceptions.MobileChargeError as e:
   print(e.err)
   print(e.err["flwRef"])
-
-except RaveExceptions.TransactionVerificationError as e:
-  print(e.err["errMsg"])
-  print(e.err["txRef"])
+  

@@ -41,9 +41,9 @@ class Rave:
         self.Ussd = Ussd(publicKey, secretKey, production, usingEnv)
         self.GhMobile = GhMobile(publicKey, secretKey, production, usingEnv)
         self.ZBMobile = ZBMobile(publicKey, secretKey, production, usingEnv)
+        self.RWMobile = RWMobile(publicKey, secretKey, production, usingEnv)
         self.UGMobile = UGMobile(publicKey, secretKey, production, usingEnv)
         self.Francophone = Francophone(publicKey, secretKey, production, usingEnv)
-        self.RWMobile = RWMobile(publicKey, secretKey, production, usingEnv)
         self.Mpesa = Mpesa(publicKey, secretKey, production, usingEnv)
         # Transfer endpoint
         self.Transfer = Transfer(publicKey, secretKey, production, usingEnv)

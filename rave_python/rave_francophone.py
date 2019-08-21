@@ -18,10 +18,10 @@ class Francophone(Payment):
         flwRef = res["flwRef"]
 
         # Checking if there is redirect url
-        if responseJson["data"].get("redirect_url", "N/A") == "N/A":
+        if responseJson["data"]["data"].get("redirect_url", "N/A") == "N/A":
             redirectUrl = None
         else:
-            redirectUrl = responseJson["data"]["redirect_url"]
+            redirectUrl = responseJson["data"]["data"]["redirect_url"]
 
         # If all preliminary checks passed
         if not (responseJson["data"].get("chargeResponseCode", None) == "00"):
