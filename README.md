@@ -1202,6 +1202,175 @@ except RaveExceptions.TransactionVerificationError as e:
 ```
 
 <br>
+## ```rave.SubAccount```
+
+This is used to initiate and manage payouts
+
+
+**Functions included:**
+
+* ```.createSubaccount```
+
+* ```.allSubaccounts```
+
+* ```.fetchSubaccounts```
+
+
+<br>
+
+### ```.createSubaccount(accountDetails)```
+
+This allows you to create a subaccount plan. It requires a dict ```accountDetails``` containing ```account_bank```, ```account_number```, ```business_name```, ```business_email```, ```business_contact```, ```business_contact_mobile```, ```business_mobile```.
+ 
+>account_bank: This is the sub-accounts bank ISO code, use the [List of Banks for Transfer](https://developer.flutterwave.com/reference#list-of-banks-for-transfer) endpoint to retrieve a list of bank codes.
+
+>account_number: This is the customer's account number
+
+>business_name: This is the sub-account business name.
+
+>business_email: This is the sub-account business email.
+
+>business_contact: This is the contact person for the sub-account e.g. Richard Hendrix
+
+>business_contact_mobile: Business contact number.
+
+>business_mobile: Primary business contact number.
+
+>split_type: This can be set as   ```percentage``` or ```flat``` when set as percentage it means you want to take a percentage fee on all transactions, and vice versa for flat this means you want to take a flat fee on every transaction.
+
+>split_value: This can be a ```percentage``` value or ```flat``` value depending on what was set on ```split_type```
+
+More information can be found [here](https://developer.flutterwave.com/v2.0/reference#create-subaccount)
+
+
+A sample createsubAccount call is:
+
+``` 
+ res = rave.SubAccount.createSubaccount({
+	"account_bank": "044",
+	"account_number": "0690000031",
+	"business_name": "Jake Stores",
+	"business_email": "kwakj@services.com",
+	"business_contact": "Amy Parkers",
+	"business_contact_mobile": "09083772",
+	"business_mobile": "0188883882",
+    "split_type": "flat",
+    "split_value": 3000
+	"meta": [{"metaname": "MarketplaceID", "metavalue": "ggs-920900"}]
+})
+```
+
+#### Returns
+
+This call returns a dictionary. A sample response is:
+
+ ```
+ {'error': False, 'id': 114, 'data': {'id': 114, 'account_number': '0690000032', 'account_bank': '044', 'business_name': 'Jake Stores', 'fullname': 'Pastor Bright', 'date_created': '2018-10-09T10:43:02.000Z', 'meta': [{'metaname': 'MarketplaceID', 'metavalue': 'ggs-920900'}], 'split_ratio': 1, 'split_type': 'flat', 'split_value': 3000, 'subaccount_id': 'RS_8279B1518A139DD3238328747F322418', 'bank_name': 'ACCESS BANK NIGERIA'}}
+ ```
+
+ This call raises an ```.SubaccountCreationError``` if there was a problem processing your transaction. The ```.SubaccountCreationError``` contains some information about your transaction. You can handle this as such:
+
+```
+try: 
+    #Your charge call
+except RaveExceptions..SubaccountCreationError as e:
+    print(e.err["errMsg"])
+    print(e.err["flwRef"])
+```
+
+### ```.allSubaccounts()```
+
+This allows you retrieve all subaccounts 
+
+A sample allSubaccounts call is:
+
+``` 
+res2 = rave.SubAccount.allSubaccounts()
+```
+
+#### Returns
+
+This call returns a dictionary. A sample response is:
+
+ ```
+ {'error': False, 'returnedData': {'status': 'success', 'message': 'SUBACCOUNTS', 'data': {'page_info': {'total': 3, 'current_page': 1, 'total_pages': 1}, 'subaccounts': [{'id': 114, 'account_number': '0690000032', 'account_bank': '044', 'business_name': 'Jake Stores', 'fullname': 'Pastor Bright', 'date_created': '2018-10-09T10:43:02.000Z', 'meta': [{'metaname': 'MarketplaceID', 'metavalue': 'ggs-920900'}], 'split_ratio': 1, 'split_type': 'flat', 'split_value': 3000, 'subaccount_id': 'RS_8279B1518A139DD3238328747F322418', 'bank_name': 'ACCESS BANK NIGERIA'}, {'id': 107, 'account_number': '0690000031', 'account_bank': '044', 'business_name': 'Jake Stores', 'fullname': 'Forrest Green', 'date_created': '2018-10-05T18:30:09.000Z', 'meta': [{'metaname': 'MarketplaceID', 'metavalue': 'ggs-920900'}], 'split_ratio': 1, 'split_type': 'flat', 'split_value': 100, 'subaccount_id': 'RS_41FFE616A1FA7EA56C85E57F593056F7', 'bank_name': 'ACCESS BANK NIGERIA'}]}}}
+
+ ```
+
+ This call raises an ```PlanStatusError``` if there was a problem processing your transaction. The ```PlanStatusError``` contains some information about your transaction. You can handle this as such:
+
+```
+try: 
+    #Your charge call
+except RaveExceptions.PlanStatusError as e:
+    print(e.err["errMsg"])
+    print(e.err["flwRef"])
+```
+
+### ```.fetchSubaccount(subaccount_id)```
+
+This allows you fetch a subaccount. You may or may not pass in a ```subaccount_id```. If you do not pass in a ```subaccount_id``` all subacocunts will be returned.
+
+>subaccount_id: This is the payment plan ID. It can be gotten from the response returned from creating a plan or from the Rave Dashboard
+
+
+A sample fetchSubaccount call is:
+
+``` 
+res2 = rave.SubAccount.fetchSubaccount(900)
+```
+
+#### Returns
+
+This call returns a dictionary. A sample response is:
+
+ ```
+ {'error': False, 'returnedData': {'status': 'success', 'message': 'SUBACCOUNT', 'data': {'id': 106, 'account_number': '0690000035', 'account_bank': '044', 'business_name': 'JK Services', 'fullname': 'Peter Crouch', 'date_created': '2018-10-05T18:24:21.000Z', 'meta': [{'metaname': 'MarketplaceID', 'metavalue': 'ggs-920900'}], 'split_ratio': 1, 'split_type': 'flat', 'split_value': 100, 'subaccount_id': 'RS_0A6C260E1A70934DE6EF2F8CEE46BBB3', 'bank_name': 'ACCESS BANK NIGERIA'}}}
+ ```
+
+ This call raises an ```PlanStatusError``` if there was a problem processing your transaction. The ```PlanStatusError``` contains some information about your transaction. You can handle this as such:
+
+```
+try: 
+    #Your charge call
+except RaveExceptions.PlanStatusError as e:
+    print(e.err["errMsg"])
+    print(e.err["flwRef"])
+```
+
+### Complete SubAccount flow
+
+```
+from rave_python import Rave, Misc, RaveExceptions
+rave = Rave("YOUR_PUBLIC_KEY", "YOUR_PRIVATE_KEY", usingEnv = False)
+try:
+   
+    res = rave.SubAccount.createSubaccount({
+	"account_bank": "044",
+	"account_number": "0690000032",
+	"business_name": "Jake Stores",
+	"business_email": "jdhhd@services.com",
+	"business_contact": "Amy Parkers",
+	"business_contact_mobile": "09083772",
+	"business_mobile": "0188883882",
+    "split_type": "flat",
+    "split_value": 3000,
+	"meta": [{"metaname": "MarketplaceID", "metavalue": "ggs-920900"}]
+    })
+    res = rave.SubAccount.fetchSubaccount('RS_0A6C260E1A70934DE6EF2F8CEE46BBB3')
+    print(res)
+
+except RaveExceptions.IncompletePaymentDetailsError as e:
+    print(e)
+
+except RaveExceptions.PlanStatusError as e:
+    print(e.err)
+
+except RaveExceptions.ServerError as e:
+    print(e.err)
+
+```
+<br>
 
 ## ```rave.Transfer```
 
@@ -1462,7 +1631,152 @@ except RaveExceptions.ServerError as e:
 
 
 ```
+<br>
 
+## ```rave.Subscriptions```
+
+This is used to initiate and manage payouts
+
+
+**Functions included:**
+
+* ```.allSubscriptions```
+
+* ```.fetchSubscription```
+
+* ```.cancelSubscription```
+
+* ```.activateSubscription```
+
+
+### ```.allSubscriptions()```
+
+This allows you retrieve all subscriptions 
+
+A sample allSubaccounts call is:
+
+``` 
+res2 = rave.Subscriptions.allSubscriptions()
+```
+
+#### Returns
+
+This call returns a dictionary. A sample response is:
+
+ ```
+ {'error': False, 'returnedData': {'status': 'success', 'message': 'SUBSCRIPTIONS-FETCHED', 'data': {'page_info': {'total': 0, 'current_page': 0, 'total_pages': 0}, 'plansubscriptions': []}}}
+ ```
+
+ This call raises an ```PlanStatusError``` if there was a problem processing your transaction. The ```PlanStatusError``` contains some information about your transaction. You can handle this as such:
+
+```
+try: 
+    #Your charge call
+except RaveExceptions.PlanStatusError as e:
+    print(e.err["errMsg"])
+    print(e.err["flwRef"])
+```
+
+### ```.fetchSubscription(subscription_id, subscription_email)```
+
+This allows you fetch a subscription. You may or may not pass in a ```subscription_id``` or ```subscription_email```. If you do not pass in a ```subscription_id``` or ```subscription_email``` all subscriptions will be returned.
+
+>subscription_id: This is the subscription ID.
+
+>subscription_email: This is the subscription email.
+
+
+A sample fetchSubaccount call is:
+
+``` 
+res2 = rave.Subscriptions.fetchSubscription(900)
+```
+
+#### Returns
+
+This call returns a dictionary. A sample response is:
+
+ ```
+ {'error': False, 'returnedData': {'status': 'success', 'message': 'SUBSCRIPTIONS-FETCHED', 'data': {'page_info': {'total': 0, 'current_page': 0, 'total_pages': 0}, 'plansubscriptions': []}}}
+ ```
+
+ This call raises an ```PlanStatusError``` if there was a problem processing your transaction. The ```PlanStatusError``` contains some information about your transaction. You can handle this as such:
+
+```
+try: 
+    #Your charge call
+except RaveExceptions.PlanStatusError as e:
+    print(e.err["errMsg"])
+    print(e.err["flwRef"])
+```
+
+### ```.cancelSubscription(subscription_id)```
+
+This allows you cancel a subscription.
+
+>subscription_id: This is the subscription ID. It can be gotten from the Rave Dashboard
+
+
+A sample cancelSubscription call is:
+
+``` 
+res2 = rave.Subscriptions.cancelSubscription(900)
+```
+
+ This call raises an ```PlanStatusError``` if there was a problem processing your transaction. The ```PlanStatusError``` contains some information about your transaction. You can handle this as such:
+
+```
+try: 
+    #Your charge call
+except RaveExceptions.PlanStatusError as e:
+    print(e.err["errMsg"])
+    print(e.err["flwRef"])
+```
+
+
+### ```.activateSubscription(subscription_id)```
+
+This allows you activate a subscription.
+
+>subscription_id: This is the subscription ID. It can be gotten from the Rave Dashboard
+
+
+A sample activateSubscription call is:
+
+``` 
+res2 = rave.Subscriptions.activateSubscription(900)
+```
+
+ This call raises an ```PlanStatusError``` if there was a problem processing your transaction. The ```PlanStatusError``` contains some information about your transaction. You can handle this as such:
+
+```
+try: 
+    #Your charge call
+except RaveExceptions.PlanStatusError as e:
+    print(e.err["errMsg"])
+    print(e.err["flwRef"])
+```
+
+### Complete Subscriptions flow
+
+```
+from rave_python import Rave, Misc, RaveExceptions
+rave = Rave("YOUR_PUBLIC_KEY", "YOUR_PRIVATE_KEY", usingEnv = False)
+try:
+   
+    res = rave.Subscriptions.allSubscriptions()
+    res = rave.Subscriptions.fetchSubscription(880)
+    res = rave.Subscriptions.cancelSubscription(880)
+    print(res)
+
+except RaveExceptions.PlanStatusError as e:
+    print(e.err)
+
+except RaveExceptions.ServerError as e:
+    print(e.err)
+
+```
+<br>
 ## ```rave.PaymentPlan```
 
 This is used to initiate and manage payouts
@@ -1703,321 +2017,7 @@ except RaveExceptions.TransferFetchError as e:
 except RaveExceptions.ServerError as e:
     print(e.err)
 ```
-
 <br>
-
-## ```rave.SubAccount```
-
-This is used to initiate and manage payouts
-
-
-**Functions included:**
-
-* ```.createSubaccount```
-
-* ```.allSubaccounts```
-
-* ```.fetchSubaccounts```
-
-
-<br>
-
-### ```.createSubaccount(accountDetails)```
-
-This allows you to create a subaccount plan. It requires a dict ```accountDetails``` containing ```account_bank```, ```account_number```, ```business_name```, ```business_email```, ```business_contact```, ```business_contact_mobile```, ```business_mobile```.
- 
->account_bank: This is the sub-accounts bank ISO code, use the [List of Banks for Transfer](https://developer.flutterwave.com/reference#list-of-banks-for-transfer) endpoint to retrieve a list of bank codes.
-
->account_number: This is the customer's account number
-
->business_name: This is the sub-account business name.
-
->business_email: This is the sub-account business email.
-
->business_contact: This is the contact person for the sub-account e.g. Richard Hendrix
-
->business_contact_mobile: Business contact number.
-
->business_mobile: Primary business contact number.
-
->split_type: This can be set as   ```percentage``` or ```flat``` when set as percentage it means you want to take a percentage fee on all transactions, and vice versa for flat this means you want to take a flat fee on every transaction.
-
->split_value: This can be a ```percentage``` value or ```flat``` value depending on what was set on ```split_type```
-
-More information can be found [here](https://developer.flutterwave.com/v2.0/reference#create-subaccount)
-
-
-A sample createsubAccount call is:
-
-``` 
- res = rave.SubAccount.createSubaccount({
-	"account_bank": "044",
-	"account_number": "0690000031",
-	"business_name": "Jake Stores",
-	"business_email": "kwakj@services.com",
-	"business_contact": "Amy Parkers",
-	"business_contact_mobile": "09083772",
-	"business_mobile": "0188883882",
-    "split_type": "flat",
-    "split_value": 3000
-	"meta": [{"metaname": "MarketplaceID", "metavalue": "ggs-920900"}]
-})
-```
-
-#### Returns
-
-This call returns a dictionary. A sample response is:
-
- ```
- {'error': False, 'id': 114, 'data': {'id': 114, 'account_number': '0690000032', 'account_bank': '044', 'business_name': 'Jake Stores', 'fullname': 'Pastor Bright', 'date_created': '2018-10-09T10:43:02.000Z', 'meta': [{'metaname': 'MarketplaceID', 'metavalue': 'ggs-920900'}], 'split_ratio': 1, 'split_type': 'flat', 'split_value': 3000, 'subaccount_id': 'RS_8279B1518A139DD3238328747F322418', 'bank_name': 'ACCESS BANK NIGERIA'}}
- ```
-
- This call raises an ```.SubaccountCreationError``` if there was a problem processing your transaction. The ```.SubaccountCreationError``` contains some information about your transaction. You can handle this as such:
-
-```
-try: 
-    #Your charge call
-except RaveExceptions..SubaccountCreationError as e:
-    print(e.err["errMsg"])
-    print(e.err["flwRef"])
-```
-
-### ```.allSubaccounts()```
-
-This allows you retrieve all subaccounts 
-
-A sample allSubaccounts call is:
-
-``` 
-res2 = rave.SubAccount.allSubaccounts()
-```
-
-#### Returns
-
-This call returns a dictionary. A sample response is:
-
- ```
- {'error': False, 'returnedData': {'status': 'success', 'message': 'SUBACCOUNTS', 'data': {'page_info': {'total': 3, 'current_page': 1, 'total_pages': 1}, 'subaccounts': [{'id': 114, 'account_number': '0690000032', 'account_bank': '044', 'business_name': 'Jake Stores', 'fullname': 'Pastor Bright', 'date_created': '2018-10-09T10:43:02.000Z', 'meta': [{'metaname': 'MarketplaceID', 'metavalue': 'ggs-920900'}], 'split_ratio': 1, 'split_type': 'flat', 'split_value': 3000, 'subaccount_id': 'RS_8279B1518A139DD3238328747F322418', 'bank_name': 'ACCESS BANK NIGERIA'}, {'id': 107, 'account_number': '0690000031', 'account_bank': '044', 'business_name': 'Jake Stores', 'fullname': 'Forrest Green', 'date_created': '2018-10-05T18:30:09.000Z', 'meta': [{'metaname': 'MarketplaceID', 'metavalue': 'ggs-920900'}], 'split_ratio': 1, 'split_type': 'flat', 'split_value': 100, 'subaccount_id': 'RS_41FFE616A1FA7EA56C85E57F593056F7', 'bank_name': 'ACCESS BANK NIGERIA'}]}}}
-
- ```
-
- This call raises an ```PlanStatusError``` if there was a problem processing your transaction. The ```PlanStatusError``` contains some information about your transaction. You can handle this as such:
-
-```
-try: 
-    #Your charge call
-except RaveExceptions.PlanStatusError as e:
-    print(e.err["errMsg"])
-    print(e.err["flwRef"])
-```
-
-### ```.fetchSubaccount(subaccount_id)```
-
-This allows you fetch a subaccount. You may or may not pass in a ```subaccount_id```. If you do not pass in a ```subaccount_id``` all subacocunts will be returned.
-
->subaccount_id: This is the payment plan ID. It can be gotten from the response returned from creating a plan or from the Rave Dashboard
-
-
-A sample fetchSubaccount call is:
-
-``` 
-res2 = rave.SubAccount.fetchSubaccount(900)
-```
-
-#### Returns
-
-This call returns a dictionary. A sample response is:
-
- ```
- {'error': False, 'returnedData': {'status': 'success', 'message': 'SUBACCOUNT', 'data': {'id': 106, 'account_number': '0690000035', 'account_bank': '044', 'business_name': 'JK Services', 'fullname': 'Peter Crouch', 'date_created': '2018-10-05T18:24:21.000Z', 'meta': [{'metaname': 'MarketplaceID', 'metavalue': 'ggs-920900'}], 'split_ratio': 1, 'split_type': 'flat', 'split_value': 100, 'subaccount_id': 'RS_0A6C260E1A70934DE6EF2F8CEE46BBB3', 'bank_name': 'ACCESS BANK NIGERIA'}}}
- ```
-
- This call raises an ```PlanStatusError``` if there was a problem processing your transaction. The ```PlanStatusError``` contains some information about your transaction. You can handle this as such:
-
-```
-try: 
-    #Your charge call
-except RaveExceptions.PlanStatusError as e:
-    print(e.err["errMsg"])
-    print(e.err["flwRef"])
-```
-
-### Complete SubAccount flow
-
-```
-from rave_python import Rave, Misc, RaveExceptions
-rave = Rave("YOUR_PUBLIC_KEY", "YOUR_PRIVATE_KEY", usingEnv = False)
-try:
-   
-    res = rave.SubAccount.createSubaccount({
-	"account_bank": "044",
-	"account_number": "0690000032",
-	"business_name": "Jake Stores",
-	"business_email": "jdhhd@services.com",
-	"business_contact": "Amy Parkers",
-	"business_contact_mobile": "09083772",
-	"business_mobile": "0188883882",
-    "split_type": "flat",
-    "split_value": 3000,
-	"meta": [{"metaname": "MarketplaceID", "metavalue": "ggs-920900"}]
-    })
-    res = rave.SubAccount.fetchSubaccount('RS_0A6C260E1A70934DE6EF2F8CEE46BBB3')
-    print(res)
-
-except RaveExceptions.IncompletePaymentDetailsError as e:
-    print(e)
-
-except RaveExceptions.PlanStatusError as e:
-    print(e.err)
-
-except RaveExceptions.ServerError as e:
-    print(e.err)
-
-```
-
-## ```rave.Subscriptions```
-
-This is used to initiate and manage payouts
-
-
-**Functions included:**
-
-* ```.allSubscriptions```
-
-* ```.fetchSubscription```
-
-* ```.cancelSubscription```
-
-* ```.activateSubscription```
-
-
-### ```.allSubscriptions()```
-
-This allows you retrieve all subscriptions 
-
-A sample allSubaccounts call is:
-
-``` 
-res2 = rave.Subscriptions.allSubscriptions()
-```
-
-#### Returns
-
-This call returns a dictionary. A sample response is:
-
- ```
- {'error': False, 'returnedData': {'status': 'success', 'message': 'SUBSCRIPTIONS-FETCHED', 'data': {'page_info': {'total': 0, 'current_page': 0, 'total_pages': 0}, 'plansubscriptions': []}}}
- ```
-
- This call raises an ```PlanStatusError``` if there was a problem processing your transaction. The ```PlanStatusError``` contains some information about your transaction. You can handle this as such:
-
-```
-try: 
-    #Your charge call
-except RaveExceptions.PlanStatusError as e:
-    print(e.err["errMsg"])
-    print(e.err["flwRef"])
-```
-
-### ```.fetchSubscription(subscription_id, subscription_email)```
-
-This allows you fetch a subscription. You may or may not pass in a ```subscription_id``` or ```subscription_email```. If you do not pass in a ```subscription_id``` or ```subscription_email``` all subscriptions will be returned.
-
->subscription_id: This is the subscription ID.
-
->subscription_email: This is the subscription email.
-
-
-A sample fetchSubaccount call is:
-
-``` 
-res2 = rave.Subscriptions.fetchSubscription(900)
-```
-
-#### Returns
-
-This call returns a dictionary. A sample response is:
-
- ```
- {'error': False, 'returnedData': {'status': 'success', 'message': 'SUBSCRIPTIONS-FETCHED', 'data': {'page_info': {'total': 0, 'current_page': 0, 'total_pages': 0}, 'plansubscriptions': []}}}
- ```
-
- This call raises an ```PlanStatusError``` if there was a problem processing your transaction. The ```PlanStatusError``` contains some information about your transaction. You can handle this as such:
-
-```
-try: 
-    #Your charge call
-except RaveExceptions.PlanStatusError as e:
-    print(e.err["errMsg"])
-    print(e.err["flwRef"])
-```
-
-### ```.cancelSubscription(subscription_id)```
-
-This allows you cancel a subscription.
-
->subscription_id: This is the subscription ID. It can be gotten from the Rave Dashboard
-
-
-A sample cancelSubscription call is:
-
-``` 
-res2 = rave.Subscriptions.cancelSubscription(900)
-```
-
- This call raises an ```PlanStatusError``` if there was a problem processing your transaction. The ```PlanStatusError``` contains some information about your transaction. You can handle this as such:
-
-```
-try: 
-    #Your charge call
-except RaveExceptions.PlanStatusError as e:
-    print(e.err["errMsg"])
-    print(e.err["flwRef"])
-```
-
-
-### ```.activateSubscription(subscription_id)```
-
-This allows you activate a subscription.
-
->subscription_id: This is the subscription ID. It can be gotten from the Rave Dashboard
-
-
-A sample activateSubscription call is:
-
-``` 
-res2 = rave.Subscriptions.activateSubscription(900)
-```
-
- This call raises an ```PlanStatusError``` if there was a problem processing your transaction. The ```PlanStatusError``` contains some information about your transaction. You can handle this as such:
-
-```
-try: 
-    #Your charge call
-except RaveExceptions.PlanStatusError as e:
-    print(e.err["errMsg"])
-    print(e.err["flwRef"])
-```
-
-### Complete Subscriptions flow
-
-```
-from rave_python import Rave, Misc, RaveExceptions
-rave = Rave("YOUR_PUBLIC_KEY", "YOUR_PRIVATE_KEY", usingEnv = False)
-try:
-   
-    res = rave.Subscriptions.allSubscriptions()
-    res = rave.Subscriptions.fetchSubscription(880)
-    res = rave.Subscriptions.cancelSubscription(880)
-    print(res)
-
-except RaveExceptions.PlanStatusError as e:
-    print(e.err)
-
-except RaveExceptions.ServerError as e:
-    print(e.err)
-
-```
 
 ## ```rave.Ussd```
 
