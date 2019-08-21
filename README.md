@@ -822,7 +822,7 @@ This is used to facilitate Uganda mobile money transactions.
 <br>
 
 ### ```.charge(payload)```
-This is called to start an Ghana mobile money transaction. The payload should be a dictionary containing account information. It should have the parameters:
+This is called to start a Ugandan mobile money transaction. The payload should be a dictionary containing account information. It should have the parameters:
 
 * ```amount```,
 
@@ -914,7 +914,7 @@ except RaveExceptions.TransactionVerificationError as e:
 <br><br>
 
 ## ```rave.ZBMobile```
-This is used to facilitate Ghana mobile money transactions.
+This is used to facilitate Zambian mobile money transactions.
 
 **Functions included:**
 
@@ -975,7 +975,7 @@ You can call this to check if your transaction was completed successfully. You h
 
 A sample verify call is:
 
-``` res = rave.UGMobile.verify(data["txRef"]) ```
+``` res = rave.ZBMobile.verify(data["txRef"]) ```
 
 #### Returns
 
