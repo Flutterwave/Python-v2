@@ -9,6 +9,7 @@ This is a Python wrapper around the [API](https://flutterwavedevelopers.readme.i
 * Mpesa Payments
 * Uganda Mobile Money Payments
 * Zambia Mobile Money Payments
+* Mobile Money Payments for Francophone countries
 * Subaccounts
 * Transfer
 * Subscription (Recurring Payments)
@@ -46,175 +47,6 @@ To initialize in production, simply set the ```production``` flag to ```True```.
 # Rave Objects
 This is the documentation for all of the components of rave_python
 
-
-## ```rave.Account```
-This is used to facilitate account transactions.
-
-**Functions included:**
-
-* ```.charge```
-
-* ```.validate```
-
-* ```.verify```
-
-<br>
-
-### ```.charge(payload)```
-This is called to start an account transaction. The payload should be a dictionary containing card information. It should have the parameters:
-
-* ```accountbank```, 
-
-* ```accountnumber```, 
-
-* ```amount```, 
-
-* ```email```, 
-
-* ```phonenumber```, 
-
-* ```IP```
-
-Optionally, you can add a custom transaction reference using the ```txRef``` parameter. Note that if you do not specify one, it would be automatically generated. We do provide a function for generating transaction references in the Misc library (add link).
-
-
-A sample call is:
-
-``` res = rave.Account.charge(payload) ```
-
-#### Returns
-
-This call returns a dictionary. A sample response is:
-
- ```{'error': False, 'validationRequired': True, 'txRef': 'MC-1530899106006', 'flwRef': 'ACHG-1530899109682', 'authUrl': None} ```
-
- This call raises an ```AccountChargeError``` if there was a problem processing your transaction. The ```AccountChargeError``` contains some information about your transaction. You can handle this as such:
-
-```
-try: 
-    #Your charge call
-except RaveExceptions.AccountChargeError as e:
-    print(e.err["errMsg"])
-    print(e.err["flwRef"])
-```
-
-A sample ``` e.err ``` contains:
-
-```{'error': True, 'txRef': 'MC-1530897824739', 'flwRef': None, 'errMsg': 'Sorry, that account number is invalid, please check and try again'}```
-
-<br>
-
-### ```.validate(txRef)```
-
-After a successful charge, most times you will be asked to verify with OTP. To check if this is required, check the ```validationRequired``` key in the ```res``` of the charge call.
-
-In the case that an ```authUrl``` is returned from your charge call, you may skip the validation step and simply pass your authUrl to the end-user. 
-
-```authUrl = res['authUrl'] ```
-
-To validate, you need to pass the ```flwRef``` from the ```res``` of the charge call as well as the OTP.
-
-A sample validate call is: 
-
-```res2 = rave.Account.validate(res["flwRef"], "12345")```
-
-
-#### Returns
-
-This call returns a dictionary containing the ```txRef```, ```flwRef``` among others if successful.
-
-This call raises a ```TransactionValidationError``` if the OTP is not correct or there was a problem processing your request. 
-
-To handle this, write:
-
-```
-try:
-    # Your charge call
-except RaveExceptions.TransactionValidationError as e:
-    print(e.err["errMsg"])
-    print(e.err["flwRef"])
-```
-
-A sample ``` e.err ``` contains:
-
-```{'error': True, 'txRef': 'MC-1530899869968', 'flwRef': 'ACHG-1530899873118', 'errMsg': 'Pending OTP validation'}```
-
-
-
-<br>
-
-### ```.verify(txRef)```
-
-You can call this to check if your transaction was completed successfully. You have to pass the transaction reference generated at the point of charging. This is the ```txRef``` in the ```res``` parameter returned any of the calls (```charge``` or ```validate```). 
-
-A sample verify call is:
-
-``` res = rave.Account.verify(data["txRef"]) ```
-
-#### Returns
-
-This call returns a dict with ```txRef```, ```flwRef``` and ```transactionComplete``` which indicates whether the transaction was completed successfully. 
-
-Sample
-
-```{'status': u'success', 'vbvcode': u'N/A', 'chargedamount': 500, 'vbvmessage': u'N/A', 'error': False, 'flwRef': u'ACHG-1538093023787', 'currency': u'NGN', 'amount': 500, 'transactionComplete': True, 'acctmessage': u'Approved Or Completed Successfully', 'chargecode': u'00', 'txRef': u'MC-1538093008498'}```
-
-If your call could not be completed successfully or if a wrong ```txRef``` is passed, a ```TransactionVerificationError``` is raised. You can handle that as such
-```
-try: 
-    #Your charge call
-except RaveExceptions.TransactionVerificationError as e:
-    print(e.err["errMsg"])
-    print(e.err["flwRef"])
-```
-
-
-
-<br>
-
-### Complete account flow
-
-```
-from rave_python import Rave, RaveExceptions, Misc
-rave = Rave("ENTER_YOUR_PUBLIC_KEY", "ENTER_YOUR_SECRET_KEY", usingEnv = False)
-# account payload
-payload = {
-  "accountbank": "044",  # get the bank code from the bank list endpoint.
-  "accountnumber": "0690000031",
-  "currency": "NGN",
-  "country": "NG",
-  "amount": "100",
-  "email": "test@test.com",
-  "phonenumber": "0902620185",
-  "IP": "355426087298442",
-}
-
-try:
-    res = rave.Account.charge(payload)
-    if res["authUrl"]:
-        print(res["authUrl"])
-
-    elif res["validationRequired"]:
-        rave.Account.validate(res["flwRef"], "12345")
-
-    res = rave.Account.verify(res["txRef"])
-    print(res)
-
-except RaveExceptions.AccountChargeError as e:
-    print(e.err)
-    print(e.err["flwRef"])
-
-except RaveExceptions.TransactionValidationError as e:
-    print(e.err)
-    print(e.err["flwRef"])
-
-except RaveExceptions.TransactionVerificationError as e:
-    print(e.err["errMsg"])
-    print(e.err["txRef"])
-
-
-```
-<br><br>
 ## ```rave.Card```
 This is used to facilitate card transactions.
 
@@ -488,24 +320,28 @@ except RaveExceptions.TransactionVerificationError as e:
     print(e.err["txRef"])
 
 ```
-
 <br><br>
-## ```rave.Mpesa```
-This is used to facilitate Mpesa transactions.
+## ```rave.Account```
+This is used to facilitate account transactions.
 
 **Functions included:**
 
 * ```.charge```
 
+* ```.validate```
 
 * ```.verify```
 
 <br>
 
 ### ```.charge(payload)```
-This is called to start an Mpesa transaction. The payload should be a dictionary containing account information. It should have the parameters:
+This is called to start an account transaction. The payload should be a dictionary containing card information. It should have the parameters:
 
-* ```account```, 
+* ```accountbank```, 
+
+* ```accountnumber```, 
+
+* ```amount```, 
 
 * ```email```, 
 
@@ -518,28 +354,65 @@ Optionally, you can add a custom transaction reference using the ```txRef``` par
 
 A sample call is:
 
-``` res = rave.Mpesa.charge(payload) ```
+``` res = rave.Account.charge(payload) ```
 
 #### Returns
 
 This call returns a dictionary. A sample response is:
 
- ```{'error': False, 'validationRequired': True, 'txRef': 'MC-1530910216380', 'flwRef': 'N/A'} ```
+ ```{'error': False, 'validationRequired': True, 'txRef': 'MC-1530899106006', 'flwRef': 'ACHG-1530899109682', 'authUrl': None} ```
 
- This call raises an ```TransactionChargeError``` if there was a problem processing your transaction. The ```TransactionChargeError``` contains some information about your transaction. You can handle this as such:
+ This call raises an ```AccountChargeError``` if there was a problem processing your transaction. The ```AccountChargeError``` contains some information about your transaction. You can handle this as such:
 
 ```
 try: 
     #Your charge call
-except RaveExceptions.TransactionChargeError as e:
+except RaveExceptions.AccountChargeError as e:
     print(e.err["errMsg"])
     print(e.err["flwRef"])
-
 ```
 
 A sample ``` e.err ``` contains:
 
-```{'error': True, 'txRef': 'MC-1530910109929', 'flwRef': None, 'errMsg': 'email is required'}```
+```{'error': True, 'txRef': 'MC-1530897824739', 'flwRef': None, 'errMsg': 'Sorry, that account number is invalid, please check and try again'}```
+
+<br>
+
+### ```.validate(txRef)```
+
+After a successful charge, most times you will be asked to verify with OTP. To check if this is required, check the ```validationRequired``` key in the ```res``` of the charge call.
+
+In the case that an ```authUrl``` is returned from your charge call, you may skip the validation step and simply pass your authUrl to the end-user. 
+
+```authUrl = res['authUrl'] ```
+
+To validate, you need to pass the ```flwRef``` from the ```res``` of the charge call as well as the OTP.
+
+A sample validate call is: 
+
+```res2 = rave.Account.validate(res["flwRef"], "12345")```
+
+
+#### Returns
+
+This call returns a dictionary containing the ```txRef```, ```flwRef``` among others if successful.
+
+This call raises a ```TransactionValidationError``` if the OTP is not correct or there was a problem processing your request. 
+
+To handle this, write:
+
+```
+try:
+    # Your charge call
+except RaveExceptions.TransactionValidationError as e:
+    print(e.err["errMsg"])
+    print(e.err["flwRef"])
+```
+
+A sample ``` e.err ``` contains:
+
+```{'error': True, 'txRef': 'MC-1530899869968', 'flwRef': 'ACHG-1530899873118', 'errMsg': 'Pending OTP validation'}```
+
 
 
 <br>
@@ -550,38 +423,63 @@ You can call this to check if your transaction was completed successfully. You h
 
 A sample verify call is:
 
-``` res = rave.Mpesa.verify(data["txRef"]) ```
+``` res = rave.Account.verify(data["txRef"]) ```
 
 #### Returns
 
 This call returns a dict with ```txRef```, ```flwRef``` and ```transactionComplete``` which indicates whether the transaction was completed successfully. 
 
-If your call could not be completed successfully, a ```TransactionVerificationError``` is raised.
+Sample
+
+```{'status': u'success', 'vbvcode': u'N/A', 'chargedamount': 500, 'vbvmessage': u'N/A', 'error': False, 'flwRef': u'ACHG-1538093023787', 'currency': u'NGN', 'amount': 500, 'transactionComplete': True, 'acctmessage': u'Approved Or Completed Successfully', 'chargecode': u'00', 'txRef': u'MC-1538093008498'}```
+
+If your call could not be completed successfully or if a wrong ```txRef``` is passed, a ```TransactionVerificationError``` is raised. You can handle that as such
+```
+try: 
+    #Your charge call
+except RaveExceptions.TransactionVerificationError as e:
+    print(e.err["errMsg"])
+    print(e.err["flwRef"])
+```
+
+
 
 <br>
 
-### Complete Mpesa charge flow
+### Complete account flow
 
 ```
 from rave_python import Rave, RaveExceptions, Misc
-rave = Rave("ENTIRE_YOUR_PUBLIC_KEY", "ENTIRE_YOUR_SECRET_KEY", usingEnv = False)
-
-# mobile payload
+rave = Rave("ENTER_YOUR_PUBLIC_KEY", "ENTER_YOUR_SECRET_KEY", usingEnv = False)
+# account payload
 payload = {
-    "amount": "100",
-    "phonenumber": "0926420185",
-    "email": "user@exampe.com",
-    "IP": "40.14.290",
-    "narration": "funds payment",
+  "accountbank": "044",  # get the bank code from the bank list endpoint.
+  "accountnumber": "0690000031",
+  "currency": "NGN",
+  "country": "NG",
+  "amount": "100",
+  "email": "test@test.com",
+  "phonenumber": "0902620185",
+  "IP": "355426087298442",
 }
 
 try:
-    res = rave.Mpesa.charge(payload)
-    res = rave.Mpesa.verify(res["txRef"])
+    res = rave.Account.charge(payload)
+    if res["authUrl"]:
+        print(res["authUrl"])
+
+    elif res["validationRequired"]:
+        rave.Account.validate(res["flwRef"], "12345")
+
+    res = rave.Account.verify(res["txRef"])
     print(res)
 
-except RaveExceptions.TransactionChargeError as e:
-    print(e.err["errMsg"])
+except RaveExceptions.AccountChargeError as e:
+    print(e.err)
+    print(e.err["flwRef"])
+
+except RaveExceptions.TransactionValidationError as e:
+    print(e.err)
     print(e.err["flwRef"])
 
 except RaveExceptions.TransactionVerificationError as e:
@@ -590,11 +488,10 @@ except RaveExceptions.TransactionVerificationError as e:
 
 
 ```
-
 <br><br>
 
 ## ```rave.GhMobile```
-This is used to facilitate Ghana mobile money transactions.
+This is used to facilitate Ghanaian mobile money transactions.
 
 **Functions included:**
 
@@ -698,8 +595,108 @@ except RaveExceptions.TransactionVerificationError as e:
 
 
 ```
+<br><br>
+
+## ```rave.Mpesa```
+This is used to facilitate Mpesa transactions.
+
+**Functions included:**
+
+* ```.charge```
 
 
+* ```.verify```
+
+<br>
+
+### ```.charge(payload)```
+This is called to start an Mpesa transaction. The payload should be a dictionary containing account information. It should have the parameters:
+
+* ```account```, 
+
+* ```email```, 
+
+* ```phonenumber```, 
+
+* ```IP```
+
+Optionally, you can add a custom transaction reference using the ```txRef``` parameter. Note that if you do not specify one, it would be automatically generated. We do provide a function for generating transaction references in the Misc library (add link).
+
+
+A sample call is:
+
+``` res = rave.Mpesa.charge(payload) ```
+
+#### Returns
+
+This call returns a dictionary. A sample response is:
+
+ ```{'error': False, 'validationRequired': True, 'txRef': 'MC-1530910216380', 'flwRef': 'N/A'} ```
+
+ This call raises an ```TransactionChargeError``` if there was a problem processing your transaction. The ```TransactionChargeError``` contains some information about your transaction. You can handle this as such:
+
+```
+try: 
+    #Your charge call
+except RaveExceptions.TransactionChargeError as e:
+    print(e.err["errMsg"])
+    print(e.err["flwRef"])
+
+```
+
+A sample ``` e.err ``` contains:
+
+```{'error': True, 'txRef': 'MC-1530910109929', 'flwRef': None, 'errMsg': 'email is required'}```
+
+
+<br>
+
+### ```.verify(txRef)```
+
+You can call this to check if your transaction was completed successfully. You have to pass the transaction reference generated at the point of charging. This is the ```txRef``` in the ```res``` parameter returned any of the calls (```charge``` or ```validate```). 
+
+A sample verify call is:
+
+``` res = rave.Mpesa.verify(data["txRef"]) ```
+
+#### Returns
+
+This call returns a dict with ```txRef```, ```flwRef``` and ```transactionComplete``` which indicates whether the transaction was completed successfully. 
+
+If your call could not be completed successfully, a ```TransactionVerificationError``` is raised.
+
+<br>
+
+### Complete Mpesa charge flow
+
+```
+from rave_python import Rave, RaveExceptions, Misc
+rave = Rave("ENTIRE_YOUR_PUBLIC_KEY", "ENTIRE_YOUR_SECRET_KEY", usingEnv = False)
+
+# mobile payload
+payload = {
+    "amount": "100",
+    "phonenumber": "0926420185",
+    "email": "user@exampe.com",
+    "IP": "40.14.290",
+    "narration": "funds payment",
+}
+
+try:
+    res = rave.Mpesa.charge(payload)
+    res = rave.Mpesa.verify(res["txRef"])
+    print(res)
+
+except RaveExceptions.TransactionChargeError as e:
+    print(e.err["errMsg"])
+    print(e.err["flwRef"])
+
+except RaveExceptions.TransactionVerificationError as e:
+    print(e.err["errMsg"])
+    print(e.err["txRef"])
+
+
+```
 <br><br>
 
 ## ```rave.UGMobile```
@@ -715,7 +712,7 @@ This is used to facilitate Uganda mobile money transactions.
 <br>
 
 ### ```.charge(payload)```
-This is called to start an Ghana mobile money transaction. The payload should be a dictionary containing account information. It should have the parameters:
+This is called to start a Ugandan mobile money transaction. The payload should be a dictionary containing account information. It should have the parameters:
 
 * ```amount```,
 
@@ -807,7 +804,7 @@ except RaveExceptions.TransactionVerificationError as e:
 <br><br>
 
 ## ```rave.ZBMobile```
-This is used to facilitate Ghana mobile money transactions.
+This is used to facilitate Zambian mobile money transactions.
 
 **Functions included:**
 
@@ -868,7 +865,7 @@ You can call this to check if your transaction was completed successfully. You h
 
 A sample verify call is:
 
-``` res = rave.UGMobile.verify(data["txRef"]) ```
+``` res = rave.ZBMobile.verify(data["txRef"]) ```
 
 #### Returns
 
@@ -896,6 +893,110 @@ payload = {
 try:
   res = rave.ZBMobile.charge(payload)
   res = rave.ZBMobile.verify(res["txRef"])
+  print(res)
+
+except RaveExceptions.TransactionChargeError as e:
+  print(e.err)
+  print(e.err["flwRef"])
+
+except RaveExceptions.TransactionVerificationError as e:
+  print(e.err["errMsg"])
+  print(e.err["txRef"])
+
+
+```
+<br><br>
+
+## ```rave.Francophone```
+This is used to facilitate mobile money transactions in Ivory Coast, Senegal and Mali.
+
+**Functions included:**
+
+* ```.charge```
+
+
+* ```.verify```
+
+<br>
+
+### ```.charge(payload)```
+This is called to start a francophone mobile money transaction. The payload should be a dictionary containing account information. It should have the parameters:
+
+* ```amount```,
+
+* ```email```, 
+
+* ```phonenumber```,
+
+* ```IP```,
+
+* ```redirect_url```
+
+Optionally, you can add a custom transaction reference using the ```txRef``` parameter. Note that if you do not specify one, it would be automatically generated. We do provide a function for generating transaction references in the Misc library (add link).
+
+
+A sample call is:
+
+``` res = rave.Francophone.charge(payload) ```
+
+#### Returns
+
+This call returns a dictionary. A sample response is:
+
+ ```{'error': False, 'validationRequired': True, 'txRef': 'MC-1530910216380', 'flwRef': 'N/A'} ```
+
+ This call raises an ```TransactionChargeError``` if there was a problem processing your transaction. The ```TransactionChargeError``` contains some information about your transaction. You can handle this as such:
+
+```
+try: 
+    #Your charge call
+except RaveExceptions.TransactionChargeError as e:
+    print(e.err["errMsg"])
+    print(e.err["flwRef"])
+
+```
+
+A sample ``` e.err ``` contains:
+
+```{'error': True, 'txRef': 'MC-1530911537060', 'flwRef': None, 'errMsg': None}```
+
+
+<br>
+
+### ```.verify(txRef)```
+
+You can call this to check if your transaction was completed successfully. You have to pass the transaction reference generated at the point of charging. This is the ```txRef``` in the ```res``` parameter returned any of the calls (```charge``` or ```validate```). 
+
+A sample verify call is:
+
+``` res = rave.Francophone.verify(data["txRef"]) ```
+
+#### Returns
+
+This call returns a dict with ```txRef```, ```flwRef``` and ```transactionComplete``` which indicates whether the transaction was completed successfully. 
+
+If your call could not be completed successfully, a ```TransactionVerificationError``` is raised.
+
+<br>
+
+### Complete Francophone mobile money charge flow
+
+```
+from rave_python import Rave, RaveExceptions, Misc
+rave = Rave("ENTER_YOUR_PUBLIC_KEY", "ENTER_YOUR_SECRET_KEY", usingEnv = False)
+
+# mobile payload
+payload = {
+  "amount": "50",
+  "email": "",
+  "phonenumber": "054709929220",
+  "redirect_url": "https://rave-webhook.herokuapp.com/receivepayment",
+  "IP":""
+}
+
+try:
+  res = rave.Francophone.charge(payload)
+  res = rave.Francophone.verify(res["txRef"])
   print(res)
 
 except RaveExceptions.TransactionChargeError as e:
@@ -1100,6 +1201,175 @@ except RaveExceptions.TransactionVerificationError as e:
 
 ```
 
+<br>
+## ```rave.SubAccount```
+
+This is used to initiate and manage payouts
+
+
+**Functions included:**
+
+* ```.createSubaccount```
+
+* ```.allSubaccounts```
+
+* ```.fetchSubaccounts```
+
+
+<br>
+
+### ```.createSubaccount(accountDetails)```
+
+This allows you to create a subaccount plan. It requires a dict ```accountDetails``` containing ```account_bank```, ```account_number```, ```business_name```, ```business_email```, ```business_contact```, ```business_contact_mobile```, ```business_mobile```.
+ 
+>account_bank: This is the sub-accounts bank ISO code, use the [List of Banks for Transfer](https://developer.flutterwave.com/reference#list-of-banks-for-transfer) endpoint to retrieve a list of bank codes.
+
+>account_number: This is the customer's account number
+
+>business_name: This is the sub-account business name.
+
+>business_email: This is the sub-account business email.
+
+>business_contact: This is the contact person for the sub-account e.g. Richard Hendrix
+
+>business_contact_mobile: Business contact number.
+
+>business_mobile: Primary business contact number.
+
+>split_type: This can be set as   ```percentage``` or ```flat``` when set as percentage it means you want to take a percentage fee on all transactions, and vice versa for flat this means you want to take a flat fee on every transaction.
+
+>split_value: This can be a ```percentage``` value or ```flat``` value depending on what was set on ```split_type```
+
+More information can be found [here](https://developer.flutterwave.com/v2.0/reference#create-subaccount)
+
+
+A sample createsubAccount call is:
+
+``` 
+ res = rave.SubAccount.createSubaccount({
+	"account_bank": "044",
+	"account_number": "0690000031",
+	"business_name": "Jake Stores",
+	"business_email": "kwakj@services.com",
+	"business_contact": "Amy Parkers",
+	"business_contact_mobile": "09083772",
+	"business_mobile": "0188883882",
+    "split_type": "flat",
+    "split_value": 3000
+	"meta": [{"metaname": "MarketplaceID", "metavalue": "ggs-920900"}]
+})
+```
+
+#### Returns
+
+This call returns a dictionary. A sample response is:
+
+ ```
+ {'error': False, 'id': 114, 'data': {'id': 114, 'account_number': '0690000032', 'account_bank': '044', 'business_name': 'Jake Stores', 'fullname': 'Pastor Bright', 'date_created': '2018-10-09T10:43:02.000Z', 'meta': [{'metaname': 'MarketplaceID', 'metavalue': 'ggs-920900'}], 'split_ratio': 1, 'split_type': 'flat', 'split_value': 3000, 'subaccount_id': 'RS_8279B1518A139DD3238328747F322418', 'bank_name': 'ACCESS BANK NIGERIA'}}
+ ```
+
+ This call raises an ```.SubaccountCreationError``` if there was a problem processing your transaction. The ```.SubaccountCreationError``` contains some information about your transaction. You can handle this as such:
+
+```
+try: 
+    #Your charge call
+except RaveExceptions..SubaccountCreationError as e:
+    print(e.err["errMsg"])
+    print(e.err["flwRef"])
+```
+
+### ```.allSubaccounts()```
+
+This allows you retrieve all subaccounts 
+
+A sample allSubaccounts call is:
+
+``` 
+res2 = rave.SubAccount.allSubaccounts()
+```
+
+#### Returns
+
+This call returns a dictionary. A sample response is:
+
+ ```
+ {'error': False, 'returnedData': {'status': 'success', 'message': 'SUBACCOUNTS', 'data': {'page_info': {'total': 3, 'current_page': 1, 'total_pages': 1}, 'subaccounts': [{'id': 114, 'account_number': '0690000032', 'account_bank': '044', 'business_name': 'Jake Stores', 'fullname': 'Pastor Bright', 'date_created': '2018-10-09T10:43:02.000Z', 'meta': [{'metaname': 'MarketplaceID', 'metavalue': 'ggs-920900'}], 'split_ratio': 1, 'split_type': 'flat', 'split_value': 3000, 'subaccount_id': 'RS_8279B1518A139DD3238328747F322418', 'bank_name': 'ACCESS BANK NIGERIA'}, {'id': 107, 'account_number': '0690000031', 'account_bank': '044', 'business_name': 'Jake Stores', 'fullname': 'Forrest Green', 'date_created': '2018-10-05T18:30:09.000Z', 'meta': [{'metaname': 'MarketplaceID', 'metavalue': 'ggs-920900'}], 'split_ratio': 1, 'split_type': 'flat', 'split_value': 100, 'subaccount_id': 'RS_41FFE616A1FA7EA56C85E57F593056F7', 'bank_name': 'ACCESS BANK NIGERIA'}]}}}
+
+ ```
+
+ This call raises an ```PlanStatusError``` if there was a problem processing your transaction. The ```PlanStatusError``` contains some information about your transaction. You can handle this as such:
+
+```
+try: 
+    #Your charge call
+except RaveExceptions.PlanStatusError as e:
+    print(e.err["errMsg"])
+    print(e.err["flwRef"])
+```
+
+### ```.fetchSubaccount(subaccount_id)```
+
+This allows you fetch a subaccount. You may or may not pass in a ```subaccount_id```. If you do not pass in a ```subaccount_id``` all subacocunts will be returned.
+
+>subaccount_id: This is the payment plan ID. It can be gotten from the response returned from creating a plan or from the Rave Dashboard
+
+
+A sample fetchSubaccount call is:
+
+``` 
+res2 = rave.SubAccount.fetchSubaccount(900)
+```
+
+#### Returns
+
+This call returns a dictionary. A sample response is:
+
+ ```
+ {'error': False, 'returnedData': {'status': 'success', 'message': 'SUBACCOUNT', 'data': {'id': 106, 'account_number': '0690000035', 'account_bank': '044', 'business_name': 'JK Services', 'fullname': 'Peter Crouch', 'date_created': '2018-10-05T18:24:21.000Z', 'meta': [{'metaname': 'MarketplaceID', 'metavalue': 'ggs-920900'}], 'split_ratio': 1, 'split_type': 'flat', 'split_value': 100, 'subaccount_id': 'RS_0A6C260E1A70934DE6EF2F8CEE46BBB3', 'bank_name': 'ACCESS BANK NIGERIA'}}}
+ ```
+
+ This call raises an ```PlanStatusError``` if there was a problem processing your transaction. The ```PlanStatusError``` contains some information about your transaction. You can handle this as such:
+
+```
+try: 
+    #Your charge call
+except RaveExceptions.PlanStatusError as e:
+    print(e.err["errMsg"])
+    print(e.err["flwRef"])
+```
+
+### Complete SubAccount flow
+
+```
+from rave_python import Rave, Misc, RaveExceptions
+rave = Rave("YOUR_PUBLIC_KEY", "YOUR_PRIVATE_KEY", usingEnv = False)
+try:
+   
+    res = rave.SubAccount.createSubaccount({
+	"account_bank": "044",
+	"account_number": "0690000032",
+	"business_name": "Jake Stores",
+	"business_email": "jdhhd@services.com",
+	"business_contact": "Amy Parkers",
+	"business_contact_mobile": "09083772",
+	"business_mobile": "0188883882",
+    "split_type": "flat",
+    "split_value": 3000,
+	"meta": [{"metaname": "MarketplaceID", "metavalue": "ggs-920900"}]
+    })
+    res = rave.SubAccount.fetchSubaccount('RS_0A6C260E1A70934DE6EF2F8CEE46BBB3')
+    print(res)
+
+except RaveExceptions.IncompletePaymentDetailsError as e:
+    print(e)
+
+except RaveExceptions.PlanStatusError as e:
+    print(e.err)
+
+except RaveExceptions.ServerError as e:
+    print(e.err)
+
+```
 <br>
 
 ## ```rave.Transfer```
@@ -1361,7 +1631,152 @@ except RaveExceptions.ServerError as e:
 
 
 ```
+<br>
 
+## ```rave.Subscriptions```
+
+This is used to initiate and manage payouts
+
+
+**Functions included:**
+
+* ```.allSubscriptions```
+
+* ```.fetchSubscription```
+
+* ```.cancelSubscription```
+
+* ```.activateSubscription```
+
+
+### ```.allSubscriptions()```
+
+This allows you retrieve all subscriptions 
+
+A sample allSubaccounts call is:
+
+``` 
+res2 = rave.Subscriptions.allSubscriptions()
+```
+
+#### Returns
+
+This call returns a dictionary. A sample response is:
+
+ ```
+ {'error': False, 'returnedData': {'status': 'success', 'message': 'SUBSCRIPTIONS-FETCHED', 'data': {'page_info': {'total': 0, 'current_page': 0, 'total_pages': 0}, 'plansubscriptions': []}}}
+ ```
+
+ This call raises an ```PlanStatusError``` if there was a problem processing your transaction. The ```PlanStatusError``` contains some information about your transaction. You can handle this as such:
+
+```
+try: 
+    #Your charge call
+except RaveExceptions.PlanStatusError as e:
+    print(e.err["errMsg"])
+    print(e.err["flwRef"])
+```
+
+### ```.fetchSubscription(subscription_id, subscription_email)```
+
+This allows you fetch a subscription. You may or may not pass in a ```subscription_id``` or ```subscription_email```. If you do not pass in a ```subscription_id``` or ```subscription_email``` all subscriptions will be returned.
+
+>subscription_id: This is the subscription ID.
+
+>subscription_email: This is the subscription email.
+
+
+A sample fetchSubaccount call is:
+
+``` 
+res2 = rave.Subscriptions.fetchSubscription(900)
+```
+
+#### Returns
+
+This call returns a dictionary. A sample response is:
+
+ ```
+ {'error': False, 'returnedData': {'status': 'success', 'message': 'SUBSCRIPTIONS-FETCHED', 'data': {'page_info': {'total': 0, 'current_page': 0, 'total_pages': 0}, 'plansubscriptions': []}}}
+ ```
+
+ This call raises an ```PlanStatusError``` if there was a problem processing your transaction. The ```PlanStatusError``` contains some information about your transaction. You can handle this as such:
+
+```
+try: 
+    #Your charge call
+except RaveExceptions.PlanStatusError as e:
+    print(e.err["errMsg"])
+    print(e.err["flwRef"])
+```
+
+### ```.cancelSubscription(subscription_id)```
+
+This allows you cancel a subscription.
+
+>subscription_id: This is the subscription ID. It can be gotten from the Rave Dashboard
+
+
+A sample cancelSubscription call is:
+
+``` 
+res2 = rave.Subscriptions.cancelSubscription(900)
+```
+
+ This call raises an ```PlanStatusError``` if there was a problem processing your transaction. The ```PlanStatusError``` contains some information about your transaction. You can handle this as such:
+
+```
+try: 
+    #Your charge call
+except RaveExceptions.PlanStatusError as e:
+    print(e.err["errMsg"])
+    print(e.err["flwRef"])
+```
+
+
+### ```.activateSubscription(subscription_id)```
+
+This allows you activate a subscription.
+
+>subscription_id: This is the subscription ID. It can be gotten from the Rave Dashboard
+
+
+A sample activateSubscription call is:
+
+``` 
+res2 = rave.Subscriptions.activateSubscription(900)
+```
+
+ This call raises an ```PlanStatusError``` if there was a problem processing your transaction. The ```PlanStatusError``` contains some information about your transaction. You can handle this as such:
+
+```
+try: 
+    #Your charge call
+except RaveExceptions.PlanStatusError as e:
+    print(e.err["errMsg"])
+    print(e.err["flwRef"])
+```
+
+### Complete Subscriptions flow
+
+```
+from rave_python import Rave, Misc, RaveExceptions
+rave = Rave("YOUR_PUBLIC_KEY", "YOUR_PRIVATE_KEY", usingEnv = False)
+try:
+   
+    res = rave.Subscriptions.allSubscriptions()
+    res = rave.Subscriptions.fetchSubscription(880)
+    res = rave.Subscriptions.cancelSubscription(880)
+    print(res)
+
+except RaveExceptions.PlanStatusError as e:
+    print(e.err)
+
+except RaveExceptions.ServerError as e:
+    print(e.err)
+
+```
+<br>
 ## ```rave.PaymentPlan```
 
 This is used to initiate and manage payouts
@@ -1602,321 +2017,7 @@ except RaveExceptions.TransferFetchError as e:
 except RaveExceptions.ServerError as e:
     print(e.err)
 ```
-
 <br>
-
-## ```rave.SubAccount```
-
-This is used to initiate and manage payouts
-
-
-**Functions included:**
-
-* ```.createSubaccount```
-
-* ```.allSubaccounts```
-
-* ```.fetchSubaccounts```
-
-
-<br>
-
-### ```.createSubaccount(accountDetails)```
-
-This allows you to create a subaccount plan. It requires a dict ```accountDetails``` containing ```account_bank```, ```account_number```, ```business_name```, ```business_email```, ```business_contact```, ```business_contact_mobile```, ```business_mobile```.
- 
->account_bank: This is the sub-accounts bank ISO code, use the [List of Banks for Transfer](https://developer.flutterwave.com/reference#list-of-banks-for-transfer) endpoint to retrieve a list of bank codes.
-
->account_number: This is the customer's account number
-
->business_name: This is the sub-account business name.
-
->business_email: This is the sub-account business email.
-
->business_contact: This is the contact person for the sub-account e.g. Richard Hendrix
-
->business_contact_mobile: Business contact number.
-
->business_mobile: Primary business contact number.
-
->split_type: This can be set as   ```percentage``` or ```flat``` when set as percentage it means you want to take a percentage fee on all transactions, and vice versa for flat this means you want to take a flat fee on every transaction.
-
->split_value: This can be a ```percentage``` value or ```flat``` value depending on what was set on ```split_type```
-
-More information can be found [here](https://developer.flutterwave.com/v2.0/reference#create-subaccount)
-
-
-A sample createsubAccount call is:
-
-``` 
- res = rave.SubAccount.createSubaccount({
-	"account_bank": "044",
-	"account_number": "0690000031",
-	"business_name": "Jake Stores",
-	"business_email": "kwakj@services.com",
-	"business_contact": "Amy Parkers",
-	"business_contact_mobile": "09083772",
-	"business_mobile": "0188883882",
-    "split_type": "flat",
-    "split_value": 3000
-	"meta": [{"metaname": "MarketplaceID", "metavalue": "ggs-920900"}]
-})
-```
-
-#### Returns
-
-This call returns a dictionary. A sample response is:
-
- ```
- {'error': False, 'id': 114, 'data': {'id': 114, 'account_number': '0690000032', 'account_bank': '044', 'business_name': 'Jake Stores', 'fullname': 'Pastor Bright', 'date_created': '2018-10-09T10:43:02.000Z', 'meta': [{'metaname': 'MarketplaceID', 'metavalue': 'ggs-920900'}], 'split_ratio': 1, 'split_type': 'flat', 'split_value': 3000, 'subaccount_id': 'RS_8279B1518A139DD3238328747F322418', 'bank_name': 'ACCESS BANK NIGERIA'}}
- ```
-
- This call raises an ```.SubaccountCreationError``` if there was a problem processing your transaction. The ```.SubaccountCreationError``` contains some information about your transaction. You can handle this as such:
-
-```
-try: 
-    #Your charge call
-except RaveExceptions..SubaccountCreationError as e:
-    print(e.err["errMsg"])
-    print(e.err["flwRef"])
-```
-
-### ```.allSubaccounts()```
-
-This allows you retrieve all subaccounts 
-
-A sample allSubaccounts call is:
-
-``` 
-res2 = rave.SubAccount.allSubaccounts()
-```
-
-#### Returns
-
-This call returns a dictionary. A sample response is:
-
- ```
- {'error': False, 'returnedData': {'status': 'success', 'message': 'SUBACCOUNTS', 'data': {'page_info': {'total': 3, 'current_page': 1, 'total_pages': 1}, 'subaccounts': [{'id': 114, 'account_number': '0690000032', 'account_bank': '044', 'business_name': 'Jake Stores', 'fullname': 'Pastor Bright', 'date_created': '2018-10-09T10:43:02.000Z', 'meta': [{'metaname': 'MarketplaceID', 'metavalue': 'ggs-920900'}], 'split_ratio': 1, 'split_type': 'flat', 'split_value': 3000, 'subaccount_id': 'RS_8279B1518A139DD3238328747F322418', 'bank_name': 'ACCESS BANK NIGERIA'}, {'id': 107, 'account_number': '0690000031', 'account_bank': '044', 'business_name': 'Jake Stores', 'fullname': 'Forrest Green', 'date_created': '2018-10-05T18:30:09.000Z', 'meta': [{'metaname': 'MarketplaceID', 'metavalue': 'ggs-920900'}], 'split_ratio': 1, 'split_type': 'flat', 'split_value': 100, 'subaccount_id': 'RS_41FFE616A1FA7EA56C85E57F593056F7', 'bank_name': 'ACCESS BANK NIGERIA'}]}}}
-
- ```
-
- This call raises an ```PlanStatusError``` if there was a problem processing your transaction. The ```PlanStatusError``` contains some information about your transaction. You can handle this as such:
-
-```
-try: 
-    #Your charge call
-except RaveExceptions.PlanStatusError as e:
-    print(e.err["errMsg"])
-    print(e.err["flwRef"])
-```
-
-### ```.fetchSubaccount(subaccount_id)```
-
-This allows you fetch a subaccount. You may or may not pass in a ```subaccount_id```. If you do not pass in a ```subaccount_id``` all subacocunts will be returned.
-
->subaccount_id: This is the payment plan ID. It can be gotten from the response returned from creating a plan or from the Rave Dashboard
-
-
-A sample fetchSubaccount call is:
-
-``` 
-res2 = rave.SubAccount.fetchSubaccount(900)
-```
-
-#### Returns
-
-This call returns a dictionary. A sample response is:
-
- ```
- {'error': False, 'returnedData': {'status': 'success', 'message': 'SUBACCOUNT', 'data': {'id': 106, 'account_number': '0690000035', 'account_bank': '044', 'business_name': 'JK Services', 'fullname': 'Peter Crouch', 'date_created': '2018-10-05T18:24:21.000Z', 'meta': [{'metaname': 'MarketplaceID', 'metavalue': 'ggs-920900'}], 'split_ratio': 1, 'split_type': 'flat', 'split_value': 100, 'subaccount_id': 'RS_0A6C260E1A70934DE6EF2F8CEE46BBB3', 'bank_name': 'ACCESS BANK NIGERIA'}}}
- ```
-
- This call raises an ```PlanStatusError``` if there was a problem processing your transaction. The ```PlanStatusError``` contains some information about your transaction. You can handle this as such:
-
-```
-try: 
-    #Your charge call
-except RaveExceptions.PlanStatusError as e:
-    print(e.err["errMsg"])
-    print(e.err["flwRef"])
-```
-
-### Complete SubAccount flow
-
-```
-from rave_python import Rave, Misc, RaveExceptions
-rave = Rave("YOUR_PUBLIC_KEY", "YOUR_PRIVATE_KEY", usingEnv = False)
-try:
-   
-    res = rave.SubAccount.createSubaccount({
-	"account_bank": "044",
-	"account_number": "0690000032",
-	"business_name": "Jake Stores",
-	"business_email": "jdhhd@services.com",
-	"business_contact": "Amy Parkers",
-	"business_contact_mobile": "09083772",
-	"business_mobile": "0188883882",
-    "split_type": "flat",
-    "split_value": 3000,
-	"meta": [{"metaname": "MarketplaceID", "metavalue": "ggs-920900"}]
-    })
-    res = rave.SubAccount.fetchSubaccount('RS_0A6C260E1A70934DE6EF2F8CEE46BBB3')
-    print(res)
-
-except RaveExceptions.IncompletePaymentDetailsError as e:
-    print(e)
-
-except RaveExceptions.PlanStatusError as e:
-    print(e.err)
-
-except RaveExceptions.ServerError as e:
-    print(e.err)
-
-```
-
-## ```rave.Subscriptions```
-
-This is used to initiate and manage payouts
-
-
-**Functions included:**
-
-* ```.allSubscriptions```
-
-* ```.fetchSubscription```
-
-* ```.cancelSubscription```
-
-* ```.activateSubscription```
-
-
-### ```.allSubscriptions()```
-
-This allows you retrieve all subscriptions 
-
-A sample allSubaccounts call is:
-
-``` 
-res2 = rave.Subscriptions.allSubscriptions()
-```
-
-#### Returns
-
-This call returns a dictionary. A sample response is:
-
- ```
- {'error': False, 'returnedData': {'status': 'success', 'message': 'SUBSCRIPTIONS-FETCHED', 'data': {'page_info': {'total': 0, 'current_page': 0, 'total_pages': 0}, 'plansubscriptions': []}}}
- ```
-
- This call raises an ```PlanStatusError``` if there was a problem processing your transaction. The ```PlanStatusError``` contains some information about your transaction. You can handle this as such:
-
-```
-try: 
-    #Your charge call
-except RaveExceptions.PlanStatusError as e:
-    print(e.err["errMsg"])
-    print(e.err["flwRef"])
-```
-
-### ```.fetchSubscription(subscription_id, subscription_email)```
-
-This allows you fetch a subscription. You may or may not pass in a ```subscription_id``` or ```subscription_email```. If you do not pass in a ```subscription_id``` or ```subscription_email``` all subscriptions will be returned.
-
->subscription_id: This is the subscription ID.
-
->subscription_email: This is the subscription email.
-
-
-A sample fetchSubaccount call is:
-
-``` 
-res2 = rave.Subscriptions.fetchSubscription(900)
-```
-
-#### Returns
-
-This call returns a dictionary. A sample response is:
-
- ```
- {'error': False, 'returnedData': {'status': 'success', 'message': 'SUBSCRIPTIONS-FETCHED', 'data': {'page_info': {'total': 0, 'current_page': 0, 'total_pages': 0}, 'plansubscriptions': []}}}
- ```
-
- This call raises an ```PlanStatusError``` if there was a problem processing your transaction. The ```PlanStatusError``` contains some information about your transaction. You can handle this as such:
-
-```
-try: 
-    #Your charge call
-except RaveExceptions.PlanStatusError as e:
-    print(e.err["errMsg"])
-    print(e.err["flwRef"])
-```
-
-### ```.cancelSubscription(subscription_id)```
-
-This allows you cancel a subscription.
-
->subscription_id: This is the subscription ID. It can be gotten from the Rave Dashboard
-
-
-A sample cancelSubscription call is:
-
-``` 
-res2 = rave.Subscriptions.cancelSubscription(900)
-```
-
- This call raises an ```PlanStatusError``` if there was a problem processing your transaction. The ```PlanStatusError``` contains some information about your transaction. You can handle this as such:
-
-```
-try: 
-    #Your charge call
-except RaveExceptions.PlanStatusError as e:
-    print(e.err["errMsg"])
-    print(e.err["flwRef"])
-```
-
-
-### ```.activateSubscription(subscription_id)```
-
-This allows you activate a subscription.
-
->subscription_id: This is the subscription ID. It can be gotten from the Rave Dashboard
-
-
-A sample activateSubscription call is:
-
-``` 
-res2 = rave.Subscriptions.activateSubscription(900)
-```
-
- This call raises an ```PlanStatusError``` if there was a problem processing your transaction. The ```PlanStatusError``` contains some information about your transaction. You can handle this as such:
-
-```
-try: 
-    #Your charge call
-except RaveExceptions.PlanStatusError as e:
-    print(e.err["errMsg"])
-    print(e.err["flwRef"])
-```
-
-### Complete Subscriptions flow
-
-```
-from rave_python import Rave, Misc, RaveExceptions
-rave = Rave("YOUR_PUBLIC_KEY", "YOUR_PRIVATE_KEY", usingEnv = False)
-try:
-   
-    res = rave.Subscriptions.allSubscriptions()
-    res = rave.Subscriptions.fetchSubscription(880)
-    res = rave.Subscriptions.cancelSubscription(880)
-    print(res)
-
-except RaveExceptions.PlanStatusError as e:
-    print(e.err)
-
-except RaveExceptions.ServerError as e:
-    print(e.err)
-
-```
 
 ## ```rave.Ussd```
 

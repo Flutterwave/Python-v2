@@ -6,6 +6,7 @@ from rave_python.rave_ghmobile import GhMobile
 from rave_python.rave_ugmobile import UGMobile
 from rave_python.rave_zbmobile import ZBMobile
 from rave_python.rave_rwmobile import RWMobile
+from rave_python.rave_francophone import Francophone
 from rave_python.rave_mpesa import Mpesa
 from rave_python.rave_preauth import Preauth
 from rave_python.rave_transfer import Transfer
@@ -25,6 +26,7 @@ class Rave:
             rave.UGMobile -- For Uganda mobile money transactions\n
             rave.ZBMobile -- For Zambia mobile money transactions\n
             rave.RWMobile -- For Rwanda mobile money transactions\n
+            rave.Francophone -- For West African Francophone mobile money transactions\n
             rave.Mpesa -- For mpesa transactions\n
         """
         
@@ -39,7 +41,9 @@ class Rave:
         self.Ussd = Ussd(publicKey, secretKey, production, usingEnv)
         self.GhMobile = GhMobile(publicKey, secretKey, production, usingEnv)
         self.ZBMobile = ZBMobile(publicKey, secretKey, production, usingEnv)
+        self.RWMobile = RWMobile(publicKey, secretKey, production, usingEnv)
         self.UGMobile = UGMobile(publicKey, secretKey, production, usingEnv)
+        self.Francophone = Francophone(publicKey, secretKey, production, usingEnv)
         self.RWMobile = RWMobile(publicKey, secretKey, production, usingEnv)
         self.Mpesa = Mpesa(publicKey, secretKey, production, usingEnv)
         # Transfer endpoint
