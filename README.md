@@ -943,9 +943,9 @@ A sample call is:
 
 This call returns a dictionary. A sample response is:
 
- ```{'error': False, 'validationRequired': True, 'txRef': 'MC-1530910216380', 'flwRef': 'N/A'} ```
-
- This call raises an ```TransactionChargeError``` if there was a problem processing your transaction. The ```TransactionChargeError``` contains some information about your transaction. You can handle this as such:
+ ```{'error': False, 'validationRequired': True, 'txRef': 'MC-1566482674756', 'flwRef': None, 'suggestedAuth': None, 'redirectUrl': 'https://flutterwaveprodv2.com/flwcinetpay/paymentServlet?reference=FLW186321566482674310'} ```
+ 
+ The call returns redirect Url ```'redirectUrl':'https://redirecturl.com'``` for the authentication of the transaction. It raises an ```TransactionChargeError``` if there was a problem processing your transaction. The ```TransactionChargeError``` contains some information about your transaction. You can handle this as such:
 
 ```
 try: 
@@ -996,6 +996,7 @@ payload = {
 
 try:
   res = rave.Francophone.charge(payload)
+  print(res)
   res = rave.Francophone.verify(res["txRef"])
   print(res)
 
