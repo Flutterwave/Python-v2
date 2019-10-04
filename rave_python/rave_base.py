@@ -43,6 +43,17 @@ class RaveBase(object):
                 "list": "v2/gpx/subaccounts/",
                 "fetch": "v2/gpx/subaccounts/get"
             },
+            "virtual_card": {
+                "create": "v2/services/virtualcards/new",
+                "list": "v2/services/virtualcards/search",
+                "get": "/v2/services/virtualcards/get",
+                "terminate": "/v2/services/virtualcards/",
+                "fund": "v2/services/virtualcards/fund",
+                "transactions": "v2/services/virtualcards/",
+                "withdraw": "v2/services/virtualcards/withdraw",
+                "freeze": "/v2/services/virtualcards/",
+                "unfreeze": "/v2/services/virtualcards/",
+            },
             "transfer": {
                 "initiate": "v2/gpx/transfers/create",
                 "bulk": "v2/gpx/transfers/create_bulk",

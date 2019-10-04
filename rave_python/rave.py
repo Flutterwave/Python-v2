@@ -13,6 +13,7 @@ from rave_python.rave_transfer import Transfer
 from rave_python.rave_paymentplan import PaymentPlan
 from rave_python.rave_subaccounts import SubAccount
 from rave_python.rave_subscription import Subscriptions
+from rave_python.rave_virtualcard import VirtualCard
 
 class Rave:
     
@@ -48,5 +49,6 @@ class Rave:
         self.Mpesa = Mpesa(publicKey, secretKey, production, usingEnv)
         # Transfer endpoint
         self.Transfer = Transfer(publicKey, secretKey, production, usingEnv)
+        self.VirtualCard = VirtualCard(publicKey, secretKey, production, usingEnv)
         
         
