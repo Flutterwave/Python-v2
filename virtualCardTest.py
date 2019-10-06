@@ -1,7 +1,7 @@
 from rave_python import Rave, RaveExceptions, Misc
 
 
-rave = Rave("FLWPUBK_TEST-0db01907c1b990c273c365a696c1613d-X", "FLWSECK_TEST-624d8f04393b01cac90d02f562b26389-X", production = False, usingEnv = False)
+rave = Rave("FLWPUBK_TEST-********************************-X", "FLWSECK_TEST-********************************-X", production = False, usingEnv = False)
 
 # payload = {
 #     "currency": "NGN",
