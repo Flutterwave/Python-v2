@@ -11,6 +11,11 @@ class IncompletePaymentDetailsError(RaveError):
         msg =  "\n\""+value+"\" was not defined in your dictionary. Please ensure you have supplied the following in the payload: \n "+'  \n '.join(requiredParameters)
         super(IncompletePaymentDetailsError, self).__init__(msg)
 
+class IncompleteCardDetailsError(RaveError):
+    """ Raised when details for card creation are incomplete"""
+    def __init__(self, value, requiredParameters):
+        msg = "\n\""+value+"\" was not defined in your dictionary. Please ensure you have supplied the following in the paylosd: \n "+' \n '.join(requiredParameters)
+        super(IncompleteCardDetailsError, self).__init__(msg)
 
 class AuthMethodNotSupportedError(RaveError):
     """ Raised when user requests for an auth method not currently supported by rave-python """
@@ -137,6 +142,15 @@ class PlanStatusError(RaveError):
     def __str__(self):
         return self.type +"ing plan failed with error: " + self.err["errMsg"]
 
+class CardStatusError(RaveError):
+    """Raised when fetching a Virtual Card status"""
+    def __init__(self, type, err):
+        self.err = err
+        self.type = type
+
+    def __str__(self):
+        return self.type +"ing card failed with error: " + self.err["errMsg"]
+
 class SubaccountCreationError(RaveError):
     """ Raised when creating a payment plan fails """
     def __init__(self, err):
@@ -144,3 +158,11 @@ class SubaccountCreationError(RaveError):
 
     def __str__(self):
         return "Subaccount Creation failed with error: " +self.err["errMsg"]
+
+class CardCreationError(RaveError):
+    """ Raised when creating a virtual card fails """
+    def __init__(self, err):
+        self.err = err
+    
+    def  __str__(self):
+        return "Virtual Card creation failed with error: " +self.err["errMsg"]
