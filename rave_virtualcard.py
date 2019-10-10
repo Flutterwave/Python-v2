@@ -96,3 +96,22 @@ class VirtualCard(RaveBase):
         endpoint = self._baseUrl + self._endpointMap["virtual_card"]["unfreeze"] + str(card_id) + "/status/unblock"
         data = {"seckey": self._getSecretKey()}
         return self._handleCardStatusRequests("Unfreeze", endpoint, isPostRequest=True, data=data)
+
+    def fundCard(self, card_id, amount, currency):
+        data = {
+            "card_id": card_id,
+            "amount" : amount,
+            "debit_currency": currency,
+            "seckey": self._getSecretKey(),
+        }
+        endpoint = self._baseUrl + self._endpointMap["virtual_card"]["fund"]
+        return self._handleCardStatusRequests("Fund", endpoint, isPostRequest=True, data=data)
+
+    def Withdraw(self, card_id, amount):
+        data = {
+            "card_id": card_id,
+            "amount" : amount,
+            "seckey": self._getSecretKey(),
+        }
+        endpoint = self._baseUrl + self._endpointMap["virtual_card"]["withdraw"]
+        return self._handleCardStatusRequests("Fund", endpoint, isPostRequest=True, data=data)

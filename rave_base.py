@@ -36,7 +36,7 @@ class RaveBase(object):
                 "fetch": "v2/gpx/subscriptions/query",
                 "list": "v2/gpx/subscriptions/query",
                 "cancel": "v2/gpx/subscriptions/",
-                "activate" :  "v2/gpx/subscriptions/"
+                "activate" : "v2/gpx/subscriptions/"
             },
             "subaccount": {
                 "create": "v2/gpx/subaccounts/create",
