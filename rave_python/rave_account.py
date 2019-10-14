@@ -58,5 +58,9 @@ class Account(Payment):
         requiredParameters = ["accountbank", "accountnumber", "amount", "email", "phonenumber", "IP"]
         return super(Account, self).charge(accountDetails, requiredParameters, endpoint)
 
+    def verify(self, txRef):
+        endpoint = self._baseUrl + self._endpointMap["account"]["verify"]
+        return super(Account, self).verify(txRef, endpoint)
+
 
 
