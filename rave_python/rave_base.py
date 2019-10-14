@@ -36,23 +36,12 @@ class RaveBase(object):
                 "fetch": "v2/gpx/subscriptions/query",
                 "list": "v2/gpx/subscriptions/query",
                 "cancel": "v2/gpx/subscriptions/",
-                "activate" :  "v2/gpx/subscriptions/"
+                "activate" : "v2/gpx/subscriptions/"
             },
             "subaccount": {
                 "create": "v2/gpx/subaccounts/create",
                 "list": "v2/gpx/subaccounts/",
                 "fetch": "v2/gpx/subaccounts/get"
-            },
-            "virtual_card": {
-                "create": "v2/services/virtualcards/new",
-                "list": "v2/services/virtualcards/search",
-                "get": "/v2/services/virtualcards/get",
-                "terminate": "/v2/services/virtualcards/",
-                "fund": "v2/services/virtualcards/fund",
-                "transactions": "v2/services/virtualcards/",
-                "withdraw": "v2/services/virtualcards/withdraw",
-                "freeze": "/v2/services/virtualcards/",
-                "unfreeze": "/v2/services/virtualcards/",
             },
             "transfer": {
                 "initiate": "v2/gpx/transfers/create",
@@ -61,6 +50,20 @@ class RaveBase(object):
                 "fee": "v2/gpx/transfers/fee",
                 "balance": "v2/gpx/balance",
                 "accountVerification": "flwv3-pug/getpaidx/api/resolve_account"
+            },
+            "virtual_card": {
+                "create": "v2/services/virtualcards/new",
+                "list": "v2/services/virtualcards/search",
+                "get": "v2/services/virtualcards/get",
+                "terminate": "v2/services/virtualcards/",
+                "fund": "v2/services/virtualcards/fund",
+                "transactions": "v2/services/virtualcards/",
+                "withdraw": "v2/services/virtualcards/withdraw",
+                "freeze": "v2/services/virtualcards/",
+                "unfreeze": "v2/services/virtualcards/",
+            },
+            "virtual_account":{
+                "create" : "v2/banktransfers/accountnumbers",
             },
             "verify": "flwv3-pug/getpaidx/api/v2/verify",
             "refund": "gpx/merchant/transactions/refund"

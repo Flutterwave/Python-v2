@@ -256,32 +256,32 @@ class Payment(RaveBase):
         response = requests.post(endpoint, headers=headers, data=json.dumps(payload))
         return self._handleVerifyResponse(response, txRef)
 
-    # Refund call
-    # def refund(self, flwRef):
-    #     """ This is used to refund a transaction from any of Rave's component objects.\n 
-    #          Parameters include:\n
-    #         flwRef (string) -- This is the flutterwave reference returned from a successful call from any component. You can access this from action["flwRef"] returned from the charge call
-    #     """
-    #     payload = {
-    #         "ref": flwRef,
-    #         "seckey": self._getSecretKey(),
-    #     }
-    #     headers = {
-    #         "Content-Type":"application/json"
-    #     }
-    #     endpoint = self._baseUrl+self._endpointMap["refund"]
+    #Refund call
+    def refund(self, flwRef):
+        """ This is used to refund a transaction from any of Rave's component objects.\n 
+             Parameters include:\n
+            flwRef (string) -- This is the flutterwave reference returned from a successful call from any component. You can access this from action["flwRef"] returned from the charge call
+        """
+        payload = {
+            "ref": flwRef,
+            "seckey": self._getSecretKey(),
+        }
+        headers = {
+            "Content-Type":"application/json"
+        }
+        endpoint = self._baseUrl + self._endpointMap["refund"]
 
-    #     response = requests.post(endpoint, headers = headers, data=json.dumps(payload))
+        response = requests.post(endpoint, headers = headers, data=json.dumps(payload))
 
-    #     try:
-    #         responseJson = response.json()
-    #     except ValueError:
-    #         raise ServerError(response)
+        try:
+            responseJson = response.json()
+        except ValueError:
+            raise ServerError(response)
         
-    #     if responseJson.get("status", None) == "error":
-    #         raise RefundError(responseJson.get("message", None))
-    #     elif responseJson.get("status", None) == "success":
-    #         return True, responseJson.get("data", None)
+        if responseJson.get("status", None) == "error":
+            raise RefundError(responseJson.get("message", None))
+        elif responseJson.get("status", None) == "success":
+            return True, responseJson.get("data", None)
 
 
         
