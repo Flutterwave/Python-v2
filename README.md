@@ -14,7 +14,7 @@ This is a Python wrapper around the [API](https://flutterwavedevelopers.readme.i
 * Transfer
 * Subscription (Recurring Payments)
 * Payment Plan
-* USSD Payments (Still In Beta Mode)
+* USSD Payments (Still in Beta Mode)
 ## Installation
 To install, run
 
@@ -104,7 +104,7 @@ This call returns a dictionary. A sample response is:
 
  ```{'validationRequired': True, 'suggestedAuth': u'PIN', 'flwRef': None, 'authUrl': None, 'error': False, 'txRef': 'MC-1538095398058'} ```
 
- This call raises an ```CardChargeError``` if there was a problem processing your transaction. The ```CardChargeError``` contains some information about your transaction. You can handle this as such:
+ This call raises a ```CardChargeError``` if there was a problem processing your transaction. The ```CardChargeError``` contains some information about your transaction. You can handle this as such:
 
 ```
 try: 
@@ -193,7 +193,7 @@ This call returns a dict with ```txRef```, ```flwRef``` and ```transactionComple
 Sample
 ```{'flwRef': None, 'cardToken': u'flw-t1nf-5b0f12d565cd961f73c51370b1340f1f-m03k', 'chargedAmount': 100, 'amount': 100, 'transactionComplete': True, 'error': False, 'txRef': u'MC-1538095718251'}```
 
-#### Please note that after charging a card successfully on rave, if you wish to save the card for further charges, In your verify payment response you will find an object: "cardtoken": "flw-t0-f6f915f53a094671d98560272572993e-m03k".  This is the token you will use for card tokenization. Details are provided below.
+#### Please note that after charging a card successfully on rave, if you wish to save the card for further charges, in your verify payment response you will find an object: "cardtoken": "flw-t0-f6f915f53a094671d98560272572993e-m03k".  This is the token you will use for card tokenization. Details are provided below.
 
 If your call could not be completed successfully, a ```TransactionVerificationError``` is raised.
 
@@ -503,7 +503,7 @@ This is used to facilitate Ghanaian mobile money transactions.
 <br>
 
 ### ```.charge(payload)```
-This is called to start an Ghana mobile money transaction. The payload should be a dictionary containing account information. It should have the parameters:
+This is called to start a Ghana mobile money transaction. The payload should be a dictionary containing account information. It should have the parameters:
 
 * ```amount```,
 
@@ -530,7 +530,7 @@ This call returns a dictionary. A sample response is:
 
  ```{'error': False, 'validationRequired': True, 'txRef': 'MC-1530910216380', 'flwRef': 'N/A'} ```
 
- This call raises an ```TransactionChargeError``` if there was a problem processing your transaction. The ```TransactionChargeError``` contains some information about your transaction. You can handle this as such:
+ This call raises a ```TransactionChargeError``` if there was a problem processing your transaction. The ```TransactionChargeError``` contains some information about your transaction. You can handle this as such:
 
 ```
 try: 
@@ -633,7 +633,7 @@ This call returns a dictionary. A sample response is:
 
  ```{'error': False, 'validationRequired': True, 'txRef': 'MC-1530910216380', 'flwRef': 'N/A'} ```
 
- This call raises an ```TransactionChargeError``` if there was a problem processing your transaction. The ```TransactionChargeError``` contains some information about your transaction. You can handle this as such:
+ This call raises a ```TransactionChargeError``` if there was a problem processing your transaction. The ```TransactionChargeError``` contains some information about your transaction. You can handle this as such:
 
 ```
 try: 
@@ -737,7 +737,7 @@ This call returns a dictionary. A sample response is:
 
  ```{'error': False, 'status': 'success', 'validationRequired': True, 'txRef': 'MC-1544013787279', 'flwRef': 'flwm3s4m0c1544013788481'}```
 
- This call raises an ```TransactionChargeError``` if there was a problem processing your transaction. The ```TransactionChargeError``` contains some information about your transaction. You can handle this as such:
+ This call raises a ```TransactionChargeError``` if there was a problem processing your transaction. The ```TransactionChargeError``` contains some information about your transaction. You can handle this as such:
 
 ```
 try: 
@@ -816,7 +816,7 @@ This is used to facilitate Zambian mobile money transactions.
 <br>
 
 ### ```.charge(payload)```
-This is called to start an Zambian mobile money transaction. The payload should be a dictionary containing account information. It should have the parameters:
+This is called to start a Zambian mobile money transaction. The payload should be a dictionary containing account information. It should have the parameters:
 
 * ```amount```,
 
@@ -841,7 +841,7 @@ This call returns a dictionary. A sample response is:
 
  ```{'error': False, 'status': 'success', 'validationRequired': True, 'txRef': 'MC-1544013787279', 'flwRef': 'flwm3s4m0c1544013788481'}```
 
- This call raises an ```TransactionChargeError``` if there was a problem processing your transaction. The ```TransactionChargeError``` contains some information about your transaction. You can handle this as such:
+ This call raises a ```TransactionChargeError``` if there was a problem processing your transaction. The ```TransactionChargeError``` contains some information about your transaction. You can handle this as such:
 
 ```
 try: 
@@ -945,7 +945,7 @@ This call returns a dictionary. A sample response is:
 
  ```{'error': False, 'validationRequired': True, 'txRef': 'MC-1566482674756', 'flwRef': None, 'suggestedAuth': None, 'redirectUrl': 'https://flutterwaveprodv2.com/flwcinetpay/paymentServlet?reference=FLW186321566482674310'} ```
  
- The call returns redirect Url ```'redirectUrl':'https://redirecturl.com'``` for the authentication of the transaction. It raises an ```TransactionChargeError``` if there was a problem processing your transaction. The ```TransactionChargeError``` contains some information about your transaction. You can handle this as such:
+ The call returns redirect Url ```'redirectUrl':'https://redirecturl.com'``` for the authentication of the transaction. It raises a ```TransactionChargeError``` if there was a problem processing your transaction. The ```TransactionChargeError``` contains some information about your transaction. You can handle this as such:
 
 ```
 try: 
@@ -1040,11 +1040,11 @@ In order to ```preauthorize``` a card, you must have:
 
 ### ```.charge(cardDetails, chargeWithToken=True, hasFailed=False)```
 
-This is used to preauthorise a specific amount to be paid by a customer.
+This is used to preauthorize a specific amount to be paid by a customer.
 
 **Note:** > it takes the same parameters as Card charge. However, the cardDetails object differs. See below for an example
 
-Once preauthorised successfully, you can then ```capture``` that ```held``` amount at a later time or date
+Once preauthorized successfully, you can then ```capture``` that ```held``` amount at a later time or date
 
 A sample charge call is:
 
@@ -1068,7 +1068,7 @@ This call returns a dictionary. A sample response is:
 
  ```{'error': False, 'status': 'success', 'validationRequired': False, 'txRef': 'MC-7666-YU', 'flwRef': 'FLW-PREAUTH-M03K-7d01799093ee2db9d8136cf042dc8c37', 'suggestedAuth': None, 'authUrl': None} ```
 
- This call raises an ```TransactionChargeError``` if there was a problem processing your transaction. The ```TransactionChargeError``` contains some information about your transaction. You can handle this as such:
+ This call raises a ```TransactionChargeError``` if there was a problem processing your transaction. The ```TransactionChargeError``` contains some information about your transaction. You can handle this as such:
 
 ```
 try: 
@@ -1099,7 +1099,7 @@ This call returns a dictionary. A sample response is:
 
  ```{'error': False, 'status': 'success', 'message': 'Capture complete', 'validationRequired': False, 'txRef': 'MC-7666-YU', 'flwRef': 'FLW-PREAUTH-M03K-0bce8fe1c3561e17e026ddfbbea37fdb'} ```
 
- This call raises an ```PreauthCaptureError``` if there was a problem processing your transaction. The ```PreauthCaptureError``` contains some information about your transaction. You can handle this as such:
+ This call raises a ```PreauthCaptureError``` if there was a problem processing your transaction. The ```PreauthCaptureError``` contains some information about your transaction. You can handle this as such:
 
 ```
 try: 
@@ -1148,7 +1148,7 @@ This call returns a dictionary. A sample response is:
 
  ```{'error': False, 'transactionComplete': True, 'txRef': 'MC-7666-YU', 'flwRef': None, 'amount': 1000, 'chargedAmount': 1000, 'cardToken': 'flw-t1nf-5b0f12d565cd961f73c51370b1340f1f-m03k'} ```
 
- This call raises an ```TransactionVerificationError``` if there was a problem processing your transaction. The ```TransactionVerificationError``` contains some information about your transaction. You can handle this as such:
+ This call raises a ```TransactionVerificationError``` if there was a problem processing your transaction. The ```TransactionVerificationError``` contains some information about your transaction. You can handle this as such:
 
 ```
 try: 
@@ -1269,7 +1269,7 @@ This call returns a dictionary. A sample response is:
  {'error': False, 'id': 114, 'data': {'id': 114, 'account_number': '0690000032', 'account_bank': '044', 'business_name': 'Jake Stores', 'fullname': 'Pastor Bright', 'date_created': '2018-10-09T10:43:02.000Z', 'meta': [{'metaname': 'MarketplaceID', 'metavalue': 'ggs-920900'}], 'split_ratio': 1, 'split_type': 'flat', 'split_value': 3000, 'subaccount_id': 'RS_8279B1518A139DD3238328747F322418', 'bank_name': 'ACCESS BANK NIGERIA'}}
  ```
 
- This call raises an ```.SubaccountCreationError``` if there was a problem processing your transaction. The ```.SubaccountCreationError``` contains some information about your transaction. You can handle this as such:
+ This call raises a ```.SubaccountCreationError``` if there was a problem processing your transaction. The ```.SubaccountCreationError``` contains some information about your transaction. You can handle this as such:
 
 ```
 try: 
@@ -1298,7 +1298,7 @@ This call returns a dictionary. A sample response is:
 
  ```
 
- This call raises an ```PlanStatusError``` if there was a problem processing your transaction. The ```PlanStatusError``` contains some information about your transaction. You can handle this as such:
+ This call raises a ```PlanStatusError``` if there was a problem processing your transaction. The ```PlanStatusError``` contains some information about your transaction. You can handle this as such:
 
 ```
 try: 
@@ -1329,7 +1329,7 @@ This call returns a dictionary. A sample response is:
  {'error': False, 'returnedData': {'status': 'success', 'message': 'SUBACCOUNT', 'data': {'id': 106, 'account_number': '0690000035', 'account_bank': '044', 'business_name': 'JK Services', 'fullname': 'Peter Crouch', 'date_created': '2018-10-05T18:24:21.000Z', 'meta': [{'metaname': 'MarketplaceID', 'metavalue': 'ggs-920900'}], 'split_ratio': 1, 'split_type': 'flat', 'split_value': 100, 'subaccount_id': 'RS_0A6C260E1A70934DE6EF2F8CEE46BBB3', 'bank_name': 'ACCESS BANK NIGERIA'}}}
  ```
 
- This call raises an ```PlanStatusError``` if there was a problem processing your transaction. The ```PlanStatusError``` contains some information about your transaction. You can handle this as such:
+ This call raises a ```PlanStatusError``` if there was a problem processing your transaction. The ```PlanStatusError``` contains some information about your transaction. You can handle this as such:
 
 ```
 try: 
@@ -1399,7 +1399,7 @@ This is used to initiate and manage payouts
 This initiates a transfer to a customer's account. When a transfer is initiated, it comes with a status NEW this means the transfer has been queued for processing.
 
 **Please note that you must pass ```beneficiary_name``` as part of the initiate call. Else an error will be thrown.**
->Also if you are doing international transfers, you must pass a meta parameter as part of your payload as shown below:
+>Also, if you are doing international transfers, you must pass a meta parameter as part of your payload as shown below:
 ```
 "meta": [
     {
@@ -1513,7 +1513,7 @@ This call returns a dictionary. A sample response is:
 
  ```
 
- This call raises an ```TransferFetchError``` if there was a problem processing your transaction. The ```TransferFetchError``` contains some information about your transaction. You can handle this as such:
+ This call raises a ```TransferFetchError``` if there was a problem processing your transaction. The ```TransferFetchError``` contains some information about your transaction. You can handle this as such:
 
 ```
 try: 
@@ -1542,7 +1542,7 @@ This call returns a dictionary. A sample response is:
 
  ```
 
- This call raises an ```TransferFetchError``` if there was a problem processing your transaction. The ```TransferFetchError``` contains some information about your transaction. You can handle this as such:
+ This call raises a ```TransferFetchError``` if there was a problem processing your transaction. The ```TransferFetchError``` contains some information about your transaction. You can handle this as such:
 
 ```
 try: 
@@ -1573,7 +1573,7 @@ This call returns a dictionary. A sample response is:
 
  ### ```.getBalance(currency)```
 
-This allows you get your balance in a specified. You may or may not pass in a ```currency```. If you do not pass in a ```currency```, your balance will be returned in the currency specified in yiur rave account
+This allows you get your balance in a specified. You may or may not pass in a ```currency```. If you do not pass in a ```currency```, your balance will be returned in the currency specified in your rave account
 
 A sample fetch call is:
 
@@ -1668,7 +1668,7 @@ This call returns a dictionary. A sample response is:
  {'error': False, 'returnedData': {'status': 'success', 'message': 'SUBSCRIPTIONS-FETCHED', 'data': {'page_info': {'total': 0, 'current_page': 0, 'total_pages': 0}, 'plansubscriptions': []}}}
  ```
 
- This call raises an ```PlanStatusError``` if there was a problem processing your transaction. The ```PlanStatusError``` contains some information about your transaction. You can handle this as such:
+ This call raises a ```PlanStatusError``` if there was a problem processing your transaction. The ```PlanStatusError``` contains some information about your transaction. You can handle this as such:
 
 ```
 try: 
@@ -1701,7 +1701,7 @@ This call returns a dictionary. A sample response is:
  {'error': False, 'returnedData': {'status': 'success', 'message': 'SUBSCRIPTIONS-FETCHED', 'data': {'page_info': {'total': 0, 'current_page': 0, 'total_pages': 0}, 'plansubscriptions': []}}}
  ```
 
- This call raises an ```PlanStatusError``` if there was a problem processing your transaction. The ```PlanStatusError``` contains some information about your transaction. You can handle this as such:
+ This call raises a ```PlanStatusError``` if there was a problem processing your transaction. The ```PlanStatusError``` contains some information about your transaction. You can handle this as such:
 
 ```
 try: 
@@ -1724,7 +1724,7 @@ A sample cancelSubscription call is:
 res2 = rave.Subscriptions.cancelSubscription(900)
 ```
 
- This call raises an ```PlanStatusError``` if there was a problem processing your transaction. The ```PlanStatusError``` contains some information about your transaction. You can handle this as such:
+ This call raises a ```PlanStatusError``` if there was a problem processing your transaction. The ```PlanStatusError``` contains some information about your transaction. You can handle this as such:
 
 ```
 try: 
@@ -1748,7 +1748,7 @@ A sample activateSubscription call is:
 res2 = rave.Subscriptions.activateSubscription(900)
 ```
 
- This call raises an ```PlanStatusError``` if there was a problem processing your transaction. The ```PlanStatusError``` contains some information about your transaction. You can handle this as such:
+ This call raises a ```PlanStatusError``` if there was a problem processing your transaction. The ```PlanStatusError``` contains some information about your transaction. You can handle this as such:
 
 ```
 try: 
@@ -1799,7 +1799,7 @@ This is used to initiate and manage payouts
 
 ### ```.createPlan(planDetails)```
 
-This allows a customer to create a payment plan. It requires a dict ```planDetails``` containing ```amount```, ```,name```, ```interval```, ```,```,```duration```. 
+This allows a customer to create a payment plan. It requires a dict ```planDetails``` containing ```amount```, ```name```, ```interval```, ```duration```. 
 >amount: this is the amount for the plan
 
 >name: This is what would appear on the subscription reminder email
@@ -1877,7 +1877,7 @@ This call returns a dictionary. A sample response is:
 
  ```
 
- This call raises an ```PlanStatusError``` if there was a problem processing your transaction. The ```PlanStatusError``` contains some information about your transaction. You can handle this as such:
+ This call raises a ```PlanStatusError``` if there was a problem processing your transaction. The ```PlanStatusError``` contains some information about your transaction. You can handle this as such:
 
 ```
 try: 
@@ -1909,7 +1909,7 @@ This call returns a dictionary. A sample response is:
  {'error': False, 'returnedData': {'status': 'success', 'message': 'QUERIED-PAYMENTPLANS', 'data': {'page_info': {'total': 1, 'current_page': 1, 'total_pages': 1}, 'paymentplans': [{'id': 890, 'name': 'Ultimate Play', 'amount': 1, 'interval': 'dai', 'duration': 5, 'status': 'active', 'currency': 'NGN', 'plan_token': 'rpp_af8ea4d5d785d08f47d8', 'date_created': '2018-10-09T10:03:00.000Z'}]}}}
  ```
 
- This call raises an ```PlanStatusError``` if there was a problem processing your transaction. The ```PlanStatusError``` contains some information about your transaction. You can handle this as such:
+ This call raises a ```PlanStatusError``` if there was a problem processing your transaction. The ```PlanStatusError``` contains some information about your transaction. You can handle this as such:
 
 ```
 try: 
@@ -1939,7 +1939,7 @@ This call returns a dictionary. A sample response is:
  {'error': False, 'returnedData': {'status': 'success', 'message': 'PLAN-CANCELED', 'data': {'id': 890, 'name': 'Ultimate Play', 'uuid': 'rpp_af8ea4d5d785d08f47d8', 'status': 'cancelled', 'start': None, 'stop': None, 'initial_charge_amount': None, 'currency': 'NGN', 'amount': 1, 'duration': 5, 'interval': 'dai', 'createdAt': '2018-10-09T10:03:00.000Z', 'updatedAt': '2018-10-09T10:17:14.000Z', 'deletedAt': None, 'AccountId': 5949, 'paymentpageId': None}}}
  ```
 
- This call raises an ```PlanStatusError``` if there was a problem processing your transaction. The ```PlanStatusError``` contains some information about your transaction. You can handle this as such:
+ This call raises a ```PlanStatusError``` if there was a problem processing your transaction. The ```PlanStatusError``` contains some information about your transaction. You can handle this as such:
 
 ```
 try: 
@@ -1977,7 +1977,7 @@ This call returns a dictionary. A sample response is:
  {'error': False, 'returnedData': {'status': 'success', 'message': 'PLAN-EDITED', 'data': {'id': 880, 'name': "Jack's Plan", 'uuid': 'rpp_237e94690d8e7089c07b', 'status': 'active', 'start': None, 'stop': None, 'initial_charge_amount': None, 'currency': 'NGN', 'amount': 1, 'duration': 5, 'interval': 'dai', 'createdAt': '2018-10-05T17:13:16.000Z', 'updatedAt': '2018-10-09T10:25:25.000Z', 'deletedAt': None, 'AccountId': 5949, 'paymentpageId': None}}}
  ```
 
- This call raises an ```PlanStatusError``` if there was a problem processing your transaction. The ```PlanStatusError``` contains some information about your transaction. You can handle this as such:
+ This call raises a ```PlanStatusError``` if there was a problem processing your transaction. The ```PlanStatusError``` contains some information about your transaction. You can handle this as such:
 
 ```
 try: 
@@ -2042,4 +2042,4 @@ They can be run like so:
 
 >**NOTE:** If the test fails for creating a subaccount, just change the ```account_number``` ```account_bank```  and ```businesss_email``` to something different
 
->**NOTE:** The test may fail for account validation - ``` Pending OTP validation``` depending of whether the service is down or not
+>**NOTE:** The test may fail for account validation - ``` Pending OTP validation``` depending on whether the service is down or not
