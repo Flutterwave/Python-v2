@@ -256,7 +256,7 @@ Once this is done, call ```rave.Card.verify``` passing in the ```txRef``` return
 
 ```{'flwRef': None, 'cardToken': u'flw-t1nf-5b0f12d565cd961f73c51370b1340f1f-m03k', 'chargedAmount': 1000, 'amount': 1000, 'transactionComplete': True, 'error': False, 'txRef': 'MC-7666-YU'}```
 
-```rave.Card.verify``` raises a ```TransactionVerificationError``` if an invalid ```txRef`` is supplied. You can handle this as such:
+```rave.Card.verify``` raises a ```TransactionVerificationError``` if an invalid ```txRef``` is supplied. You can handle this as such:
 
  ```
 try: 
