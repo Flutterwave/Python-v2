@@ -1867,6 +1867,7 @@ except RaveExceptions.ServerError as e:
 ```
 
 <br>
+
 ## ```rave.PaymentPlan```
 
 This is used to initiate and manage payouts
@@ -2112,7 +2113,9 @@ except RaveExceptions.ServerError as e:
 ## ```rave.Ussd```
 
 >**NOTE:** This payment option is still in beta mode.
+
 <br>
+
 ## ```rave.VirtualCard```
 
 This is used to create virtual cards and carry out other virtual card operations.
@@ -2177,6 +2180,7 @@ except RaveExceptions.IncompleteCardDetailsError as e:
 
 
 <br>
+
 ## Run Tests
 
 All of the SDK's test are written with python's ```unittest``` module. The tests currently test:
