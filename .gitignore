@@ -15,6 +15,7 @@ test_tokenized.py
 payment_plan.py
 charge_saved_card.py
 rwanda.py
+franc_test.py
 .env
 build/
 dist/
