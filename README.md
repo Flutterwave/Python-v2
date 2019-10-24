@@ -2162,7 +2162,7 @@ print(res)
 This call returns a dictionary. A sample response is:
 
 ```py
-{'error': False, 'id': 890, 'data': {'id': 890, 'name': 'Ultimate Play', 'amount': 1, 'interval': 'dai', 'duration': 5, 'status': 'active', 'currency': 'NGN', 'plan_token': 'rpp_af8ea4d5d785d08f47d8', 'date_created': '2018-10-09T10:03:00.000Z'}}
+{"status": "success", "message": "Card created successfully", "data": {"id": "c3ff3ac4-784b-4d07-9fc7-b5b9cde75752", "AccountId": 507, "amount": "100.00", "currency": "NGN", "card_hash": "c3ff3ac4-784b-4d07-9fc7-b5b9cde75752", "cardpan": "5563389915692128", "maskedpan": "556338*******2128", "city": "Lekki", "state": "Lagos", "address_1": "8, Providence Street", "address_2": null, "zip_code": "100001", "cvv": "408", "expiration": "2022-01", "send_to": null, "bin_check_name": null, "card_type": "mastercard", "name_on_card": "Corvus james", "date_created": "2019-01-30T16:45:45.550663+00:00", "is_active": true}}
 ```
 
  This call raises an ```IncompleteCardDetailsError``` if there was a problem processing your transaction. The ```IncompleteCardDetailsError``` contains some information about your transaction. You can handle this as such:
