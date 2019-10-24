@@ -9,6 +9,9 @@ class RaveBase(object):
         # config variables (protected)
         self._baseUrlMap = ["https://ravesandboxapi.flutterwave.com/", "https://api.ravepay.co/"]
         self._endpointMap = {
+            "bills": {
+                "create":"v2/services/confluence",
+            },
             "card": {
                 "charge": "flwv3-pug/getpaidx/api/charge",
                 "validate": "flwv3-pug/getpaidx/api/validatecharge",

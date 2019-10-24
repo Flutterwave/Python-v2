@@ -15,6 +15,7 @@ from rave_python.rave_subaccounts import SubAccount
 from rave_python.rave_subscription import Subscriptions
 from rave_python.rave_virtualcard import VirtualCard
 from rave_python.rave_virtualaccount import VirtualAccount
+from rave_python.rave_bills import Bills
 
 class Rave:
     
@@ -30,6 +31,12 @@ class Rave:
             rave.RWMobile -- For Rwanda mobile money transactions\n
             rave.Francophone -- For West African Francophone mobile money transactions\n
             rave.Mpesa -- For mpesa transactions\n
+            rave.Transfer -- For Payouts and transfers\n
+            rave.PaymentPlan -- For payment plan creation and operation\n
+            rave.SubAccount -- For creation of subaccounts for split payment operations\n
+            rave.VirtualCard -- For virtual card transactions\n 
+            rave.VirtualAccount -- For virtual account transactions\n
+            rave.Bills -- For Bills payments\n
         """
         
         # Creating member objects already initiated with the publicKey and secretKey
@@ -52,5 +59,6 @@ class Rave:
         self.Transfer = Transfer(publicKey, secretKey, production, usingEnv)
         self.VirtualCard = VirtualCard(publicKey, secretKey, production, usingEnv)
         self.VirtualAccount = VirtualAccount(publicKey, secretKey, production, usingEnv)
+        self.Bills = Bills(publicKey, secretKey, production, usingEnv)
         
         
