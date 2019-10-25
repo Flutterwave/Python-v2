@@ -18,6 +18,7 @@ class RaveBase(object):
                 "verify": "flwv3-pug/getpaidx/api/v2/verify",
                 "chargeSavedCard": "flwv3-pug/getpaidx/api/tokenized/charge",
             },
+            "ebills": {},
             "preauth": {
                 "charge": "flwv3-pug/getpaidx/api/tokenized/preauth_charge",
                 "capture": "flwv3-pug/getpaidx/api/capture",
@@ -40,6 +41,10 @@ class RaveBase(object):
                 "list": "v2/gpx/subscriptions/query",
                 "cancel": "v2/gpx/subscriptions/",
                 "activate" : "v2/gpx/subscriptions/"
+            },
+            "settlements": {
+                "list": "v2/merchant/settlements",
+                "fetch": "v2/merchant/settlements/",
             },
             "subaccount": {
                 "create": "v2/gpx/subaccounts/create",
