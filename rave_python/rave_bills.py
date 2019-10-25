@@ -37,24 +37,6 @@ class Bills(RaveBase):
         else:
             raise CardCreationError({"error": True, "data": responseJson["data"]})
 
-    def _handleCardStatusRequests(self, type, endpoint, isPostRequest=False, data=None):
-        #check if resposnse is a post response
-        if isPostRequest:
-            response = requests.post(endpoint, headers=self.headers, data=json.dumps(data))
-        else:
-            response = requests.get(endpoint, headers=self.headers)
-        
-        #check if it can be parsed to JSON
-        try:
-            responseJson = response.json()
-        except:
-            raise ServerError({"error": True, "errMsg": response.text})
-
-        if response.ok:
-            return {"error": False, "returnedData": responseJson}
-        else:
-            raise BillStatusError(type, {"error": True, "returnedData": responseJson })
-
     #function to create a Bill
     #Params: details - a dict containing service, service_method, service_version, service_channel and service_payload
     #if duration is not passed, any subscribed customer will be charged #indefinitely
