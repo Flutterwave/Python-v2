@@ -53,26 +53,4 @@ class Rave:
             attr = _class(publicKey, secretKey, production, usingEnv)
             setattr(self, _class.__name__, attr)
         
-        # # Creating member objects already initiated with the publicKey and secretKey
-        # self.Card = Card(publicKey, secretKey, production, usingEnv)
-        # self.Preauth = Preauth(publicKey, secretKey, production, usingEnv)
-        # self.PaymentPlan = PaymentPlan(publicKey, secretKey, production, usingEnv)
-        # self.SubAccount = SubAccount(publicKey, secretKey, production, usingEnv)
-        # self.Subscriptions = Subscriptions(publicKey, secretKey, production, usingEnv)
-        # # These all use the account endpoint till further changes, the enpoint maps are defined in rave_base
-        # self.Account = Account(publicKey, secretKey, production, usingEnv)
-        # self.Ussd = Ussd(publicKey, secretKey, production, usingEnv)
-        # self.GhMobile = GhMobile(publicKey, secretKey, production, usingEnv)
-        # self.ZBMobile = ZBMobile(publicKey, secretKey, production, usingEnv)
-        # self.RWMobile = RWMobile(publicKey, secretKey, production, usingEnv)
-        # self.UGMobile = UGMobile(publicKey, secretKey, production, usingEnv)
-        # self.Francophone = Francophone(publicKey, secretKey, production, usingEnv)
-        # self.RWMobile = RWMobile(publicKey, secretKey, production, usingEnv)
-        # self.Mpesa = Mpesa(publicKey, secretKey, production, usingEnv)
-        # # Transfer endpoint
-        # self.Transfer = Transfer(publicKey, secretKey, production, usingEnv)
-        # self.VirtualCard = VirtualCard(publicKey, secretKey, production, usingEnv)
-        # self.VirtualAccount = VirtualAccount(publicKey, secretKey, production, usingEnv)
-        # self.Bills = Bills(publicKey, secretKey, production, usingEnv)
-        
-        
+      
