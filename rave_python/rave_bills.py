@@ -35,7 +35,7 @@ class Bills(RaveBase):
             return {"error": False, "id": responseJson["data"].get("id", None), "data": responseJson["data"] }
 
         else:
-            raise CardCreationError({"error": True, "data": responseJson["data"]})
+            raise BillCreationError({"error": True, "data": responseJson["data"]})
 
 
     #function to create a Bill

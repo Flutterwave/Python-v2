@@ -1,6 +1,7 @@
 from rave_python.rave_account import Account
 from rave_python.rave_bills import Bills
 from rave_python.rave_card import Card
+from rave_python.rave_ebills import Ebills
 from rave_python.rave_francophone import Francophone
 from rave_python.rave_ghmobile import GhMobile
 from rave_python.rave_mpesa import Mpesa
@@ -46,7 +47,7 @@ class Rave:
         """
 
         classes = (
-            Account, Bills, Card, Francophone, GhMobile, Mpesa, PaymentPlan, Preauth, RWMobile, Settlement, SubAccount, Subscriptions, Transfer, UGMobile, Ussd, VirtualAccount, VirtualCard, ZBMobile
+            Account, Bills, Card, Ebills, Francophone, GhMobile, Mpesa, PaymentPlan, Preauth, RWMobile, Settlement, SubAccount, Subscriptions, Transfer, UGMobile, Ussd, VirtualAccount, VirtualCard, ZBMobile
         )
 
         for _class in classes:

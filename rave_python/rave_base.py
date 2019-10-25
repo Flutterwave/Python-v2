@@ -18,7 +18,10 @@ class RaveBase(object):
                 "verify": "flwv3-pug/getpaidx/api/v2/verify",
                 "chargeSavedCard": "flwv3-pug/getpaidx/api/tokenized/charge",
             },
-            "ebills": {},
+            "ebills": {
+                "create": "flwv3-pug/getpaidx/api/ebills/generateorder",
+                "update": "flwv3-pug/getpaidx/api/ebills/update",
+            },
             "preauth": {
                 "charge": "flwv3-pug/getpaidx/api/tokenized/preauth_charge",
                 "capture": "flwv3-pug/getpaidx/api/capture",
