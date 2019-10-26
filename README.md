@@ -101,7 +101,7 @@ This is called to start a card transaction. The payload should be a dictionary c
 
 * ```IP```
 
-Optionally, you can add a custom transaction reference using the ```txRef``` parameter. Note that if you do not specify one, it would be automatically generated. We do provide a function for generating transaction references in the Misc library (add link).
+Optionally, you can add a custom transaction reference using the ```txRef``` parameter. Note that if you do not specify one, it would be automatically generated. We do provide a function for generating transaction references in the [Misc library](https://github.com/Flutterwave/rave-python/blob/master/rave_python/rave_misc.py).
 
 
 A sample call is:
@@ -245,7 +245,7 @@ This is called to start a card transaction with a card that has been saved. The 
 * ```currency```
 
 #### NB: email must be the same as before the card was saved
-Optionally, you can add a custom transaction reference using the ```txRef``` parameter. Note that if you do not specify one, it would be automatically generated. We do provide a function for generating transaction references in the Misc library (add link).
+Optionally, you can add a custom transaction reference using the ```txRef``` parameter. Note that if you do not specify one, it would be automatically generated. We do provide a function for generating transaction references in the [Misc library](https://github.com/Flutterwave/rave-python/blob/master/rave_python/rave_misc.py).
 
 A sample call is:
 
@@ -378,7 +378,7 @@ This is called to start an account transaction. The payload should be a dictiona
 
 * ```IP```
 
-Optionally, you can add a custom transaction reference using the ```txRef``` parameter. Note that if you do not specify one, it would be automatically generated. We do provide a function for generating transaction references in the Misc library (add link).
+Optionally, you can add a custom transaction reference using the ```txRef``` parameter. Note that if you do not specify one, it would be automatically generated. We do provide a function for generating transaction references in the [Misc library](https://github.com/Flutterwave/rave-python/blob/master/rave_python/rave_misc.py).
 
 
 A sample call is:
@@ -560,7 +560,7 @@ This is called to start a Ghana mobile money transaction. The payload should be 
 
 * ```redirect_url```
 
-Optionally, you can add a custom transaction reference using the ```txRef``` parameter. Note that if you do not specify one, it would be automatically generated. We do provide a function for generating transaction references in the Misc library (add link).
+Optionally, you can add a custom transaction reference using the ```txRef``` parameter. Note that if you do not specify one, it would be automatically generated. We do provide a function for generating transaction references in the [Misc library](https://github.com/Flutterwave/rave-python/blob/master/rave_python/rave_misc.py).
 
 
 A sample call is:
@@ -670,7 +670,7 @@ This is called to start an Mpesa transaction. The payload should be a dictionary
 
 * ```IP```
 
-Optionally, you can add a custom transaction reference using the ```txRef``` parameter. Note that if you do not specify one, it would be automatically generated. We do provide a function for generating transaction references in the Misc library (add link).
+Optionally, you can add a custom transaction reference using the ```txRef``` parameter. Note that if you do not specify one, it would be automatically generated. We do provide a function for generating transaction references in the [Misc library](https://github.com/Flutterwave/rave-python/blob/master/rave_python/rave_misc.py).
 
 
 A sample call is:
@@ -780,7 +780,7 @@ This is called to start a Ugandan mobile money transaction. The payload should b
 
 * ```redirect_url```
 
-Optionally, you can add a custom transaction reference using the ```txRef``` parameter. Note that if you do not specify one, it would be automatically generated. We do provide a function for generating transaction references in the Misc library (add link).
+Optionally, you can add a custom transaction reference using the ```txRef``` parameter. Note that if you do not specify one, it would be automatically generated. We do provide a function for generating transaction references in the [Misc library](https://github.com/Flutterwave/rave-python/blob/master/rave_python/rave_misc.py).
 
 
 A sample call is:
@@ -890,7 +890,7 @@ This is called to start a Zambian mobile money transaction. The payload should b
 
 * ```redirect_url```
 
-Optionally, you can add a custom transaction reference using the ```txRef``` parameter. Note that if you do not specify one, it would be automatically generated. We do provide a function for generating transaction references in the Misc library (add link).
+Optionally, you can add a custom transaction reference using the ```txRef``` parameter. Note that if you do not specify one, it would be automatically generated. We do provide a function for generating transaction references in the [Misc library](https://github.com/Flutterwave/rave-python/blob/master/rave_python/rave_misc.py).
 
 
 A sample call is:
@@ -1000,7 +1000,7 @@ This is called to start a francophone mobile money transaction. The payload shou
 
 * ```redirect_url```
 
-Optionally, you can add a custom transaction reference using the ```txRef``` parameter. Note that if you do not specify one, it would be automatically generated. We do provide a function for generating transaction references in the Misc library (add link).
+Optionally, you can add a custom transaction reference using the ```txRef``` parameter. Note that if you do not specify one, it would be automatically generated. We do provide a function for generating transaction references in the [Misc library](https://github.com/Flutterwave/rave-python/blob/master/rave_python/rave_misc.py).
 
 
 A sample call is:
