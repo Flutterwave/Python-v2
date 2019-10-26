@@ -1296,6 +1296,7 @@ except RaveExceptions.TransactionVerificationError as e:
 ```
 
 <br>
+
 ## ```rave.SubAccount```
 
 This is used to initiate and manage payouts
@@ -2183,7 +2184,7 @@ except RaveExceptions.IncompleteCardDetailsError as e:
 
 ## Run Tests
 
-All of the SDK's test are written with python's ```unittest``` module. The tests currently test:
+All of the SDK's tests are written with Python's ```unittest``` module. The tests currently test:
 ```rave.Account```
 ```rave.Card```
 ```rave.Transfer```
