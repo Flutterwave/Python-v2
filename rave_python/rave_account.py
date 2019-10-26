@@ -1,8 +1,7 @@
-from rave_python.rave_exceptions import RaveError, IncompletePaymentDetailsError, AccountChargeError, TransactionVerificationError, TransactionValidationError, ServerError
-
-from rave_python.rave_payment import Payment
+from rave_python.rave_exceptions import AccountChargeError
 from rave_python.rave_misc import generateTransactionReference
-import json
+from rave_python.rave_payment import Payment
+
 
 class Account(Payment):
     """ This is the rave object for account transactions. It contains the following public functions:\n
@@ -10,33 +9,30 @@ class Account(Payment):
         .validate -- This is called if further action is required i.e. OTP validation\n
         .verify -- This checks the status of your transaction\n
     """
-    def __init__(self, publicKey, secretKey, production, usingEnv):
-            super(Account, self).__init__(publicKey, secretKey, production, usingEnv)
-
-
     def _handleChargeResponse(self, response, txRef, request=None):
         """ This handles account charge responses """
         # This checks if we can parse the json successfully
         res =  self._preliminaryResponseChecks(response, AccountChargeError, txRef=txRef)
 
-        responseJson = res["json"]
+        response_json = res['json']
         # change - added data before flwRef
-        flwRef = responseJson['data']["flwRef"]
-        
+        response_data = response_json['data']
+        flw_ref = response_data['flwRef']
+
         # If all preliminary checks are passed
-        if not (responseJson["data"].get("chargeResponseCode", None) == "00"):
+        data = {
+            'error': False,
+            'validationRequired': True,
+            'txRef': txRef,
+            'flwRef': flw_ref,
+            'authUrl': None,
+        }
+        if response_data.get("chargeResponseCode") != "00":
             # If contains authurl
-            if not (responseJson["data"].get("authurl", "NO-URL") == "NO-URL"):
-                authUrl = responseJson["data"].get("authurl", "NO-URL")
-                return {"error": False, "validationRequired": True, "txRef": txRef, "flwRef": flwRef, "authUrl": authUrl}
-            # If it doesn't
-            else:
-                return {"error": False, "validationRequired": True, "txRef": txRef, "flwRef": flwRef, "authUrl": None}
-
+            data['authUrl'] = response_data.get("authurl")  # None by default
         else:
-            return {"error": False, "validationRequired": False, "txRef": txRef, "flwRef": flwRef, "authUrl": None, "validateInstructions": responseJson['data']["validateInstructions"]}
-    
-
+            data['validateInstructions'] = response_data['validateInstructions']
+        return data
 
     # Charge account function
     def charge(self, accountDetails, hasFailed=False):
@@ -47,20 +43,18 @@ class Account(Payment):
         """
 
         # setting the endpoint
-        endpoint = self._baseUrl + self._endpointMap["account"]["charge"]
+        endpoint = self._baseUrl + self._endpointMap['account']['charge']
 
         # It is faster to just update rather than check if it is already present
-        accountDetails.update({"payment_type": "account"})
-        # Here we check because txRef could be set by user
-        if not ("txRef" in accountDetails):
-            accountDetails.update({"txRef": generateTransactionReference()})
+        accountDetails.update({'payment_type': 'account'})
+
+        # Generate transaction reference if txRef doesn't exist
+        accountDetails.setdefault('txRef', generateTransactionReference())
+
         # Checking for required account components
-        requiredParameters = ["accountbank", "accountnumber", "amount", "email", "phonenumber", "IP"]
-        return super(Account, self).charge(accountDetails, requiredParameters, endpoint)
+        requiredParameters = ['accountbank', 'accountnumber', 'amount', 'email', 'phonenumber', 'IP']
+        return super().charge(accountDetails, requiredParameters, endpoint)
 
     def verify(self, txRef):
-        endpoint = self._baseUrl + self._endpointMap["account"]["verify"]
-        return super(Account, self).verify(txRef, endpoint)
-
-
-
+        endpoint = self._baseUrl + self._endpointMap['account']['verify']
+        return super().verify(txRef, endpoint)
