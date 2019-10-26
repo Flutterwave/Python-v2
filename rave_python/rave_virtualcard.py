@@ -69,12 +69,13 @@ class VirtualCard(RaveBase):
         response = requests.post(endpoint, headers=self.headers, data=json.dumps(vcardDetails))
         return self._handleCreateResponse(response, vcardDetails)
 
-    #gets all subaccounts connected to a merchant's account
+    #gets all virtual cards connected to a merchant's account
     def allCards(self):
         endpoint = self._baseUrl + self._endpointMap["virtual_card"]["list"] + "?seckey="+ self._getSecretKey()
         data = {"seckey": self._getSecretKey()}
         return self._handleCardStatusRequests("List", endpoint, isPostRequest=True, data=data)
 
+    #permanently deletes a card with specified id 
     def cancelCard(self, card_id):
         if not id:
             return "Card id was not supplied. Kindly supply one"
@@ -82,21 +83,25 @@ class VirtualCard(RaveBase):
         data = {"seckey": self._getSecretKey()}
         return self._handleCardStatusRequests("Cancel", endpoint, isPostRequest=True, data=data)
 
+    #fetches Card details and transactions for a cars with specified id
     def getCard(self, card_id):
         endpoint = self._baseUrl + self._endpointMap["virtual_card"]["get"]
         data = {"seckey": self._getSecretKey()}
         return self._handleCardStatusRequests("Get", endpoint, isPostRequest=True, data=data)
 
+    #temporarily suspends the use of card
     def freezeCard(self, card_id):
         endpoint = self._baseUrl + self._endpointMap["virtual_card"]["freeze"] + str(card_id) + "/status/block"
         data = {"seckey": self._getSecretKey()}
         return self._handleCardStatusRequests("Freeze", endpoint, isPostRequest=True, data=data)
 
+    #reverses the freeze card operation
     def unfreezeCard(self, card_id):
         endpoint = self._baseUrl + self._endpointMap["virtual_card"]["unfreeze"] + str(card_id) + "/status/unblock"
         data = {"seckey": self._getSecretKey()}
         return self._handleCardStatusRequests("Unfreeze", endpoint, isPostRequest=True, data=data)
 
+    #funds a card with specified balance for online transactions
     def fundCard(self, card_id, amount, currency):
         data = {
             "card_id": card_id,
@@ -107,6 +112,7 @@ class VirtualCard(RaveBase):
         endpoint = self._baseUrl + self._endpointMap["virtual_card"]["fund"]
         return self._handleCardStatusRequests("Fund", endpoint, isPostRequest=True, data=data)
 
+    #withdraws funds from Virtual card. Withdrawn funds are added to Rave Balance
     def Withdraw(self, card_id, amount):
         data = {
             "card_id": card_id,

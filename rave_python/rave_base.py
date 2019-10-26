@@ -9,11 +9,18 @@ class RaveBase(object):
         # config variables (protected)
         self._baseUrlMap = ["https://ravesandboxapi.flutterwave.com/", "https://api.ravepay.co/"]
         self._endpointMap = {
+            "bills": {
+                "create":"v2/services/confluence",
+            },
             "card": {
                 "charge": "flwv3-pug/getpaidx/api/charge",
                 "validate": "flwv3-pug/getpaidx/api/validatecharge",
                 "verify": "flwv3-pug/getpaidx/api/v2/verify",
                 "chargeSavedCard": "flwv3-pug/getpaidx/api/tokenized/charge",
+            },
+            "ebills": {
+                "create": "flwv3-pug/getpaidx/api/ebills/generateorder",
+                "update": "flwv3-pug/getpaidx/api/ebills/update",
             },
             "preauth": {
                 "charge": "flwv3-pug/getpaidx/api/tokenized/preauth_charge",
@@ -37,6 +44,10 @@ class RaveBase(object):
                 "list": "v2/gpx/subscriptions/query",
                 "cancel": "v2/gpx/subscriptions/",
                 "activate" : "v2/gpx/subscriptions/"
+            },
+            "settlements": {
+                "list": "v2/merchant/settlements",
+                "fetch": "v2/merchant/settlements/",
             },
             "subaccount": {
                 "create": "v2/gpx/subaccounts/create",

@@ -2,6 +2,7 @@
 
 ## Introduction
 This is a Python wrapper around the [API](https://flutterwavedevelopers.readme.io/v2.0/reference) for [Rave by Flutterwave](https://rave.flutterwave.com).
+
 #### Payment types implemented:
 * Card Payments
 * Bank Account Payments
@@ -13,8 +14,16 @@ This is a Python wrapper around the [API](https://flutterwavedevelopers.readme.i
 * Subaccounts
 * Transfer
 * Subscription (Recurring Payments)
+* Bills payment
 * Payment Plan
 * USSD Payments (Still in Beta Mode)
+
+#### Other features include:
+* Refunds
+* Transaction Verification
+* Virtual Cards
+* Virtual Accounts
+
 ## Installation
 To install, run
 
@@ -2108,6 +2117,71 @@ except RaveExceptions.ServerError as e:
 
 <br>
 
+## ```rave.VirtualCard```
+
+This is used to create virtual cards and carry out other virtual card operations.
+
+
+**Functions included:**
+
+* ```.Create```
+
+* ```.allCards```
+
+* ```.getCard```
+
+* ```.cancelCard```
+
+* ```.freezeCard```
+
+* ```.unfreezeCard```
+
+* ```.fundCard```
+
+* ```.withdraw```
+<br>
+
+### ```.Create(vcardDetails)```
+
+This allows a customer to create a virtual card. It requires a dict ```vcardDetails``` containing ```currency```, ```amount```, ```billing name```, ```billing address```, ```billing city```, ```billing state```, ```billing postal code```, ```billing country```
+
+A sample Create call is:
+
+```py
+ res = rave.VirtualCard.CreatePlan({
+    "currency": "NGN",
+    "amount": "100",
+    "billing_name": "Corvus james",
+    "billing_address": "8, Providence Street",
+    "billing_city": "Lekki",
+    "billing_state": "Lagos",
+    "billing_postal_code": "100001",
+    "billing_country": "NG",
+ })
+print(res)
+```
+
+#### Returns
+
+This call returns a dictionary. A sample response is:
+
+```py
+{"status": "success", "message": "Card created successfully", "data": {"id": "c3ff3ac4-784b-4d07-9fc7-b5b9cde75752", "AccountId": 507, "amount": "100.00", "currency": "NGN", "card_hash": "c3ff3ac4-784b-4d07-9fc7-b5b9cde75752", "cardpan": "5563389915692128", "maskedpan": "556338*******2128", "city": "Lekki", "state": "Lagos", "address_1": "8, Providence Street", "address_2": null, "zip_code": "100001", "cvv": "408", "expiration": "2022-01", "send_to": null, "bin_check_name": null, "card_type": "mastercard", "name_on_card": "Corvus james", "date_created": "2019-01-30T16:45:45.550663+00:00", "is_active": true}}
+```
+
+ This call raises an ```IncompleteCardDetailsError``` if there was a problem processing your transaction. The ```IncompleteCardDetailsError``` contains some information about your transaction. You can handle this as such:
+
+```py
+try: 
+    #Your charge call
+except RaveExceptions.IncompleteCardDetailsError as e:
+    print(e.err["errMsg"])
+    print(e.err["flwRef"])
+```
+
+
+<br>
+
 ## Run Tests
 
 All of the SDK's tests are written with Python's ```unittest``` module. The tests currently test:
@@ -2128,3 +2202,4 @@ python test.py
 >**NOTE:** If the test fails for creating a subaccount, just change the ```account_number``` ```account_bank```  and ```businesss_email``` to something different
 
 >**NOTE:** The test may fail for account validation - ``` Pending OTP validation``` depending on whether the service is down or not
+

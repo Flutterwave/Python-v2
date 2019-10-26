@@ -5,11 +5,11 @@ class RaveError(Exception):
         pass
 
 # Non-Transaction related errors
-class IncompletePaymentDetailsError(RaveError):
-    """ Raised when card details are incomplete """
+class IncompleteAccountDetailsError(RaveError):
+    """ Raised when details for card creation are incomplete"""
     def __init__(self, value, requiredParameters):
-        msg =  "\n\""+value+"\" was not defined in your dictionary. Please ensure you have supplied the following in the payload: \n "+'  \n '.join(requiredParameters)
-        super(IncompletePaymentDetailsError, self).__init__(msg)
+        msg = "\n\""+value+"\" was not defined in your dictionary. Please ensure you have supplied the following in the payload: \n "+' \n '.join(requiredParameters)
+        super(IncompleteAccountDetailsError, self).__init__(msg)
 
 class IncompleteCardDetailsError(RaveError):
     """ Raised when details for card creation are incomplete"""
@@ -17,11 +17,11 @@ class IncompleteCardDetailsError(RaveError):
         msg = "\n\""+value+"\" was not defined in your dictionary. Please ensure you have supplied the following in the payload: \n "+' \n '.join(requiredParameters)
         super(IncompleteCardDetailsError, self).__init__(msg)
 
-class IncompleteAccountDetailsError(RaveError):
-    """ Raised when details for card creation are incomplete"""
+class IncompletePaymentDetailsError(RaveError):
+    """ Raised when card details are incomplete """
     def __init__(self, value, requiredParameters):
-        msg = "\n\""+value+"\" was not defined in your dictionary. Please ensure you have supplied the following in the payload: \n "+' \n '.join(requiredParameters)
-        super(IncompleteAccountDetailsError, self).__init__(msg)
+        msg =  "\n\""+value+"\" was not defined in your dictionary. Please ensure you have supplied the following in the payload: \n "+'  \n '.join(requiredParameters)
+        super(IncompletePaymentDetailsError, self).__init__(msg)
 
 class AuthMethodNotSupportedError(RaveError):
     """ Raised when user requests for an auth method not currently supported by rave-python """
@@ -30,19 +30,19 @@ class AuthMethodNotSupportedError(RaveError):
         super(AuthMethodNotSupportedError, self).__init__(msg)
 
 # Transaction related errors
-class CardChargeError(RaveError):
-    """ Raised when card charge has failed """
-    def __init__(self, err):
-        self.err = err
-    def __str__(self):
-        return "Your card charge call failed with message: "+self.err["errMsg"]
-
 class AccountChargeError(RaveError):
     """ Raised when account charge has failed """
     def __init__(self, err):
         self.err = err
     def __str__(self):
         return "Your account charge call failed with message: "+self.err["errMsg"]
+        
+class CardChargeError(RaveError):
+    """ Raised when card charge has failed """
+    def __init__(self, err):
+        self.err = err
+    def __str__(self):
+        return "Your card charge call failed with message: "+self.err["errMsg"]
 
 class MobileChargeError(RaveError):
     """ Raised when mobile money charge has failed """
@@ -166,6 +166,15 @@ class AccountStatusError(RaveError):
     def __str__(self):
         return self.type +"ing account failed with error: " + self.err["errMsg"]
 
+class BillStatusError(RaveError):
+    """Raised when fetching a Bill status"""
+    def __init__(self, type, err):
+        self.err = err
+        self.type = type
+
+    def __str__(self):
+        return self.type +"ing bill failed with error: " + self.err["errMsg"]
+
 class SubaccountCreationError(RaveError):
     """ Raised when creating a payment plan fails """
     def __init__(self, err):
@@ -189,3 +198,11 @@ class AccountCreationError(RaveError):
     
     def  __str__(self):
         return "Virtual account creation failed with error: " +self.err["errMsg"]
+
+class BillCreationError(RaveError):
+    """ Raised when creating a Bill fails """
+    def __init__(self, err):
+        self.err = err
+    
+    def  __str__(self):
+        return "Bill creation failed with error: " +self.err["errMsg"]
