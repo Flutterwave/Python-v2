@@ -38,7 +38,7 @@ class Settlement(RaveBase):
             raise CardCreationError({"error": True, "data": responseJson["data"]})
 
     def _handleCardStatusRequests(self, type, endpoint, isPostRequest=False, data=None):
-        #check if resposnse is a post response
+        #check if response is a post response
         if isPostRequest:
             response = requests.post(endpoint, headers=self.headers, data=json.dumps(data))
         else:

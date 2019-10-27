@@ -1,4 +1,4 @@
-""" Miscallaneous helper functions """
+""" Miscellaneous helper functions """
 import time
 from rave_python.rave_exceptions import IncompletePaymentDetailsError, AuthMethodNotSupportedError
 # Helper function to generate unique transaction reference
@@ -89,7 +89,7 @@ def updatePayload(suggestedAuth, payload, **kwargs):
         errorMsg = "Please provide the appropriate argument for the auth method. For {}, we require a \"{}\" argument.".format(suggestedAuth["suggested_auth"], keyword)
         raise ValueError(errorMsg)
 
-    # 2) If keyword is address, checks if all required address paramaters are present
+    # 2) If keyword is address, checks if all required address parameters are present
     if keyword == "address":
         requiredAddressParameters = ["billingzip", "billingcity", "billingaddress", "billingstate", "billingcountry"]
         checkIfParametersAreComplete(requiredAddressParameters, kwargs[keyword])
