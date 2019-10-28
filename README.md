@@ -2335,16 +2335,233 @@ This call returns a dictionary. A sample response is:
 }
 ```
 
- This call raises an ```IncompleteCardDetailsError``` if there was a problem processing your transaction. The ```IncompleteCardDetailsError``` contains some information about your transaction. You can handle this as such:
+### ```.getCard()```
+
+This allows a the user to query the details of a card with a given id. 
+
+A sample Create call is:
 
 ```py
-try: 
-    #Your charge call
-except RaveExceptions.IncompleteCardDetailsError as e:
-    print(e.err["errMsg"])
-    print(e.err["flwRef"])
+card_id = "660bae3b-333c-410f-b283-2d181587247f"
+res = rave.VirtualCard.getCard(card_id)
+print(res)
 ```
 
+#### Returns
+
+This call returns a dictionary. A sample response is:
+
+```py
+{
+    "status": "success",
+    "message": "SUCCESSFUL",
+    "data": {
+        "id": "660bae3b-333c-410f-b283-2d181587247f",
+        "AccountId": 507,
+        "amount": "21.00",
+        "currency": "USD",
+        "card_hash": "660bae3b-333c-410f-b283-2d181587247f",
+        "cardpan": "5563384241646062",
+        "maskedpan": "556338*******6062",
+        "city": "Hillside",
+        "state": null,
+        "address_1": "471 mundet pl",
+        "address_2": null,
+        "zip_code": "07205",
+        "cvv": "480",
+        "expiration": "2022-01",
+        "send_to": null,
+        "bin_check_name": null,
+        "card_type": "mastercard",
+        "name_on_card": null,
+        "date_created": "2019-01-30T17:01:47.0972087+00:00",
+        "is_active": true
+    }
+}
+```
+
+### ```.cancelCard()```
+
+This allows a the user to terminate the use of a card with a given id permanently. This cancellation results in the permanent deletion of the card. 
+
+A sample Create call is:
+
+```py
+card_id = "660bae3b-333c-410f-b283-2d181587247f"
+res = rave.VirtualCard.cancelCard(card_id)
+print(res)
+```
+
+#### Returns
+
+This call returns a dictionary. A sample response is:
+
+```py
+{
+    "status": "success",
+    "message": "SUCCESSFUL",
+    "data": {
+        "id": "660bae3b-333c-410f-b283-2d181587247f",
+        "AccountId": 507,
+        "amount": "21.00",
+        "currency": "USD",
+        "card_hash": "660bae3b-333c-410f-b283-2d181587247f",
+        "cardpan": "5563384241646062",
+        "maskedpan": "556338*******6062",
+        "city": "Hillside",
+        "state": null,
+        "address_1": "471 mundet pl",
+        "address_2": null,
+        "zip_code": "07205",
+        "cvv": "480",
+        "expiration": "2022-01",
+        "send_to": null,
+        "bin_check_name": null,
+        "card_type": "mastercard",
+        "name_on_card": null,
+        "date_created": "2019-01-30T17:01:47.0972087+00:00",
+        "is_active": true
+    }
+}
+```
+
+### ```.freezeCard()```
+
+This allows a the user to terminate the use of a card with a given id temporarily. This cancellation results in the temporary suspension of the card 
+
+A sample Create call is:
+
+```py
+card_id = "660bae3b-333c-410f-b283-2d181587247f"
+res = rave.VirtualCard.freezeCard(card_id)
+print(res)
+```
+
+#### Returns
+
+This call returns a dictionary. A sample response is:
+
+```py
+{
+    "status": "success",
+    "message": "SUCCESSFUL",
+    "data": {
+        "id": "660bae3b-333c-410f-b283-2d181587247f",
+        "AccountId": 507,
+        "amount": "21.00",
+        "currency": "USD",
+        "card_hash": "660bae3b-333c-410f-b283-2d181587247f",
+        "cardpan": "5563384241646062",
+        "maskedpan": "556338*******6062",
+        "city": "Hillside",
+        "state": null,
+        "address_1": "471 mundet pl",
+        "address_2": null,
+        "zip_code": "07205",
+        "cvv": "480",
+        "expiration": "2022-01",
+        "send_to": null,
+        "bin_check_name": null,
+        "card_type": "mastercard",
+        "name_on_card": null,
+        "date_created": "2019-01-30T17:01:47.0972087+00:00",
+        "is_active": true
+    }
+}
+```
+
+### ```.unfreezeCard()```
+
+This allows a the user to resume the use of a temporarily suspended or frozen card with a given id. 
+
+A sample Create call is:
+
+```py
+card_id = "660bae3b-333c-410f-b283-2d181587247f"
+res = rave.VirtualCard.getCard(card_id)
+print(res)
+```
+
+#### Returns
+
+This call returns a dictionary. A sample response is:
+
+```py
+{
+    "status": "success",
+    "message": "SUCCESSFUL",
+    "data": {
+        "id": "660bae3b-333c-410f-b283-2d181587247f",
+        "AccountId": 507,
+        "amount": "21.00",
+        "currency": "USD",
+        "card_hash": "660bae3b-333c-410f-b283-2d181587247f",
+        "cardpan": "5563384241646062",
+        "maskedpan": "556338*******6062",
+        "city": "Hillside",
+        "state": null,
+        "address_1": "471 mundet pl",
+        "address_2": null,
+        "zip_code": "07205",
+        "cvv": "480",
+        "expiration": "2022-01",
+        "send_to": null,
+        "bin_check_name": null,
+        "card_type": "mastercard",
+        "name_on_card": null,
+        "date_created": "2019-01-30T17:01:47.0972087+00:00",
+        "is_active": true
+    }
+}
+```
+
+### ```.fundCard()```
+
+This allows a the user to add funds to a card with a given id. the `card_id`, `currency` and `amount` are passed into the `.fundCard()` method.
+
+A sample Create call is:
+
+```py
+card_id = "660bae3b-333c-410f-b283-2d181587247f"
+res = rave.VirtualCard.fundCard(card_id, "NGN", 2000)
+print(res)
+```
+
+#### Returns
+
+This call returns a dictionary. A sample response is:
+
+```py
+{
+    "Status": "success",
+    "Message": "Card was funded successfully",
+    "Reference": null
+}
+```
+
+### ```.Withdraw()```
+
+This allows a the user to withdraw funds from a card with a given id. the `card id` and `amount` are passed into the `.Withdraw()` method.
+
+A sample Create call is:
+
+```py
+card_id = "660bae3b-333c-410f-b283-2d181587247f"
+res = rave.VirtualCard.Withdraw(card_id, 1000)
+print(res)
+```
+
+#### Returns
+
+This call returns a dictionary. A sample response is:
+
+```py
+{
+    "Status": "success",
+    "Message": "Withdrawal successful",
+    "Reference": null
+}
+```
 <br>
 
 ## Run Tests
