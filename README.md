@@ -2398,30 +2398,9 @@ This call returns a dictionary. A sample response is:
 
 ```py
 {
-    "status": "success",
-    "message": "SUCCESSFUL",
-    "data": {
-        "id": "660bae3b-333c-410f-b283-2d181587247f",
-        "AccountId": 507,
-        "amount": "21.00",
-        "currency": "USD",
-        "card_hash": "660bae3b-333c-410f-b283-2d181587247f",
-        "cardpan": "5563384241646062",
-        "maskedpan": "556338*******6062",
-        "city": "Hillside",
-        "state": null,
-        "address_1": "471 mundet pl",
-        "address_2": null,
-        "zip_code": "07205",
-        "cvv": "480",
-        "expiration": "2022-01",
-        "send_to": null,
-        "bin_check_name": null,
-        "card_type": "mastercard",
-        "name_on_card": null,
-        "date_created": "2019-01-30T17:01:47.0972087+00:00",
-        "is_active": true
-    }
+  "Status": "success",
+  "Message": "Card terminated successfully",
+  "Reference": null
 }
 ```
 
@@ -2443,30 +2422,9 @@ This call returns a dictionary. A sample response is:
 
 ```py
 {
-    "status": "success",
-    "message": "SUCCESSFUL",
-    "data": {
-        "id": "660bae3b-333c-410f-b283-2d181587247f",
-        "AccountId": 507,
-        "amount": "21.00",
-        "currency": "USD",
-        "card_hash": "660bae3b-333c-410f-b283-2d181587247f",
-        "cardpan": "5563384241646062",
-        "maskedpan": "556338*******6062",
-        "city": "Hillside",
-        "state": null,
-        "address_1": "471 mundet pl",
-        "address_2": null,
-        "zip_code": "07205",
-        "cvv": "480",
-        "expiration": "2022-01",
-        "send_to": null,
-        "bin_check_name": null,
-        "card_type": "mastercard",
-        "name_on_card": null,
-        "date_created": "2019-01-30T17:01:47.0972087+00:00",
-        "is_active": true
-    }
+  "Status": "success",
+  "Message": "Card freeze successful",
+  "Reference": null
 }
 ```
 
@@ -2488,30 +2446,9 @@ This call returns a dictionary. A sample response is:
 
 ```py
 {
-    "status": "success",
-    "message": "SUCCESSFUL",
-    "data": {
-        "id": "660bae3b-333c-410f-b283-2d181587247f",
-        "AccountId": 507,
-        "amount": "21.00",
-        "currency": "USD",
-        "card_hash": "660bae3b-333c-410f-b283-2d181587247f",
-        "cardpan": "5563384241646062",
-        "maskedpan": "556338*******6062",
-        "city": "Hillside",
-        "state": null,
-        "address_1": "471 mundet pl",
-        "address_2": null,
-        "zip_code": "07205",
-        "cvv": "480",
-        "expiration": "2022-01",
-        "send_to": null,
-        "bin_check_name": null,
-        "card_type": "mastercard",
-        "name_on_card": null,
-        "date_created": "2019-01-30T17:01:47.0972087+00:00",
-        "is_active": true
-    }
+  "Status": "success",
+  "Message": "Card unfreeze successful",
+  "Reference": null
 }
 ```
 
