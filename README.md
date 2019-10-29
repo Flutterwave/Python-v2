@@ -2179,7 +2179,326 @@ except RaveExceptions.IncompleteCardDetailsError as e:
     print(e.err["flwRef"])
 ```
 
+### ```.allCards()```
 
+This allows a the user to query all cards 
+
+A sample Create call is:
+
+```py
+res = rave.VirtualCard.allCards()
+print(res)
+```
+
+#### Returns
+
+This call returns a dictionary. A sample response is:
+
+```py
+{
+    "status": "success",
+    "message": "SUCCESSFUL",
+    "data": [
+        {
+            "id": "660bae3b-333c-410f-b283-2d181587247f",
+            "AccountId": 507,
+            "amount": "1.00",
+            "currency": "USD",
+            "card_hash": "660bae3b-333c-410f-b283-2d181587247f",
+            "cardpan": "5563384241646062",
+            "maskedpan": "556338*******6062",
+            "city": "Hillside",
+            "state": "New jersey",
+            "address_1": "471 mundet pl",
+            "address_2": null,
+            "zip_code": "07205",
+            "cvv": "480",
+            "expiration": "2022-01",
+            "send_to": null,
+            "bin_check_name": null,
+            "card_type": "mastercard",
+            "name_on_card": "ruby cupp",
+            "date_created": "2019-01-26T04:00:10.263Z",
+            "is_active": true
+        },
+        {
+            "id": "6b7daf10-ade2-4633-a2ab-ea5495bb0ce2",
+            "AccountId": 507,
+            "amount": "10.00",
+            "currency": "USD",
+            "card_hash": "6b7daf10-ade2-4633-a2ab-ea5495bb0ce2",
+            "cardpan": "5563387512530188",
+            "maskedpan": "556338*******0188",
+            "city": "Hillside",
+            "state": "New jersey",
+            "address_1": "471 mundet pl",
+            "address_2": null,
+            "zip_code": "07205",
+            "cvv": "248",
+            "expiration": "2022-01",
+            "send_to": null,
+            "bin_check_name": null,
+            "card_type": "mastercard",
+            "name_on_card": "Paige graffunder",
+            "date_created": "2019-01-27T10:52:31.65Z",
+            "is_active": true
+        },
+        {
+            "id": "f32a2067-1b5e-419f-ae5c-69f968ee85db",
+            "AccountId": 507,
+            "amount": "1.00",
+            "currency": "USD",
+            "card_hash": "f32a2067-1b5e-419f-ae5c-69f968ee85db",
+            "cardpan": "5563387304903023",
+            "maskedpan": "556338*******3023",
+            "city": "Hillside",
+            "state": "New jersey",
+            "address_1": "471 mundet pl",
+            "address_2": null,
+            "zip_code": "07205",
+            "cvv": "994",
+            "expiration": "2022-01",
+            "send_to": null,
+            "bin_check_name": null,
+            "card_type": "mastercard",
+            "name_on_card": "Donna Gaydosh",
+            "date_created": "2019-01-27T11:10:29.333Z",
+            "is_active": true
+        },
+        {
+            "id": "3ff39cd4-4451-403d-874a-f90fa67fd1b8",
+            "AccountId": 507,
+            "amount": "1.00",
+            "currency": "USD",
+            "card_hash": "3ff39cd4-4451-403d-874a-f90fa67fd1b8",
+            "cardpan": "5563380574586529",
+            "maskedpan": "556338*******6529",
+            "city": "Hillside",
+            "state": "New jersey",
+            "address_1": "471 mundet pl",
+            "address_2": null,
+            "zip_code": "07205",
+            "cvv": "950",
+            "expiration": "2022-01",
+            "send_to": null,
+            "bin_check_name": null,
+            "card_type": "mastercard",
+            "name_on_card": "Stephanie elmer",
+            "date_created": "2019-01-27T11:12:26.68Z",
+            "is_active": true
+        },
+        {
+            "id": "cabbea77-9040-47b4-ac05-b7d1d804173b",
+            "AccountId": 507,
+            "amount": "1.00",
+            "currency": "USD",
+            "card_hash": "cabbea77-9040-47b4-ac05-b7d1d804173b",
+            "cardpan": "5563388312887679",
+            "maskedpan": "556338*******7679",
+            "city": "Hillside",
+            "state": "New jersey",
+            "address_1": "471 mundet pl",
+            "address_2": null,
+            "zip_code": "07205",
+            "cvv": "147",
+            "expiration": "2022-01",
+            "send_to": null,
+            "bin_check_name": null,
+            "card_type": "mastercard",
+            "name_on_card": "Jack Ma",
+            "date_created": "2019-01-27T15:20:20.52Z",
+            "is_active": true
+        },
+        {
+            "id": "c3ff3ac4-784b-4d07-9fc7-b5b9cde75752",
+            "AccountId": 507,
+            "amount": "12.00",
+            "currency": "USD",
+            "card_hash": "c3ff3ac4-784b-4d07-9fc7-b5b9cde75752",
+            "cardpan": "5563389915692128",
+            "maskedpan": "556338*******2128",
+            "city": "Hillside",
+            "state": "New jersey",
+            "address_1": "471 mundet pl",
+            "address_2": null,
+            "zip_code": "07205",
+            "cvv": "408",
+            "expiration": "2022-01",
+            "send_to": null,
+            "bin_check_name": null,
+            "card_type": "mastercard",
+            "name_on_card": "Jamiu Ganiu",
+            "date_created": "2019-01-30T16:45:47.233Z",
+            "is_active": true
+        }
+    ]
+}
+```
+
+### ```.getCard()```
+
+This allows a the user to query the details of a card with a given id. 
+
+A sample Create call is:
+
+```py
+card_id = "660bae3b-333c-410f-b283-2d181587247f"
+res = rave.VirtualCard.getCard(card_id)
+print(res)
+```
+
+#### Returns
+
+This call returns a dictionary. A sample response is:
+
+```py
+{
+    "status": "success",
+    "message": "SUCCESSFUL",
+    "data": {
+        "id": "660bae3b-333c-410f-b283-2d181587247f",
+        "AccountId": 507,
+        "amount": "21.00",
+        "currency": "USD",
+        "card_hash": "660bae3b-333c-410f-b283-2d181587247f",
+        "cardpan": "5563384241646062",
+        "maskedpan": "556338*******6062",
+        "city": "Hillside",
+        "state": null,
+        "address_1": "471 mundet pl",
+        "address_2": null,
+        "zip_code": "07205",
+        "cvv": "480",
+        "expiration": "2022-01",
+        "send_to": null,
+        "bin_check_name": null,
+        "card_type": "mastercard",
+        "name_on_card": null,
+        "date_created": "2019-01-30T17:01:47.0972087+00:00",
+        "is_active": true
+    }
+}
+```
+
+### ```.cancelCard()```
+
+This allows a the user to terminate the use of a card with a given id permanently. This cancellation results in the permanent deletion of the card. 
+
+A sample Create call is:
+
+```py
+card_id = "660bae3b-333c-410f-b283-2d181587247f"
+res = rave.VirtualCard.cancelCard(card_id)
+print(res)
+```
+
+#### Returns
+
+This call returns a dictionary. A sample response is:
+
+```py
+{
+  "Status": "success",
+  "Message": "Card terminated successfully",
+  "Reference": null
+}
+```
+
+### ```.freezeCard()```
+
+This allows a the user to terminate the use of a card with a given id temporarily. This cancellation results in the temporary suspension of the card 
+
+A sample Create call is:
+
+```py
+card_id = "660bae3b-333c-410f-b283-2d181587247f"
+res = rave.VirtualCard.freezeCard(card_id)
+print(res)
+```
+
+#### Returns
+
+This call returns a dictionary. A sample response is:
+
+```py
+{
+  "Status": "success",
+  "Message": "Card freeze successful",
+  "Reference": null
+}
+```
+
+### ```.unfreezeCard()```
+
+This allows a the user to resume the use of a temporarily suspended or frozen card with a given id. 
+
+A sample Create call is:
+
+```py
+card_id = "660bae3b-333c-410f-b283-2d181587247f"
+res = rave.VirtualCard.getCard(card_id)
+print(res)
+```
+
+#### Returns
+
+This call returns a dictionary. A sample response is:
+
+```py
+{
+  "Status": "success",
+  "Message": "Card unfreeze successful",
+  "Reference": null
+}
+```
+
+### ```.fundCard()```
+
+This allows a the user to add funds to a card with a given id. the `card_id`, `currency` and `amount` are passed into the `.fundCard()` method.
+
+A sample Create call is:
+
+```py
+card_id = "660bae3b-333c-410f-b283-2d181587247f"
+res = rave.VirtualCard.fundCard(card_id, "NGN", 2000)
+print(res)
+```
+
+#### Returns
+
+This call returns a dictionary. A sample response is:
+
+```py
+{
+    "Status": "success",
+    "Message": "Card was funded successfully",
+    "Reference": null
+}
+```
+
+### ```.Withdraw()```
+
+This allows a the user to withdraw funds from a card with a given id. the `card id` and `amount` are passed into the `.Withdraw()` method.
+
+A sample Create call is:
+
+```py
+card_id = "660bae3b-333c-410f-b283-2d181587247f"
+res = rave.VirtualCard.Withdraw(card_id, 1000)
+print(res)
+```
+
+#### Returns
+
+This call returns a dictionary. A sample response is:
+
+```py
+{
+    "Status": "success",
+    "Message": "Withdrawal successful",
+    "Reference": null
+}
+```
 <br>
 
 ## Run Tests
