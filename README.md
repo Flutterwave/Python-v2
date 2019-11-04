@@ -2130,21 +2130,16 @@ This is used to create virtual account for transfers.
 
 ### ```.Create(accountDetails)```
 
-This allows a customer to create a virtual card. It requires a dict ```vcardDetails``` containing ```currency```, ```amount```, ```billing name```, ```billing address```, ```billing city```, ```billing state```, ```billing postal code```, ```billing country```
+This allows a customer to create a virtual card. It requires a dict ```vcardDetails``` containing ```email```, ```seckey```, ```is_permanant```, ```frequency```, ```duration``` and  ```narration```.
 
 A sample Create call is:
 
 ```py
- res = rave.VirtualCard.CreatePlan({
-    "currency": "NGN",
-    "amount": "100",
-    "billing_name": "Corvus james",
-    "billing_address": "8, Providence Street",
-    "billing_city": "Lekki",
-    "billing_state": "Lagos",
-    "billing_postal_code": "100001",
-    "billing_country": "NG",
- })
+ res = rave.VirtualAccount.Create({
+	"email": "user@example.com",
+	"seckey": "FLWSECK-****************************-X",
+	"is_permanent": true
+})
 print(res)
 ```
 
@@ -2215,7 +2210,7 @@ This allows a customer to create a virtual card. It requires a dict ```vcardDeta
 A sample Create call is:
 
 ```py
- res = rave.VirtualCard.CreatePlan({
+ res = rave.VirtualCard.Create({
     "currency": "NGN",
     "amount": "100",
     "billing_name": "Corvus james",
