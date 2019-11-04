@@ -2117,6 +2117,73 @@ except RaveExceptions.ServerError as e:
 
 <br>
 
+## ```rave.VirtualAccount```
+
+This is used to create virtual account for transfers.
+
+
+**Functions included:**
+
+* ```.Create```
+
+<br>
+
+### ```.Create(accountDetails)```
+
+This allows a customer to create a virtual card. It requires a dict ```vcardDetails``` containing ```currency```, ```amount```, ```billing name```, ```billing address```, ```billing city```, ```billing state```, ```billing postal code```, ```billing country```
+
+A sample Create call is:
+
+```py
+ res = rave.VirtualCard.CreatePlan({
+    "currency": "NGN",
+    "amount": "100",
+    "billing_name": "Corvus james",
+    "billing_address": "8, Providence Street",
+    "billing_city": "Lekki",
+    "billing_state": "Lagos",
+    "billing_postal_code": "100001",
+    "billing_country": "NG",
+ })
+print(res)
+```
+
+#### Returns
+
+This call returns a dictionary. A sample response is:
+
+```py
+{
+    "status": "success",
+    "message": "BANKTRANSFERS-ACCOUNTNUMBER-CREATED",
+    "data": {
+        "response_code": "02",
+        "response_message": "Transaction in progress",
+        "flw_reference": "FLW-89298329b9794587807aa775cda5db9f",
+        "accountnumber": "1357960669",
+        "accountstatus": "ACTIVE",
+        "frequency": "N/A",
+        "bankname": "Highstreet MFB",
+        "created_on": "2019-08-20 12:18:46",
+        "expiry_date": "N/A",
+        "note": "Please make a bank transfer to Raver",
+        "amount": null
+    }
+}
+```
+
+ This call raises an ```IncompleteAccountDetailsError``` if there was a problem creating your virtual account. The ```IncompleteCardDetailsError``` contains some information about your virtual account. You can handle this as such:
+
+```py
+try: 
+    #Your charge call
+except RaveExceptions.IncompleteAccountDetailsError as e:
+    print(e.err["errMsg"])
+    print(e.err["flwRef"])
+```
+
+<br>
+
 ## ```rave.VirtualCard```
 
 This is used to create virtual cards and carry out other virtual card operations.
@@ -2169,7 +2236,7 @@ This call returns a dictionary. A sample response is:
 {"status": "success", "message": "Card created successfully", "data": {"id": "c3ff3ac4-784b-4d07-9fc7-b5b9cde75752", "AccountId": 507, "amount": "100.00", "currency": "NGN", "card_hash": "c3ff3ac4-784b-4d07-9fc7-b5b9cde75752", "cardpan": "5563389915692128", "maskedpan": "556338*******2128", "city": "Lekki", "state": "Lagos", "address_1": "8, Providence Street", "address_2": null, "zip_code": "100001", "cvv": "408", "expiration": "2022-01", "send_to": null, "bin_check_name": null, "card_type": "mastercard", "name_on_card": "Corvus james", "date_created": "2019-01-30T16:45:45.550663+00:00", "is_active": true}}
 ```
 
- This call raises an ```IncompleteCardDetailsError``` if there was a problem processing your transaction. The ```IncompleteCardDetailsError``` contains some information about your transaction. You can handle this as such:
+ This call raises an ```IncompleteCardDetailsError``` if there was a problem creating your card. The ```IncompleteCardDetailsError``` contains some information about the error encountered in creating your card. You can handle this as such:
 
 ```py
 try: 
