@@ -151,7 +151,7 @@ class PreauthRefundVoidError(RaveError):
     def __str__(self):
         return "Your preauth refund/void call failed with message: "+self.err["errMsg"]
 
-class RecepientCreationError(RaveError):
+class RecipientCreationError(RaveError):
     """ Raised when creating a transfer recepient fails """
     def __init__(self, err):
         self.err = err
@@ -159,7 +159,7 @@ class RecepientCreationError(RaveError):
     def __str__(self):
         return "Recepient Creation failed with error: " +self.err["errMsg"]
 
-class RecepientStatusError(RaveError):
+class RecipientStatusError(RaveError):
     """ Raised when fetching transfer recepients fails """
     def __init__(self, type, err):
         self.err = err

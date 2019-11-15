@@ -67,7 +67,7 @@ class RaveBase(object):
                 "balance": "v2/gpx/balance",
                 "accountVerification": "flwv3-pug/getpaidx/api/resolve_account"
             },
-            "recepient":{
+            "recipient":{
                 "create": "v2/gpx/transfers/beneficiaries/create",
                 "list": "v2/gpx/transfers/beneficiaries",
                 "fetch": "v2/gpx/transfers/beneficiaries",
