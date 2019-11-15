@@ -28,14 +28,14 @@ class Settlement(RaveBase):
 
         return responseJson
 
-    def _handleCreateResponse(self, response, details):
-        responseJson = self._preliminaryResponseChecks(response, CardCreationError, details["billing_name"])
+    # def _handleCreateResponse(self, response, details):
+    #     responseJson = self._preliminaryResponseChecks(response, CardCreationError, details["billing_name"])
 
-        if responseJson["status"] == "success":
-            return {"error": False, "id": responseJson["data"].get("id", None), "data": responseJson["data"] }
+    #     if responseJson["status"] == "success":
+    #         return {"error": False, "id": responseJson["data"].get("id", None), "data": responseJson["data"] }
 
-        else:
-            raise CardCreationError({"error": True, "data": responseJson["data"]})
+    #     else:
+    #         raise CardCreationError({"error": True, "data": responseJson["data"]})
 
     def _handleCardStatusRequests(self, type, endpoint, isPostRequest=False, data=None):
         #check if resposnse is a post response
@@ -58,10 +58,10 @@ class Settlement(RaveBase):
 
     #function to list and fetch settlements
     #Params: details - a dict containing service, service_method, service_version, service_channel and service_payload
-    def allSettlement(self):
+    def all(self):
         endpoint = self._baseUrl + self._endpointMap["settlements"]["list"] + "?seckey=" + self._getSecretKey()
         return self._handleCardStatusRequests("List", endpoint)
 
-    def fetchSettlement(self, settlement_id):
+    def fetch(self, settlement_id):
         endpoint = self._baseUrl + self._endpointMap["settlements"]["fetch"] + str(settlement_id) + "?seckey="+self._getSecretKey()
         return self._handleCardStatusRequests("Fetch", endpoint)
