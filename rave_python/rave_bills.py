@@ -40,7 +40,7 @@ class Bills(RaveBase):
 
     #function to create a Bill
     #Params: details - a dict containing service, service_method, service_version, service_channel and service_payload
-    def createBill(self, details):
+    def create(self, details):
         # Performing shallow copy of planDetails to avoid public exposing payload with secret key
         details = copy.copy(details)
         details.update({"seckey": self._getSecretKey()})
