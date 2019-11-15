@@ -61,7 +61,7 @@ class SubAccount(RaveBase) :
     #function to create a payment plan
     #Params: accountDetails - a dict containing account_bank, account_number, business_name, business_email, business_contact, business_contact_mobile, business_mobile, split_type, split_value
     #if duration is not passed, any subscribed customer will be charged #indefinitely
-    def createSubaccount(self, accountDetails):
+    def create(self, accountDetails):
         # Performing shallow copy of planDetails to avoid public exposing payload with secret key
         accountDetails = copy.copy(accountDetails)
         accountDetails.update({"seckey": self._getSecretKey()})
@@ -73,13 +73,38 @@ class SubAccount(RaveBase) :
         return self._handleCreateResponse(response, accountDetails)
 
     #gets all subaccounts connected to a merchant's account
-    def allSubaccounts(self):
+    def all(self):
         endpoint = self._baseUrl + self._endpointMap["subaccount"]["list"] + "?seckey="+self._getSecretKey()
         return self._handleAccountStatusRequests("List", endpoint)
     
-    def fetchSubaccount(self, subaccount_id):
+    def fetch(self, subaccount_id):
         if not subaccount_id:
             return "No subaccount id supplied. Kindly pass one in"
-        endpoint = self._baseUrl + self._endpointMap["subaccount"]["fetch"] + "/"+str(subaccount_id) + "?seckey="+self._getSecretKey()
+        endpoint = self._baseUrl + self._endpointMap["subaccount"]["fetch"] + "/" +str(subaccount_id) + "?seckey="+self._getSecretKey()
         return self._handleAccountStatusRequests("Fetch", endpoint)
+
+    def edit(self, Subaccount_id, newData={}):
+        if not id:
+            return "Plan id was not supplied. Kindly supply one"
+        endpoint = self._baseUrl + self._endpointMap["subaccount"]["update"]
+        data = {
+            "seckey": self._getSecretKey(), 
+            "account_number": newData.get("account_number", None), 
+            "account_bank": newData.get("account_bank", None),
+            "business_name": newData.get("business_name", None),
+            "business_email": newData.get("business_email", None),
+            "split_type": newData.get("split_type", None),
+            "split_value": newData.get("split_value", None),
+            }
+        return self._handlePlanStatusRequests("Edit", endpoint, isPostRequest=True, data=data)
+    
+    def cancel(self, subaccount_id):
+        if not subbacount_id:
+            return "Subaccount id was not supplied. Kindly supply one"
+        endpoint = self._baseUrl + self._endpointMap["subaccount"]["delete"]
+        data = {
+            "seckey": self._getSecretKey(),
+            "id": subaccount_id,
+            }
+        return self._handlePlanStatusRequests("Cancel", endpoint, isPostRequest=True, data=data)
     
