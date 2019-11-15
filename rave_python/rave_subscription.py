@@ -27,6 +27,7 @@ class Subscriptions(RaveBase) :
             raise TypeOfErrorToRaise({"error": True, "errMsg": errMsg})
         
         return responseJson
+        
     
     # This makes and handles all requests pertaining to the status of your payment plans
     def _handlePlanStatusRequests(self, type, endpoint, isPostRequest=False, data=None):
@@ -50,11 +51,11 @@ class Subscriptions(RaveBase) :
             raise PlanStatusError(type, {"error": True, "returnedData": str(responseJson) })
 
     #gets all subscriptions connected to a merchant's account
-    def allSubscriptions(self):
+    def all(self):
         endpoint = self._baseUrl + self._endpointMap["subscriptions"]["list"] + "?seckey="+self._getSecretKey()
         return self._handlePlanStatusRequests("List", endpoint)
     
-    def fetchSubscription(self, subscription_id=None, subscription_email=None):
+    def fetch(self, subscription_id=None, subscription_email=None):
         if subscription_id:
             endpoint = self._baseUrl + self._endpointMap["subscriptions"]["fetch"] + "?seckey="+self._getSecretKey() + "&id="+str(subscription_id)
         elif subscription_email:
@@ -63,7 +64,7 @@ class Subscriptions(RaveBase) :
             return "You must pass either plan id or plan name in order to fetch a plan's details"
         return self._handlePlanStatusRequests("Fetch", endpoint)
     
-    def cancelSubscription(self, subscription_id):
+    def cancel(self, subscription_id):
         if not subscription_id:
             return "Subscription id was not supplied. Kindly supply one"
         endpoint = self._baseUrl + self._endpointMap["subscriptions"]["cancel"] + str(subscription_id) + "/cancel"
@@ -73,7 +74,7 @@ class Subscriptions(RaveBase) :
     # activates a subscription plan
     # Params
     # id: subscription_id *required
-    def activateSubscription(self, subscription_id):
+    def activate(self, subscription_id):
         if not subscription_id:
             return "Subscription id was not supplied. Kindly supply one"
         endpoint = self._baseUrl + self._endpointMap["subscriptions"]["activate"] + str(subscription_id) + "/activate"
