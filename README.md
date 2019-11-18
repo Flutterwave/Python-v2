@@ -8,6 +8,7 @@ This is a Python wrapper around the [API](https://flutterwavedevelopers.readme.i
 * Bank Account Payments
 * Ghana Mobile Money Payments
 * Mpesa Payments
+* Rwanda Mobile Money Payments
 * Uganda Mobile Money Payments
 * Zambia Mobile Money Payments
 * Mobile Money Payments for Francophone countries
@@ -19,8 +20,10 @@ This is a Python wrapper around the [API](https://flutterwavedevelopers.readme.i
 * USSD Payments (Still in Beta Mode)
 
 #### Other features include:
+* Preauthorization charges
 * Refunds
 * Transaction Verification
+* Transfer Recipients
 * Virtual Cards
 * Virtual Accounts
 
@@ -1304,16 +1307,19 @@ This is used to initiate and manage payouts
 
 **Functions included:**
 
-* ```.createSubaccount```
+* ```.create```
 
-* ```.allSubaccounts```
+* ```.all```
 
-* ```.fetchSubaccounts```
+* ```.fetch```
 
+* ```.edit```
+
+* ```.cancel```
 
 <br>
 
-### ```.createSubaccount(accountDetails)```
+### ```.create(accountDetails)```
 
 This allows you to create a subaccount plan. It requires a dict ```accountDetails``` containing ```account_bank```, ```account_number```, ```business_name```, ```business_email```, ```business_contact```, ```business_contact_mobile```, ```business_mobile```.
  
@@ -1338,10 +1344,10 @@ This allows you to create a subaccount plan. It requires a dict ```accountDetail
 More information can be found [here](https://developer.flutterwave.com/v2.0/reference#create-subaccount)
 
 
-A sample createsubAccount call is:
+A sample create call is:
 
 ```py
- res = rave.SubAccount.createSubaccount({
+ res = rave.SubAccount.create({
 	"account_bank": "044",
 	"account_number": "0690000031",
 	"business_name": "Jake Stores",
@@ -1373,14 +1379,14 @@ except RaveExceptions..SubaccountCreationError as e:
     print(e.err["flwRef"])
 ```
 
-### ```.allSubaccounts()```
+### ```.all()```
 
 This allows you retrieve all subaccounts 
 
-A sample allSubaccounts call is:
+A sample all Subaccounts call is:
 
 ```py
-res2 = rave.SubAccount.allSubaccounts()
+res2 = rave.SubAccount.all()
 ```
 
 #### Returns
@@ -1401,17 +1407,17 @@ except RaveExceptions.PlanStatusError as e:
     print(e.err["flwRef"])
 ```
 
-### ```.fetchSubaccount(subaccount_id)```
+### ```.fetch(subaccount_id)```
 
 This allows you fetch a subaccount. You may or may not pass in a ```subaccount_id```. If you do not pass in a ```subaccount_id``` all subacocunts will be returned.
 
 >subaccount_id: This is the payment plan ID. It can be gotten from the response returned from creating a plan or from the Rave Dashboard
 
 
-A sample fetchSubaccount call is:
+A sample fetch Subaccount call is:
 
 ```py
-res2 = rave.SubAccount.fetchSubaccount(900)
+res2 = rave.SubAccount.fetch(900)
 ```
 
 #### Returns
@@ -1439,7 +1445,7 @@ from rave_python import Rave, Misc, RaveExceptions
 rave = Rave("YOUR_PUBLIC_KEY", "YOUR_PRIVATE_KEY", usingEnv = False)
 try:
    
-    res = rave.SubAccount.createSubaccount({
+    res = rave.SubAccount.create({
 	"account_bank": "044",
 	"account_number": "0690000032",
 	"business_name": "Jake Stores",
@@ -1451,7 +1457,7 @@ try:
     "split_value": 3000,
 	"meta": [{"metaname": "MarketplaceID", "metavalue": "ggs-920900"}]
     })
-    res = rave.SubAccount.fetchSubaccount('RS_0A6C260E1A70934DE6EF2F8CEE46BBB3')
+    res = rave.SubAccount.fetch('RS_0A6C260E1A70934DE6EF2F8CEE46BBB3')
     print(res)
 
 except RaveExceptions.IncompletePaymentDetailsError as e:
@@ -1479,7 +1485,7 @@ This is used to initiate and manage payouts
 
 * ```.fetch```
 
-* ```.allTransfers```
+* ```.all```
 
 * ```.getFee```
 
@@ -1616,14 +1622,14 @@ except RaveExceptions.TransferFetchError as e:
     print(e.err["flwRef"])
 ```
 
-### ```.allTransfers()```
+### ```.all()```
 
 This allows you retrieve all transfers. 
 
-A sample allTransfers call is:
+A sample all Transfers call is:
 
 ```py
-res2 = rave.Transfer.allTransfers("")
+res2 = rave.Transfer.all("")
 ```
 
 #### Returns
@@ -1726,28 +1732,28 @@ except RaveExceptions.ServerError as e:
 
 ## ```rave.Subscriptions```
 
-This is used to initiate and manage payouts
+This is used to initiate and manage Subscriptions
 
 
 **Functions included:**
 
-* ```.allSubscriptions```
+* ```.all```
 
-* ```.fetchSubscription```
+* ```.fetch```
 
-* ```.cancelSubscription```
+* ```.cancel```
 
-* ```.activateSubscription```
+* ```.activate```
 
 
-### ```.allSubscriptions()```
+### ```.all()```
 
 This allows you retrieve all subscriptions 
 
-A sample allSubaccounts call is:
+A sample all subscriptions call is:
 
 ```py
-res2 = rave.Subscriptions.allSubscriptions()
+res2 = rave.Subscriptions.all()
 ```
 
 #### Returns
@@ -1768,7 +1774,7 @@ except RaveExceptions.PlanStatusError as e:
     print(e.err["flwRef"])
 ```
 
-### ```.fetchSubscription(subscription_id, subscription_email)```
+### ```.fetch(subscription_id, subscription_email)```
 
 This allows you fetch a subscription. You may or may not pass in a ```subscription_id``` or ```subscription_email```. If you do not pass in a ```subscription_id``` or ```subscription_email``` all subscriptions will be returned.
 
@@ -1777,7 +1783,7 @@ This allows you fetch a subscription. You may or may not pass in a ```subscripti
 >subscription_email: This is the subscription email.
 
 
-A sample fetchSubaccount call is:
+A sample fetch subscription call is:
 
 ```py
 res2 = rave.Subscriptions.fetchSubscription(900)
@@ -1808,10 +1814,10 @@ This allows you cancel a subscription.
 >subscription_id: This is the subscription ID. It can be gotten from the Rave Dashboard
 
 
-A sample cancelSubscription call is:
+A sample cancel subscription call is:
 
 ```py
-res2 = rave.Subscriptions.cancelSubscription(900)
+res2 = rave.Subscriptions.cancel(900)
 ```
 
  This call raises a ```PlanStatusError``` if there was a problem processing your transaction. The ```PlanStatusError``` contains some information about your transaction. You can handle this as such:
@@ -1825,17 +1831,17 @@ except RaveExceptions.PlanStatusError as e:
 ```
 
 
-### ```.activateSubscription(subscription_id)```
+### ```.activate(subscription_id)```
 
 This allows you activate a subscription.
 
 >subscription_id: This is the subscription ID. It can be gotten from the Rave Dashboard
 
 
-A sample activateSubscription call is:
+A sample activate subscription call is:
 
 ```py
-res2 = rave.Subscriptions.activateSubscription(900)
+res2 = rave.Subscriptions.activate(900)
 ```
 
  This call raises a ```PlanStatusError``` if there was a problem processing your transaction. The ```PlanStatusError``` contains some information about your transaction. You can handle this as such:
@@ -1855,9 +1861,9 @@ from rave_python import Rave, Misc, RaveExceptions
 rave = Rave("YOUR_PUBLIC_KEY", "YOUR_PRIVATE_KEY", usingEnv = False)
 try:
    
-    res = rave.Subscriptions.allSubscriptions()
-    res = rave.Subscriptions.fetchSubscription(880)
-    res = rave.Subscriptions.cancelSubscription(880)
+    res = rave.Subscriptions.all()
+    res = rave.Subscriptions.fetch(880)
+    res = rave.Subscriptions.cancel(880)
     print(res)
 
 except RaveExceptions.PlanStatusError as e:
@@ -1871,24 +1877,24 @@ except RaveExceptions.ServerError as e:
 
 ## ```rave.PaymentPlan```
 
-This is used to initiate and manage payouts
+This is used to initiate and manage payment plans
 
 
 **Functions included:**
 
-* ```.createPlan```
+* ```.create```
 
-* ```.allPlans```
+* ```.all```
 
-* ```.fetchPlan```
+* ```.fetch```
 
 * ```.cancelPlan```
 
-* ```.editPlan```
+* ```.edit```
 
 <br>
 
-### ```.createPlan(planDetails)```
+### ```.create(planDetails)```
 
 This allows a customer to create a payment plan. It requires a dict ```planDetails``` containing ```amount```, ```name```, ```interval```, ```duration```. 
 >amount: this is the amount for the plan
@@ -1919,10 +1925,10 @@ More information can be found [here](https://developer.flutterwave.com/v2.0/refe
 **If duration is not passed, any subscribed customer will be charged indefinitely**
 
 
-A sample createPlan call is:
+A sample create call is:
 
 ```py
- res = rave.PaymentPlan.createPlan({
+ res = rave.PaymentPlan.create({
     "amount": 1,
     "duration": 5,
     "name": "Ultimate Play",
@@ -1949,14 +1955,14 @@ except RaveExceptions.IncompletePaymentDetailsError as e:
     print(e.err["flwRef"])
 ```
 
-### ```.allPlans()```
+### ```.all()```
 
 This allows you retrieve all payment plans. 
 
-A sample allPlans call is:
+A sample all plans call is:
 
 ```py
-res2 = rave.Transfer.allPlans()
+res2 = rave.Transfer.all()
 ```
 
 #### Returns
@@ -1977,7 +1983,7 @@ except RaveExceptions.PlanStatusError as e:
     print(e.err["flwRef"])
 ```
 
-### ```.fetchPlan(plan_id, plan_name)```
+### ```.fetch(plan_id, plan_name)```
 
 This allows you fetch a payment plan. You may or may not pass in a ```plan_id``` or ```plan_name```. If you do not pass in a ```plan_id``` or ```plan_name```, all payment plans will be returned.
 
@@ -1985,10 +1991,10 @@ This allows you fetch a payment plan. You may or may not pass in a ```plan_id```
 
 >plan_name: This is the payment plan name. It can be gotten from the response returned from creating a plan or from the Rave Dashboard
 
-A sample fetchPlan call is:
+A sample fetch plan call is:
 
 ```py
-res2 = rave.Transfer.fetchPlan(900)
+res2 = rave.Transfer.fetch(900)
 ```
 
 #### Returns
@@ -2040,7 +2046,7 @@ except RaveExceptions.PlanStatusError as e:
 ```
 
 
-### ```.editPlan(plan_id, newData={})```
+### ```.edit(plan_id, newData={})```
 
 This allows you edit a payment plan. It requires that you pass in an ```plan_id```. If you do not pass in the ```newData``` dict containing the change you want to make to your plan, the plan stays the same.
 
@@ -2050,7 +2056,7 @@ This allows you edit a payment plan. It requires that you pass in an ```plan_id`
 >```name``` specifies the new name for your payment plan.
 >```status``` : possible values are ```active``` and ```cancelled```
 
-A sample cancelPlan call is:
+A sample cancel plan call is:
 
 ```py
 res = rave.PaymentPlan.editPlan(880, {
@@ -2086,14 +2092,14 @@ from rave_python import Rave, Misc, RaveExceptions
 rave = Rave("YOUR_PUBLIC_KEY", "YOUR_PRIVATE_KEY", usingEnv = False)
 try:
 
-    res = rave.PaymentPlan.createPlan({
+    res = rave.PaymentPlan.create({
         "amount": 1,
         "duration": 5,
         "name": "Ultimate Plan",
         "interval": "dai"
     })
     
-    res = rave.PaymentPlan.editPlan(880, {
+    res = rave.PaymentPlan.edit(880, {
         "name": "Jack's Plan",
         "status": "active"
     })
