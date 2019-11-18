@@ -737,7 +737,7 @@ If your call could not be completed successfully, a ```TransactionVerificationEr
 
 ```py
 from rave_python import Rave, RaveExceptions, Misc
-rave = Rave("ENTIRE_YOUR_PUBLIC_KEY", "ENTIRE_YOUR_SECRET_KEY", usingEnv = False)
+rave = Rave("ENTER_YOUR_PUBLIC_KEY", "ENTER_YOUR_SECRET_KEY", usingEnv = False)
 
 # mobile payload
 payload = {
