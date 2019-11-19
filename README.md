@@ -2130,18 +2130,18 @@ This is used to create virtual account for transfers.
 
 **Functions included:**
 
-* ```.Create```
+* ```.create```
 
 <br>
 
-### ```.Create(accountDetails)```
+### ```.create(accountDetails)```
 
 This allows a customer to create a virtual card. It requires a dict ```vcardDetails``` containing ```email```, ```seckey```, ```is_permanant```, ```frequency```, ```duration``` and  ```narration```.
 
 A sample Create call is:
 
 ```py
- res = rave.VirtualAccount.Create({
+ res = rave.VirtualAccount.create({
 	"email": "user@example.com",
 	"seckey": "FLWSECK-****************************-X",
 	"is_permanent": true
@@ -2192,31 +2192,31 @@ This is used to create virtual cards and carry out other virtual card operations
 
 **Functions included:**
 
-* ```.Create```
+* ```.create```
 
-* ```.allCards```
+* ```.all```
 
-* ```.getCard```
+* ```.get```
 
-* ```.cancelCard```
+* ```.cancel```
 
-* ```.freezeCard```
+* ```.freeze```
 
-* ```.unfreezeCard```
+* ```.unfreeze```
 
-* ```.fundCard```
+* ```.fund```
 
 * ```.withdraw```
 <br>
 
-### ```.Create(vcardDetails)```
+### ```.create(vcardDetails)```
 
 This allows a customer to create a virtual card. It requires a dict ```vcardDetails``` containing ```currency```, ```amount```, ```billing name```, ```billing address```, ```billing city```, ```billing state```, ```billing postal code```, ```billing country```
 
 A sample Create call is:
 
 ```py
- res = rave.VirtualCard.Create({
+ res = rave.VirtualCard.create({
     "currency": "NGN",
     "amount": "100",
     "billing_name": "Corvus james",
@@ -2247,14 +2247,14 @@ except RaveExceptions.IncompleteCardDetailsError as e:
     print(e.err["flwRef"])
 ```
 
-### ```.allCards()```
+### ```.all()```
 
 This allows a the user to query all cards 
 
 A sample Create call is:
 
 ```py
-res = rave.VirtualCard.allCards()
+res = rave.VirtualCard.all()
 print(res)
 ```
 
@@ -2403,7 +2403,7 @@ This call returns a dictionary. A sample response is:
 }
 ```
 
-### ```.getCard()```
+### ```.get()```
 
 This allows a the user to query the details of a card with a given id. 
 
@@ -2448,7 +2448,7 @@ This call returns a dictionary. A sample response is:
 }
 ```
 
-### ```.cancelCard()```
+### ```.cancel()```
 
 This allows a the user to terminate the use of a card with a given id permanently. This cancellation results in the permanent deletion of the card. 
 
@@ -2472,7 +2472,7 @@ This call returns a dictionary. A sample response is:
 }
 ```
 
-### ```.freezeCard()```
+### ```.freeze()```
 
 This allows a the user to terminate the use of a card with a given id temporarily. This cancellation results in the temporary suspension of the card 
 
@@ -2496,7 +2496,7 @@ This call returns a dictionary. A sample response is:
 }
 ```
 
-### ```.unfreezeCard()```
+### ```.unfreeze()```
 
 This allows a the user to resume the use of a temporarily suspended or frozen card with a given id. 
 
@@ -2520,7 +2520,7 @@ This call returns a dictionary. A sample response is:
 }
 ```
 
-### ```.fundCard()```
+### ```.fund()```
 
 This allows a the user to add funds to a card with a given id. the `card_id`, `currency` and `amount` are passed into the `.fundCard()` method.
 
