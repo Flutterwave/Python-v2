@@ -8,6 +8,7 @@ This is a Python wrapper around the [API](https://flutterwavedevelopers.readme.i
 * Bank Account Payments
 * Ghana Mobile Money Payments
 * Mpesa Payments
+* Rwanda Mobile Money Payments
 * Uganda Mobile Money Payments
 * Zambia Mobile Money Payments
 * Mobile Money Payments for Francophone countries
@@ -19,8 +20,10 @@ This is a Python wrapper around the [API](https://flutterwavedevelopers.readme.i
 * USSD Payments (Still in Beta Mode)
 
 #### Other features include:
+* Preauthorization charges
 * Refunds
 * Transaction Verification
+* Transfer Recipients
 * Virtual Cards
 * Virtual Accounts
 
@@ -1304,16 +1307,19 @@ This is used to initiate and manage payouts
 
 **Functions included:**
 
-* ```.createSubaccount```
+* ```.create```
 
-* ```.allSubaccounts```
+* ```.all```
 
-* ```.fetchSubaccounts```
+* ```.fetch```
 
+* ```.edit```
+
+* ```.cancel```
 
 <br>
 
-### ```.createSubaccount(accountDetails)```
+### ```.create(accountDetails)```
 
 This allows you to create a subaccount plan. It requires a dict ```accountDetails``` containing ```account_bank```, ```account_number```, ```business_name```, ```business_email```, ```business_contact```, ```business_contact_mobile```, ```business_mobile```.
  
@@ -1338,10 +1344,10 @@ This allows you to create a subaccount plan. It requires a dict ```accountDetail
 More information can be found [here](https://developer.flutterwave.com/v2.0/reference#create-subaccount)
 
 
-A sample createsubAccount call is:
+A sample create call is:
 
 ```py
- res = rave.SubAccount.createSubaccount({
+ res = rave.SubAccount.create({
 	"account_bank": "044",
 	"account_number": "0690000031",
 	"business_name": "Jake Stores",
@@ -1373,14 +1379,14 @@ except RaveExceptions..SubaccountCreationError as e:
     print(e.err["flwRef"])
 ```
 
-### ```.allSubaccounts()```
+### ```.all()```
 
 This allows you retrieve all subaccounts 
 
-A sample allSubaccounts call is:
+A sample all Subaccounts call is:
 
 ```py
-res2 = rave.SubAccount.allSubaccounts()
+res2 = rave.SubAccount.all()
 ```
 
 #### Returns
@@ -1401,17 +1407,17 @@ except RaveExceptions.PlanStatusError as e:
     print(e.err["flwRef"])
 ```
 
-### ```.fetchSubaccount(subaccount_id)```
+### ```.fetch(subaccount_id)```
 
 This allows you fetch a subaccount. You may or may not pass in a ```subaccount_id```. If you do not pass in a ```subaccount_id``` all subacocunts will be returned.
 
 >subaccount_id: This is the payment plan ID. It can be gotten from the response returned from creating a plan or from the Rave Dashboard
 
 
-A sample fetchSubaccount call is:
+A sample fetch Subaccount call is:
 
 ```py
-res2 = rave.SubAccount.fetchSubaccount(900)
+res2 = rave.SubAccount.fetch(900)
 ```
 
 #### Returns
@@ -1439,7 +1445,7 @@ from rave_python import Rave, Misc, RaveExceptions
 rave = Rave("YOUR_PUBLIC_KEY", "YOUR_PRIVATE_KEY", usingEnv = False)
 try:
    
-    res = rave.SubAccount.createSubaccount({
+    res = rave.SubAccount.create({
 	"account_bank": "044",
 	"account_number": "0690000032",
 	"business_name": "Jake Stores",
@@ -1451,7 +1457,7 @@ try:
     "split_value": 3000,
 	"meta": [{"metaname": "MarketplaceID", "metavalue": "ggs-920900"}]
     })
-    res = rave.SubAccount.fetchSubaccount('RS_0A6C260E1A70934DE6EF2F8CEE46BBB3')
+    res = rave.SubAccount.fetch('RS_0A6C260E1A70934DE6EF2F8CEE46BBB3')
     print(res)
 
 except RaveExceptions.IncompletePaymentDetailsError as e:
@@ -1479,7 +1485,7 @@ This is used to initiate and manage payouts
 
 * ```.fetch```
 
-* ```.allTransfers```
+* ```.all```
 
 * ```.getFee```
 
@@ -1616,14 +1622,14 @@ except RaveExceptions.TransferFetchError as e:
     print(e.err["flwRef"])
 ```
 
-### ```.allTransfers()```
+### ```.all()```
 
 This allows you retrieve all transfers. 
 
-A sample allTransfers call is:
+A sample all Transfers call is:
 
 ```py
-res2 = rave.Transfer.allTransfers("")
+res2 = rave.Transfer.all("")
 ```
 
 #### Returns
@@ -1726,28 +1732,28 @@ except RaveExceptions.ServerError as e:
 
 ## ```rave.Subscriptions```
 
-This is used to initiate and manage payouts
+This is used to initiate and manage Subscriptions
 
 
 **Functions included:**
 
-* ```.allSubscriptions```
+* ```.all```
 
-* ```.fetchSubscription```
+* ```.fetch```
 
-* ```.cancelSubscription```
+* ```.cancel```
 
-* ```.activateSubscription```
+* ```.activate```
 
 
-### ```.allSubscriptions()```
+### ```.all()```
 
 This allows you retrieve all subscriptions 
 
-A sample allSubaccounts call is:
+A sample all subscriptions call is:
 
 ```py
-res2 = rave.Subscriptions.allSubscriptions()
+res2 = rave.Subscriptions.all()
 ```
 
 #### Returns
@@ -1768,7 +1774,7 @@ except RaveExceptions.PlanStatusError as e:
     print(e.err["flwRef"])
 ```
 
-### ```.fetchSubscription(subscription_id, subscription_email)```
+### ```.fetch(subscription_id, subscription_email)```
 
 This allows you fetch a subscription. You may or may not pass in a ```subscription_id``` or ```subscription_email```. If you do not pass in a ```subscription_id``` or ```subscription_email``` all subscriptions will be returned.
 
@@ -1777,7 +1783,7 @@ This allows you fetch a subscription. You may or may not pass in a ```subscripti
 >subscription_email: This is the subscription email.
 
 
-A sample fetchSubaccount call is:
+A sample fetch subscription call is:
 
 ```py
 res2 = rave.Subscriptions.fetchSubscription(900)
@@ -1808,10 +1814,10 @@ This allows you cancel a subscription.
 >subscription_id: This is the subscription ID. It can be gotten from the Rave Dashboard
 
 
-A sample cancelSubscription call is:
+A sample cancel subscription call is:
 
 ```py
-res2 = rave.Subscriptions.cancelSubscription(900)
+res2 = rave.Subscriptions.cancel(900)
 ```
 
  This call raises a ```PlanStatusError``` if there was a problem processing your transaction. The ```PlanStatusError``` contains some information about your transaction. You can handle this as such:
@@ -1825,17 +1831,17 @@ except RaveExceptions.PlanStatusError as e:
 ```
 
 
-### ```.activateSubscription(subscription_id)```
+### ```.activate(subscription_id)```
 
 This allows you activate a subscription.
 
 >subscription_id: This is the subscription ID. It can be gotten from the Rave Dashboard
 
 
-A sample activateSubscription call is:
+A sample activate subscription call is:
 
 ```py
-res2 = rave.Subscriptions.activateSubscription(900)
+res2 = rave.Subscriptions.activate(900)
 ```
 
  This call raises a ```PlanStatusError``` if there was a problem processing your transaction. The ```PlanStatusError``` contains some information about your transaction. You can handle this as such:
@@ -1855,9 +1861,9 @@ from rave_python import Rave, Misc, RaveExceptions
 rave = Rave("YOUR_PUBLIC_KEY", "YOUR_PRIVATE_KEY", usingEnv = False)
 try:
    
-    res = rave.Subscriptions.allSubscriptions()
-    res = rave.Subscriptions.fetchSubscription(880)
-    res = rave.Subscriptions.cancelSubscription(880)
+    res = rave.Subscriptions.all()
+    res = rave.Subscriptions.fetch(880)
+    res = rave.Subscriptions.cancel(880)
     print(res)
 
 except RaveExceptions.PlanStatusError as e:
@@ -1871,24 +1877,24 @@ except RaveExceptions.ServerError as e:
 
 ## ```rave.PaymentPlan```
 
-This is used to initiate and manage payouts
+This is used to initiate and manage payment plans
 
 
 **Functions included:**
 
-* ```.createPlan```
+* ```.create```
 
-* ```.allPlans```
+* ```.all```
 
-* ```.fetchPlan```
+* ```.fetch```
 
 * ```.cancelPlan```
 
-* ```.editPlan```
+* ```.edit```
 
 <br>
 
-### ```.createPlan(planDetails)```
+### ```.create(planDetails)```
 
 This allows a customer to create a payment plan. It requires a dict ```planDetails``` containing ```amount```, ```name```, ```interval```, ```duration```. 
 >amount: this is the amount for the plan
@@ -1919,10 +1925,10 @@ More information can be found [here](https://developer.flutterwave.com/v2.0/refe
 **If duration is not passed, any subscribed customer will be charged indefinitely**
 
 
-A sample createPlan call is:
+A sample create call is:
 
 ```py
- res = rave.PaymentPlan.createPlan({
+ res = rave.PaymentPlan.create({
     "amount": 1,
     "duration": 5,
     "name": "Ultimate Play",
@@ -1949,14 +1955,14 @@ except RaveExceptions.IncompletePaymentDetailsError as e:
     print(e.err["flwRef"])
 ```
 
-### ```.allPlans()```
+### ```.all()```
 
 This allows you retrieve all payment plans. 
 
-A sample allPlans call is:
+A sample all plans call is:
 
 ```py
-res2 = rave.Transfer.allPlans()
+res2 = rave.Transfer.all()
 ```
 
 #### Returns
@@ -1977,7 +1983,7 @@ except RaveExceptions.PlanStatusError as e:
     print(e.err["flwRef"])
 ```
 
-### ```.fetchPlan(plan_id, plan_name)```
+### ```.fetch(plan_id, plan_name)```
 
 This allows you fetch a payment plan. You may or may not pass in a ```plan_id``` or ```plan_name```. If you do not pass in a ```plan_id``` or ```plan_name```, all payment plans will be returned.
 
@@ -1985,10 +1991,10 @@ This allows you fetch a payment plan. You may or may not pass in a ```plan_id```
 
 >plan_name: This is the payment plan name. It can be gotten from the response returned from creating a plan or from the Rave Dashboard
 
-A sample fetchPlan call is:
+A sample fetch plan call is:
 
 ```py
-res2 = rave.Transfer.fetchPlan(900)
+res2 = rave.Transfer.fetch(900)
 ```
 
 #### Returns
@@ -2040,7 +2046,7 @@ except RaveExceptions.PlanStatusError as e:
 ```
 
 
-### ```.editPlan(plan_id, newData={})```
+### ```.edit(plan_id, newData={})```
 
 This allows you edit a payment plan. It requires that you pass in an ```plan_id```. If you do not pass in the ```newData``` dict containing the change you want to make to your plan, the plan stays the same.
 
@@ -2050,7 +2056,7 @@ This allows you edit a payment plan. It requires that you pass in an ```plan_id`
 >```name``` specifies the new name for your payment plan.
 >```status``` : possible values are ```active``` and ```cancelled```
 
-A sample cancelPlan call is:
+A sample cancel plan call is:
 
 ```py
 res = rave.PaymentPlan.editPlan(880, {
@@ -2086,14 +2092,14 @@ from rave_python import Rave, Misc, RaveExceptions
 rave = Rave("YOUR_PUBLIC_KEY", "YOUR_PRIVATE_KEY", usingEnv = False)
 try:
 
-    res = rave.PaymentPlan.createPlan({
+    res = rave.PaymentPlan.create({
         "amount": 1,
         "duration": 5,
         "name": "Ultimate Plan",
         "interval": "dai"
     })
     
-    res = rave.PaymentPlan.editPlan(880, {
+    res = rave.PaymentPlan.edit(880, {
         "name": "Jack's Plan",
         "status": "active"
     })
@@ -2117,6 +2123,68 @@ except RaveExceptions.ServerError as e:
 
 <br>
 
+## ```rave.VirtualAccount```
+
+This is used to create virtual account for transfers.
+
+
+**Functions included:**
+
+* ```.create```
+
+<br>
+
+### ```.create(accountDetails)```
+
+This allows a customer to create a virtual card. It requires a dict ```vcardDetails``` containing ```email```, ```seckey```, ```is_permanant```, ```frequency```, ```duration``` and  ```narration```.
+
+A sample Create call is:
+
+```py
+ res = rave.VirtualAccount.create({
+	"email": "user@example.com",
+	"seckey": "FLWSECK-****************************-X",
+	"is_permanent": true
+})
+print(res)
+```
+
+#### Returns
+
+This call returns a dictionary. A sample response is:
+
+```py
+{
+    "status": "success",
+    "message": "BANKTRANSFERS-ACCOUNTNUMBER-CREATED",
+    "data": {
+        "response_code": "02",
+        "response_message": "Transaction in progress",
+        "flw_reference": "FLW-89298329b9794587807aa775cda5db9f",
+        "accountnumber": "1357960669",
+        "accountstatus": "ACTIVE",
+        "frequency": "N/A",
+        "bankname": "Highstreet MFB",
+        "created_on": "2019-08-20 12:18:46",
+        "expiry_date": "N/A",
+        "note": "Please make a bank transfer to Raver",
+        "amount": null
+    }
+}
+```
+
+ This call raises an ```IncompleteAccountDetailsError``` if there was a problem creating your virtual account. The ```IncompleteCardDetailsError``` contains some information about your virtual account. You can handle this as such:
+
+```py
+try: 
+    #Your charge call
+except RaveExceptions.IncompleteAccountDetailsError as e:
+    print(e.err["errMsg"])
+    print(e.err["flwRef"])
+```
+
+<br>
+
 ## ```rave.VirtualCard```
 
 This is used to create virtual cards and carry out other virtual card operations.
@@ -2124,31 +2192,31 @@ This is used to create virtual cards and carry out other virtual card operations
 
 **Functions included:**
 
-* ```.Create```
+* ```.create```
 
-* ```.allCards```
+* ```.all```
 
-* ```.getCard```
+* ```.get```
 
-* ```.cancelCard```
+* ```.cancel```
 
-* ```.freezeCard```
+* ```.freeze```
 
-* ```.unfreezeCard```
+* ```.unfreeze```
 
-* ```.fundCard```
+* ```.fund```
 
 * ```.withdraw```
 <br>
 
-### ```.Create(vcardDetails)```
+### ```.create(vcardDetails)```
 
 This allows a customer to create a virtual card. It requires a dict ```vcardDetails``` containing ```currency```, ```amount```, ```billing name```, ```billing address```, ```billing city```, ```billing state```, ```billing postal code```, ```billing country```
 
 A sample Create call is:
 
 ```py
- res = rave.VirtualCard.CreatePlan({
+ res = rave.VirtualCard.create({
     "currency": "NGN",
     "amount": "100",
     "billing_name": "Corvus james",
@@ -2169,7 +2237,7 @@ This call returns a dictionary. A sample response is:
 {"status": "success", "message": "Card created successfully", "data": {"id": "c3ff3ac4-784b-4d07-9fc7-b5b9cde75752", "AccountId": 507, "amount": "100.00", "currency": "NGN", "card_hash": "c3ff3ac4-784b-4d07-9fc7-b5b9cde75752", "cardpan": "5563389915692128", "maskedpan": "556338*******2128", "city": "Lekki", "state": "Lagos", "address_1": "8, Providence Street", "address_2": null, "zip_code": "100001", "cvv": "408", "expiration": "2022-01", "send_to": null, "bin_check_name": null, "card_type": "mastercard", "name_on_card": "Corvus james", "date_created": "2019-01-30T16:45:45.550663+00:00", "is_active": true}}
 ```
 
- This call raises an ```IncompleteCardDetailsError``` if there was a problem processing your transaction. The ```IncompleteCardDetailsError``` contains some information about your transaction. You can handle this as such:
+ This call raises an ```IncompleteCardDetailsError``` if there was a problem creating your card. The ```IncompleteCardDetailsError``` contains some information about the error encountered in creating your card. You can handle this as such:
 
 ```py
 try: 
@@ -2179,14 +2247,14 @@ except RaveExceptions.IncompleteCardDetailsError as e:
     print(e.err["flwRef"])
 ```
 
-### ```.allCards()```
+### ```.all()```
 
 This allows a the user to query all cards 
 
 A sample Create call is:
 
 ```py
-res = rave.VirtualCard.allCards()
+res = rave.VirtualCard.all()
 print(res)
 ```
 
@@ -2335,7 +2403,7 @@ This call returns a dictionary. A sample response is:
 }
 ```
 
-### ```.getCard()```
+### ```.get()```
 
 This allows a the user to query the details of a card with a given id. 
 
@@ -2380,7 +2448,7 @@ This call returns a dictionary. A sample response is:
 }
 ```
 
-### ```.cancelCard()```
+### ```.cancel()```
 
 This allows a the user to terminate the use of a card with a given id permanently. This cancellation results in the permanent deletion of the card. 
 
@@ -2404,7 +2472,7 @@ This call returns a dictionary. A sample response is:
 }
 ```
 
-### ```.freezeCard()```
+### ```.freeze()```
 
 This allows a the user to terminate the use of a card with a given id temporarily. This cancellation results in the temporary suspension of the card 
 
@@ -2428,7 +2496,7 @@ This call returns a dictionary. A sample response is:
 }
 ```
 
-### ```.unfreezeCard()```
+### ```.unfreeze()```
 
 This allows a the user to resume the use of a temporarily suspended or frozen card with a given id. 
 
@@ -2452,7 +2520,7 @@ This call returns a dictionary. A sample response is:
 }
 ```
 
-### ```.fundCard()```
+### ```.fund()```
 
 This allows a the user to add funds to a card with a given id. the `card_id`, `currency` and `amount` are passed into the `.fundCard()` method.
 

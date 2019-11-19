@@ -8,6 +8,7 @@ from rave_python.rave_mpesa import Mpesa
 from rave_python.rave_paymentplan import PaymentPlan
 from rave_python.rave_preauth import Preauth
 from rave_python.rave_base import RaveBase
+from rave_python.rave_recipient import Recipient
 from rave_python.rave_rwmobile import RWMobile
 from rave_python.rave_settlement import Settlement
 from rave_python.rave_subaccounts import SubAccount
@@ -15,11 +16,10 @@ from rave_python.rave_subscription import Subscriptions
 from rave_python.rave_transfer import Transfer
 from rave_python.rave_ugmobile import UGMobile
 from rave_python.rave_ussd import Ussd
+from rave_python.rave_verify import Verify
 from rave_python.rave_virtualaccount import VirtualAccount
 from rave_python.rave_virtualcard import VirtualCard
 from rave_python.rave_zbmobile import ZBMobile
-
-
 
 
 class Rave:
@@ -47,7 +47,7 @@ class Rave:
         """
 
         classes = (
-            Account, Bills, Card, Ebills, Francophone, GhMobile, Mpesa, PaymentPlan, Preauth, RWMobile, Settlement, SubAccount, Subscriptions, Transfer, UGMobile, Ussd, VirtualAccount, VirtualCard, ZBMobile
+            Account, Bills, Card, Ebills, Francophone, GhMobile, Mpesa, PaymentPlan, Preauth, Recipient, RWMobile, Settlement, SubAccount, Subscriptions, Transfer, UGMobile, Ussd, Verify, VirtualAccount, VirtualCard, ZBMobile
         )
 
         for _class in classes:

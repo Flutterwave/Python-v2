@@ -1,14 +1,11 @@
 import json, requests, copy
 from rave_python.rave_base import RaveBase
 from rave_python.rave_misc import checkIfParametersAreComplete
-from rave_python.rave_exceptions import ServerError, IncompleteCardDetailsError, CardCreationError, CardStatusError
+from rave_python.rave_exceptions import ServerError, BVNFetchError
 
-class Settlement(RaveBase):
+class Verify(RaveBase):
     def __init__(self, publicKey, secretKey, production, usingEnv):
-        self.headers = {
-            'content-type' : 'application/json'
-        }
-        super(Settlement, self).__init__(publicKey, secretKey, production, usingEnv)
+        super(Verify, self).__init__(publicKey, secretKey, production, usingEnv)
 
     def _preliminaryResponseChecks(self, response, TypeOfErrorToRaise, name):
         #check if we can get json
@@ -37,7 +34,10 @@ class Settlement(RaveBase):
     #     else:
     #         raise CardCreationError({"error": True, "data": responseJson["data"]})
 
-    def _handleCardStatusRequests(self, type, endpoint, isPostRequest=False, data=None):
+    def _handleVerifyStatusRequests(self, endpoint, isPostRequest=False, data=None):
+        self.headers = {
+            'content-type' : 'application/json'
+        }
         #check if resposnse is a post response
         if isPostRequest:
             response = requests.post(endpoint, headers=self.headers, data=json.dumps(data))
@@ -53,15 +53,10 @@ class Settlement(RaveBase):
         if response.ok:
             return {"error": False, "returnedData": responseJson}
         else:
-            raise CardStatusError(type, {"error": True, "returnedData": responseJson })
+            raise BVNFetchError({"error": True, "returnedData": responseJson })
 
-
-    #function to list and fetch settlements
-    #Params: details - a dict containing service, service_method, service_version, service_channel and service_payload
-    def all(self):
-        endpoint = self._baseUrl + self._endpointMap["settlements"]["list"] + "?seckey=" + self._getSecretKey()
-        return self._handleCardStatusRequests("List", endpoint)
-
-    def fetch(self, settlement_id):
-        endpoint = self._baseUrl + self._endpointMap["settlements"]["fetch"] + str(settlement_id) + "?seckey="+self._getSecretKey()
-        return self._handleCardStatusRequests("Fetch", endpoint)
+    def bvnVerify(self, bvn):
+        if not bvn:
+            return "BVN was not supplied. Kindly supply one"
+        endpoint = self._baseUrl + self._endpointMap["bvn"]["verify"] +str(bvn)+"?seckey=" + self._getSecretKey()
+        return self._handleVerifyStatusRequests(endpoint)

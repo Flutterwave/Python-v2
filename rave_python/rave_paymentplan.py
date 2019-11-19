@@ -12,6 +12,7 @@ class PaymentPlan(RaveBase) :
     
     def _preliminaryResponseChecks(self, response, TypeOfErrorToRaise, name):
         # Check if we can obtain a json
+        
         try:
             responseJson = response.json()
         except:
@@ -60,7 +61,7 @@ class PaymentPlan(RaveBase) :
     #function to create a payment plan
     #Params: planDetails - a dict containing amount, name, interval, duration
     #if duration is not passed, any subscribed customer will be charged #indefinitely
-    def createPlan(self, planDetails):
+    def create(self, planDetails):
         # Performing shallow copy of planDetails to avoid public exposing payload with secret key
         planDetails = copy.copy(planDetails)
         planDetails.update({"seckey": self._getSecretKey()})
@@ -73,11 +74,11 @@ class PaymentPlan(RaveBase) :
         return self._handleCreateResponse(response, planDetails)
 
     #gets all payment plans connected to a merchant's account
-    def allPlans(self):
+    def all(self):
         endpoint = self._baseUrl + self._endpointMap["payment_plan"]["list"] + "?seckey="+self._getSecretKey()
         return self._handlePlanStatusRequests("List", endpoint)
     
-    def fetchPlan(self, plan_id=None, plan_name=None):
+    def fetch(self, plan_id=None, plan_name=None):
         if plan_id:
             endpoint = self._baseUrl + self._endpointMap["payment_plan"]["fetch"] + "?seckey="+self._getSecretKey() + "&id="+str(plan_id)
         elif plan_name:
@@ -97,7 +98,7 @@ class PaymentPlan(RaveBase) :
     # Params
     # id: payment plan id *required
     # newData: dict that contains the information to be updated i.e name and status-cancelled/active
-    def editPlan(self, plan_id, newData={}):
+    def edit(self, plan_id, newData={}):
         if not id:
             return "Plan id was not supplied. Kindly supply one"
         endpoint = self._baseUrl + self._endpointMap["payment_plan"]["edit"] + str(plan_id) + "/edit"

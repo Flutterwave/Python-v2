@@ -58,7 +58,7 @@ class VirtualAccount(RaveBase):
 
     #function to create a virtual card 
     #Params: cardDetails - a dict containing email, is_permanent, frequency, duration, narration
-    def Create(self, accountDetails):
+    def create(self, accountDetails):
         accountDetails = copy.copy(accountDetails)
         accountDetails.update({"seckey": self._getSecretKey()})
         

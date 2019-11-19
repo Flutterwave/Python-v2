@@ -12,6 +12,9 @@ class RaveBase(object):
             "bills": {
                 "create":"v2/services/confluence",
             },
+            "bvn": {
+                "verify": "v2/kyc/bvn/",
+            },
             "card": {
                 "charge": "flwv3-pug/getpaidx/api/charge",
                 "validate": "flwv3-pug/getpaidx/api/validatecharge",
@@ -19,8 +22,8 @@ class RaveBase(object):
                 "chargeSavedCard": "flwv3-pug/getpaidx/api/tokenized/charge",
             },
             "ebills": {
-                "create": "flwv3-pug/getpaidx/api/ebills/generateorder",
-                "update": "flwv3-pug/getpaidx/api/ebills/update",
+                "create": "flwv3-pug/getpaidx/api/ebills/generateorder/",
+                "update": "flwv3-pug/getpaidx/api/ebills/update/",
             },
             "preauth": {
                 "charge": "flwv3-pug/getpaidx/api/tokenized/preauth_charge",
@@ -52,7 +55,9 @@ class RaveBase(object):
             "subaccount": {
                 "create": "v2/gpx/subaccounts/create",
                 "list": "v2/gpx/subaccounts/",
-                "fetch": "v2/gpx/subaccounts/get"
+                "fetch": "v2/gpx/subaccounts/get",
+                "update": "v2/gpx/subaccounts/edit",
+                "delete": "v2/gpx/subaccounts/delete",
             },
             "transfer": {
                 "initiate": "v2/gpx/transfers/create",
@@ -61,6 +66,12 @@ class RaveBase(object):
                 "fee": "v2/gpx/transfers/fee",
                 "balance": "v2/gpx/balance",
                 "accountVerification": "flwv3-pug/getpaidx/api/resolve_account"
+            },
+            "recipient":{
+                "create": "v2/gpx/transfers/beneficiaries/create",
+                "list": "v2/gpx/transfers/beneficiaries",
+                "fetch": "v2/gpx/transfers/beneficiaries",
+                "delete": "v2/gpx/transfers/beneficiaries/delete",
             },
             "virtual_card": {
                 "create": "v2/services/virtualcards/new",
@@ -81,6 +92,7 @@ class RaveBase(object):
             
         }
         
+
         # Setting up public and private keys (private)
         # 
         # If we are using environment variables to store secretKey
