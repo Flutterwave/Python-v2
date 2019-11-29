@@ -1762,10 +1762,13 @@ except RaveExceptions.ServerError as e:
 
 <br>
 
-
 </details>
 
 ## `rave.Subscriptions`
+
+<details>
+  <summary> <code> rave.Subscriptions </code> </summary>
+
 
 This is used to initiate and manage Subscriptions
 
@@ -1904,7 +1907,13 @@ except RaveExceptions.ServerError as e:
 
 <br>
 
+</details>
+
 ## `rave.PaymentPlan`
+
+<details>
+  <summary> <code> rave.PaymentPlan </code> </summary>
+
 
 This is used to initiate and manage payment plans
 
@@ -2142,15 +2151,25 @@ except RaveExceptions.ServerError as e:
     print(e.err)
 ```
 
-<br>
+</details>
 
 ## `rave.Ussd`
+
+<details>
+  <summary> <code> rave.Ussd </code> </summary>
+
 
 > **NOTE:** This payment option is still in beta mode.
 
 <br>
 
+</details>
+
 ## `rave.VirtualAccount`
+
+<details>
+  <summary> <code> rave.VirtualAccount </code> </summary>
+
 
 This is used to create virtual account for transfers.
 
@@ -2211,7 +2230,13 @@ except RaveExceptions.IncompleteAccountDetailsError as e:
 
 <br>
 
+</details>
+
 ## `rave.VirtualCard`
+
+<details>
+  <summary> <code> rave.VirtualCard </code> </summary>
+
 
 This is used to create virtual cards and carry out other virtual card operations.
 
@@ -2594,6 +2619,9 @@ This call returns a dictionary. A sample response is:
 ```
 
 <br>
+
+
+</details>
 
 ## Run Tests
 
