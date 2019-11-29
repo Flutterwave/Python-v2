@@ -17,18 +17,18 @@ This is a Python wrapper around the [API](https://flutterwavedevelopers.readme.i
 - [Subaccounts](#ravesubaccount)
 - [Transfer](#ravetransfer)
 - [Subscription (Recurring Payments)](#ravesubscriptions)
-- [Bills payment](#)
+- Bills payment
 - [Payment Plan](#ravepaymentplan)
 - [USSD Payments (Still in Beta Mode)](#raveussd)
 
 #### Other features include:
 
-- Preauthorization charges
+- [Preauthorization charges](#ravepreauth)
 - Refunds
 - Transaction Verification
 - Transfer Recipients
-- Virtual Cards
-- Virtual Accounts
+- [Virtual Cards](#ravevirtualcard)
+- [Virtual Accounts](#ravevirtualaccount)
 
 ## Installation
 
