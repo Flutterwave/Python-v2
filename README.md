@@ -80,6 +80,9 @@ This is the documentation for all of the components of rave_python
 
 ## `rave.Card`
 
+<details>
+  <summary> <code> rave.Card </code> </summary>
+
 This is used to facilitate card transactions.
 
 **Functions included:**
@@ -374,9 +377,12 @@ except RaveExceptions.TransactionVerificationError as e:
     print(e.err["txRef"])
 ```
 
-<br><br>
+</details>
 
 ## `rave.Account`
+
+<details>
+  <summary> <code> rave.Account </code> </summary>
 
 This is used to facilitate account transactions.
 
@@ -555,9 +561,13 @@ except RaveExceptions.TransactionVerificationError as e:
     print(e.err["txRef"])
 ```
 
-<br><br>
+</details>
 
 ## `rave.GhMobile`
+
+<details>
+  <summary> <code> rave.GhMobile </code> </summary>
+
 
 This is used to facilitate Ghanaian mobile money transactions.
 
@@ -668,9 +678,12 @@ except RaveExceptions.TransactionVerificationError as e:
   print(e.err["txRef"])
 ```
 
-<br><br>
+</details>
 
 ## `rave.Mpesa`
+
+<details>
+  <summary> <code> rave.Mpesa </code> </summary>
 
 This is used to facilitate Mpesa transactions.
 
@@ -777,7 +790,13 @@ except RaveExceptions.TransactionVerificationError as e:
 
 <br><br>
 
+</details>
+
+
 ## `rave.UGMobile`
+
+<details>
+  <summary> <code> rave.UGMobile </code> </summary>
 
 This is used to facilitate Uganda mobile money transactions.
 
@@ -886,7 +905,12 @@ except RaveExceptions.TransactionVerificationError as e:
 
 <br><br>
 
+</details>
+
 ## `rave.ZBMobile`
+
+<details>
+  <summary> <code> rave.ZBMobile </code> </summary>
 
 This is used to facilitate Zambian mobile money transactions.
 
@@ -992,10 +1016,12 @@ except RaveExceptions.TransactionVerificationError as e:
   print(e.err["errMsg"])
   print(e.err["txRef"])
 ```
-
-<br><br>
+</details>
 
 ## `rave.Francophone`
+
+<details>
+  <summary> <code> rave.Francophone </code> </summary>
 
 This is used to facilitate mobile money transactions in Ivory Coast, Senegal and Mali.
 
@@ -1103,9 +1129,13 @@ except RaveExceptions.TransactionVerificationError as e:
   print(e.err["txRef"])
 ```
 
-<br><br>
+</details>
 
 ## `rave.Preauth`
+
+<details>
+  <summary> <code> rave.Preauth </code> </summary>
+
 
 This is used to facilitate preauthorized card transactions. This inherits the Card class so any task you can do on Card, you can do with preauth.
 
@@ -1294,9 +1324,13 @@ except RaveExceptions.TransactionVerificationError as e:
     print(e.err["txRef"])
 ```
 
-<br>
+</details>
 
 ## `rave.SubAccount`
+
+<details>
+  <summary> <code> rave.SubAccount </code> </summary>
+
 
 This is used to initiate and manage payouts
 
@@ -1465,7 +1499,13 @@ except RaveExceptions.ServerError as e:
 
 <br>
 
+</details>
+
 ## `rave.Transfer`
+
+<details>
+  <summary> <code> rave.Transfer </code> </summary>
+
 
 This is used to initiate and manage payouts
 
@@ -1721,6 +1761,9 @@ except RaveExceptions.ServerError as e:
 ```
 
 <br>
+
+
+</details>
 
 ## `rave.Subscriptions`
 
