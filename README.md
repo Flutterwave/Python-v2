@@ -6,20 +6,20 @@ This is a Python wrapper around the [API](https://flutterwavedevelopers.readme.i
 
 #### Payment types implemented:
 
-- Card Payments
-- Bank Account Payments
-- Ghana Mobile Money Payments
-- Mpesa Payments
-- Rwanda Mobile Money Payments
-- Uganda Mobile Money Payments
-- Zambia Mobile Money Payments
-- Mobile Money Payments for Francophone countries
-- Subaccounts
-- Transfer
-- Subscription (Recurring Payments)
-- Bills payment
-- Payment Plan
-- USSD Payments (Still in Beta Mode)
+- [Card Payments](#ravecard)
+- [Bank Account Payments](#raveaccount)
+- [Ghana Mobile Money Payments](#raveghmobile)
+- [Mpesa Payments](#ravempesa)
+- [Rwanda Mobile Money Payments](#ravempesa)
+- [Uganda Mobile Money Payments](#raveugmobile)
+- [Zambia Mobile Money Payments](#ravezbmobile )
+- [Mobile Money Payments for Francophone countries](#ravefrancophone)
+- [Subaccounts](#ravesubaccount)
+- [Transfer](#ravetransfer)
+- [Subscription (Recurring Payments)](#ravesubscriptions)
+- [Bills payment](#)
+- [Payment Plan](#ravepaymentplan)
+- [USSD Payments (Still in Beta Mode)](#raveussd)
 
 #### Other features include:
 
