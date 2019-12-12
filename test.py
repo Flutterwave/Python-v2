@@ -1,6 +1,6 @@
 import unittest
 from rave_python import Rave, RaveExceptions, Misc
-from rave_python.rave_exceptions import RaveError, IncompletePaymentDetailsError, AccountChargeError,TransactionVerificationError, TransactionValidationError, ServerError, CardChargeError, InitiateTransferError, SubaccountCreationError
+from rave_python.rave_exceptions import RaveError, IncompletePaymentDetailsError, AccountChargeError,TransactionVerificationError, TransactionValidationError, ServerError, CardChargeError, InitiateTransferError, SubaccountCreationError, CardCreationError
 
 # This class tests card and account payment options on Rave. It uses mock data
 
@@ -11,7 +11,7 @@ class TestRavePaymentOptions(unittest.TestCase):
             "firstname": "yemen_test",
             "country": "NG",
             "lastname": "yemen_test",
-            "accountnumber": "0005986581",
+            "accountnumber": "0690000031",
             "email": "nigeia_test@yopmail.com",
             "currency": "NGN",
             "accountbank": "044",
@@ -61,7 +61,7 @@ class TestRavePaymentOptions(unittest.TestCase):
             "currency": "NGN",
             "email":"user@gmail.com",
             "firstname":"temi",
-            "lastname":"Oyekole",
+            "lastname":"desola",
             "IP":"190.233.222.1",
             "txRef":"MC-7666-YU",
             "currency":"NGN",
@@ -252,26 +252,177 @@ class TestRavePaymentOptions(unittest.TestCase):
             "redirect_url": "https://rave-webhook.herokuapp.com/receivepayment",
             "device_fingerprint": "69e6b7f0b72037aa8428b70fbe03986c"
         }
+
+        self.ghDetails = {
+            "currency": "GHS",
+            "payment_type": "mobilemoneygh",
+            "country": "GH",
+            "amount": "50",
+            "email": "user@example.com",
+            "phonenumber": "054709929220",
+            "network": "MTN",
+            "firstname": "temi",
+            "lastname": "desola",
+            "voucher": "128373",
+            "IP": "355426087298442",
+            "txRef": "MC-1520528216374",
+            "orderRef": "MC_90929",
+            "is_mobile_money_gh": 1,
+            "redirect_url": "https://rave-webhook.herokuapp.com/receivepayment",
+            "device_fingerprint": "69e6b7f0b72037aa8428b70fbe03986c"
+        }
+
+        self.virtual_card_details = {
+            "currency": "NGN",
+            "amount": "350",
+            "billing_name": "Cornelius Ashley",
+            "billing_address": "19, Olubunmi Olurotimi street",
+            "billing_city": "Lagos",
+            "billing_state": "Lagos",
+            "billing_postal_code": "100001",
+            "billing_country": "NG"
+        }
         
+        self.faulty_virtual_card_details_1 = {
+            "amount": "350",
+            "billing_name": "Cornelius Ashley",
+            "billing_address": "19, Olubunmi Olurotimi street",
+            "billing_city": "Lagos",
+            "billing_state": "Lagos",
+            "billing_postal_code": "100001",
+            "billing_country": "NG"
+        }
 
-        self.rave = Rave("FLWPUBK-8bf84c62ed00abccc4ce37e12638ad63-X", "FLWSECK-370389724fd2d6573c1a4295ad61814f-X", production=True, usingEnv = False)
+        self.faulty_virtual_card_details_2 = {
+            "currency": "NGN",
+            "amount": "350",
+            "billing_name": "Cornelius Ashley",
+            "billing_address": "19, Olubunmi Olurotimi street",
+            "billing_state": "Lagos",
+            "billing_postal_code": "100001",
+            "billing_country": "NG"
+        }
+        self.bills_payment_details_1 = {
+            "service": "fly_buy",
+            "service_method": "post",
+            "service_version": "v1",
+            "service_channel": "rave",
+            "service_payload": {
+                "Country": "NG",
+                "CustomerId": "+23490803840303",
+                "Reference": "9300049404465",
+                "Amount": 100,
+                "RecurringType": 0,
+                "IsAirtime": True,
+                "BillerName": "AIRTIME"
+            }
+        }
 
-    def test_account(self):
-        # This test case checks that on initiating a payment, the user is requested to validate the payment
-        res = self.rave.Account.charge(self.account_details)
-        print(res)
-        self.assertEqual(res["validationRequired"], True)
-        # with self.assertRaises(AccountChargeError):
-        #     self.rave.Account.charge(self.faulty_account_details) 
+        self.faulty_bills_payment_details_1 = {
+            "service": "fly_buy",
+            "service_method": "post",
+            "service_channel": "rave",
+            "service_payload": {
+                "Country": "NG",
+                "CustomerId": "+23490803840303",
+                "Reference": "9300049404490",
+                "Amount": 100,
+                "RecurringType": 0,
+                "IsAirtime": True,
+                "BillerName": "AIRTIME"
+            }
+        }
 
-        # # This test case checks that a user validates a transaction appropriately
-        self.assertEqual(self.rave.Account.validate(res["flwRef"], "12345")["error"], False)
-        # with self.assertRaises(TransactionValidationError):
-        #     self.rave.Account.validate(res["flwRef"], "123") # a wrong otp to ensure TransactionValidationError is raised anytime a wrong otp is passed
+        self.bills_payment_details_2 = {
+            "service": "fly_buy_bulk",
+            "service_method": "post",
+            "service_version": "v1",
+            "service_channel": "rave",
+            "service_payload": {
+                "BatchReference": "batch-rave-150928302799933928",
+                "CallBackUrl": "https://rave-webhook.herokuapp.com/newregistration",
+                "Requests": [
+                    {
+                        "Country": "NG",
+                        "CustomerId": "+23490803840303",
+                        "Amount": 100,
+                        "RecurringType": 0,
+                        "IsAirtime": True,
+                        "BillerName": "AIRTIME",
+                        "Reference": "9300049404450"
+                    },
+                    {
+                        "Country": "GH",
+                        "CustomerId": "+233276081163",
+                        "Amount": 10,
+                        "RecurringType": 0,
+                        "IsAirtime": True,
+                        "BillerName": "AIRTIME",
+                        "Reference": "9300049405561"
+                    },
+                    {
+                        "Country": "US",
+                        "CustomerId": "+190830030",
+                        "Amount": 20,
+                        "RecurringType": 0,
+                        "IsAirtime": True,
+                        "BillerName": "AIRTIME",
+                        "Reference": "9300049406681"
+                    }
+                ]
+            }
+        }
 
-        # self.assertEqual(self.rave.Account.verify(res["txRef"])["transactionComplete"], True)
-        # with self.assertRaises(TransactionVerificationError):
-        #     self.rave.Account.verify("MC-8883838388881") # a wrong txRef to ensure TransactionVerificationError is raised anytime a wrong transaction reference is passed
+        self.francophone_mobile_charge_details={
+            "currency": "XAF",
+            "country":"NG",
+            "payment_type":"mobilemoneyfranco",
+            "amount": "250",
+            "email": "user@example.com",
+            "phonenumber": "054709929220",
+            "firstname": "temi",
+            "lastname": "desola",
+            "IP": "355426087298442",
+            "redirect_url": "https://www.google.com",
+            "txRef": "01002",
+            "orderRef": "12122019",
+            "is_mobile_money_franco": 1,
+            "device_fingerprint": "69e6b7f0b72037aa8428b70fbe03986c"
+        }
+
+        self.faulty_francophone_mobile_charge_details={
+            "currency": "XAF",
+            "country":"NG",
+            "payment_type":"mobilemoneyfranco",
+            "amount": "250",
+            "email": "user@example.com",
+            "phonenumber": "054709929220",
+            "firstname": "temi",
+            "lastname": "desola",
+            "IP": "355426087298442",
+            "txRef": "01002",
+            "orderRef": "12122019",
+            "is_mobile_money_franco": 1,
+        }
+
+        #please replace the keys with your public and secret keys
+        self.rave = Rave("FLWPUBK_TEST-0db01907c1b990c273c365a696c1613d-X", "FLWSECK_TEST-624d8f04393b01cac90d02f562b26389-X", production=False, usingEnv = False)
+
+    # def test_account(self):
+    #     # This test case checks that on initiating a payment, the user is requested to validate the payment
+    #     res = self.rave.Account.charge(self.account_details)
+    #     self.assertEqual(res["validationRequired"], True)
+    #     with self.assertRaises(AccountChargeError):
+    #         self.rave.Account.charge(self.faulty_account_details) 
+
+    #     # This test case checks that a user validates a transaction appropriately
+    #     self.assertEqual(self.rave.Account.validate(res["flwRef"], "12345")["error"], False)
+    #     with self.assertRaises(TransactionValidationError):
+    #         self.rave.Account.validate(res["flwRef"], "123") # a wrong otp to ensure TransactionValidationError is raised anytime a wrong otp is passed
+
+    #     self.assertEqual(self.rave.Account.verify(res["txRef"])["transactionComplete"], True)
+    #     with self.assertRaises(TransactionVerificationError):
+    #         self.rave.Account.verify("MC-8883838388881") # a wrong txRef to ensure TransactionVerificationError is raised anytime a wrong transaction reference is passed
         
     # def test_card(self):
 
@@ -298,6 +449,13 @@ class TestRavePaymentOptions(unittest.TestCase):
     #     with self.assertRaises(TransactionVerificationError):
     #         self.rave.Card.verify("MC-8883838388881") # a wrong txRef to ensure TransactionVerificationError is raised anytime a wrong transaction reference is passed
 
+    # def test_mobile_money_gh(self):
+    #     res = self.rave.GhMobile.charge(self.ghDetails)
+    #     self.assertIsNotNone(res["error"])
+    #     self.assertIsNotNone(res["status"])
+    #     self.assertEqual(res["error"], False)
+    #     self.assertEqual(res["status"], "success")
+    
     # def test_saved_card(self):
     #     res = self.rave.Card.charge(self.saved_card_details, chargeWithToken=True)
     #     self.assertIsNotNone(res["status"])
@@ -449,6 +607,38 @@ class TestRavePaymentOptions(unittest.TestCase):
     #     #charge
     #     res = self.rave.UGMobile.charge(self.ugDetails)
     #     print(res)
+
+    # def test_bills_payment(self):
+    #     #single airtime purchase
+    #     res = self.rave.Bills.create(self.bills_payment_details_1)
+    #     self.assertIsNotNone(res["error"])
+    #     self.assertIsNotNone(res["data"]["Status"])
+    #     self.assertEqual(res["error"], False)
+    #     self.assertEqual(res["data"]["Status"], "success")
+    #     with self.assertRaises(IncompletePaymentDetailsError):
+    #         self.rave.Bills.create(self.faulty_bills_payment_details_1)
+
+    #     #bulk airtime purchase
+    #     res = self.rave.Bills.create(self.bills_payment_details_2)
+    #     self.assertIsNotNone(res["error"])
+    #     self.assertIsNotNone(res["data"]["Status"])
+    #     self.assertEqual(res["error"], False)
+    #     self.assertEqual(res["data"]["Status"], "success")
+
+    # def test_virtual_card(self):
+    #     res = self.rave.VirtualCard.create(self.virtual_card_details)
+    #     print(res)
+
+    def test_francophone_charge(self):
+        res = self.rave.Francophone.charge(self.francophone_mobile_charge_details)
+        self.assertIsNotNone(res["error"])
+        self.assertEqual(res["error"], False)
+        with self.assertRaises(IncompletePaymentDetailsError):
+            self.rave.Francophone.charge(self.faulty_francophone_mobile_charge_details)
+
+    
+        
+
         
 if __name__ == '__main__':
     unittest.main()
