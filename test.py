@@ -406,7 +406,7 @@ class TestRavePaymentOptions(unittest.TestCase):
         }
 
         #please replace the keys with your public and secret keys
-        self.rave = Rave("FLWPUBK_TEST-0db01907c1b990c273c365a696c1613d-X", "FLWSECK_TEST-624d8f04393b01cac90d02f562b26389-X", production=False, usingEnv = False)
+        self.rave = Rave("FLWPUBK_TEST-********************-X", "FLWSECK_TEST-***************************-X", production=False, usingEnv = False)
 
     # def test_account(self):
     #     # This test case checks that on initiating a payment, the user is requested to validate the payment
