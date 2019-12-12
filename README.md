@@ -2589,4 +2589,7 @@ python test.py
 >**NOTE:** If the test fails for creating a subaccount, just change the ```account_number``` ```account_bank```  and ```businesss_email``` to something different
 
 >**NOTE:** The test may fail for account validation - ``` Pending OTP validation``` depending on whether the service is down or not
+<br>
 
+## Support
+For further assistance in using the SDK, you can contact the Developers on [Slack](https://join.slack.com/t/flutterwavedevelopers/shared_invite/enQtNTk3MjgxMjU3ODI5LWFkMjBkYTc0ZGJhM2Q5MTY3YjFkYzAyYmM1ZDZjZjUwMjE4YTc2NjQ1ZGM5ZWE4NDUxMzc4MmExYmI1Yjg5ZWU) and [Email](mailto:developers@flutterwavego.com). You can get more information about the amazing features here [here](https://developer.flutterwave.com/reference#introduction).
