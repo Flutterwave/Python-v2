@@ -1,30 +1,39 @@
-<!--- Provide a general summary of your changes in the title above. -->
+<!--- Provide a general summary of your changes in the Title above -->
 
-<!--- This template is entirely optional and can be removed, but is here to help both you and us. -->
-<!--- Anything on lines wrapped in comments like these will not show up in the final text. -->
+#### Description
+<!--- Describe your changes in detail -->
 
-## Description
+#### Related Issue
+<!--- This project only accepts pull requests related to open issues -->
+<!--- If suggesting a new feature or change, please discuss it in an issue first -->
+<!--- If fixing a bug, there should be an issue describing it with steps to reproduce -->
+<!--- Please link to the issue here: -->
 
-<!--- Describe your changes in detail here. -->
+#### Motivation and Context
+<!--- Why is this change required? What problem does it solve? -->
 
-## Types of Changes
+#### How Has This Been Tested?
+<!--- Please describe in detail how you tested your changes. -->
+<!--- Include details of your testing environment, and the tests you ran to -->
+<!--- see how your change affects other areas of the code, etc. -->
 
-<!--- What types of changes does your pull request introduce? Put an `x` in all the boxes that apply. -->
-- [ ] Bugfix
-- [ ] New feature
-- [ ] Enhancement/optimization
-- [ ] Documentation
+#### Types of changes
+<!--- What types of changes does your code introduce? Put an `x` in all the boxes that apply: -->
+- [ ] Bug fix (non-breaking change which fixes an issue)
+- [ ] Refactor (non-breaking change which improves implementation)
+- [ ] Performance (non-breaking change which improves performance. Please add associated performance test and results)
+- [ ] New feature (non-breaking change which adds functionality)
+- [ ] Breaking change (fix or feature that would cause existing functionality to change)
+- [ ] Non-functional change (xml comments/documentation/etc)
 
-## Issues Fixed or Closed by This PR
-
-* 
-
-## Checklist
-
-<!--- Go over all the following points, and put an `x` in all the boxes that apply. -->
+#### Checklist:
+<!--- The following is a checklist of items that MUST be completed before a PR is accepted -->
 <!--- If you're unsure about any of these, don't hesitate to ask. We're here to help! -->
 - [ ] My code follows the code style of this project.
-- [ ] My change requires a change to documentation.
-- [ ] I have updated the documentation accordingly.
-- [ ] I have added tests to cover my changes.
-- [ ] I have tested the changes and verified that they work and don't break anything (as well as I can manage).
+- [ ] I have read the **CONTRIBUTING** [document](https://github.com/QuantConnect/Lean/blob/master/CONTRIBUTING.md).
+- [ ] I have added tests to cover my changes. <!--- If not applicable, please explain why -->
+- [ ] All new and existing tests passed.
+- [ ] My branch follows the naming convention `bug-<issue#>-<description>` or `feature-<issue#>-<description>`
+
+
+@Flutterwave/Corvus97 What do you think about these updates?
