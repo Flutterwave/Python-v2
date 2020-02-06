@@ -31,9 +31,9 @@ class TestRavePaymentOptions(unittest.TestCase):
             "IP":"127.0.0.1"
         }
         self.card_details = {
-            "cardno": "5399838383838381",
-            "cvv": "470",
-            "expirymonth": "10",
+            "cardno": "5531886652142950",
+            "cvv": "564",
+            "expirymonth": "09",
             "expiryyear": "22",
             "currency": "NGN",
             "amount": "100",
