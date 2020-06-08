@@ -672,9 +672,9 @@ This is used to facilitate Mpesa transactions.
 <br>
 
 ### ```.charge(payload)```
-This is called to start an Mpesa transaction. The payload should be a dictionary containing account information. It should have the parameters:
+This is called to start an Mpesa transaction. The payload should be a dictionary containing payment information. It should have the parameters:
 
-* ```account```, 
+* ```amount```, 
 
 * ```email```, 
 
