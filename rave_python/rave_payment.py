@@ -69,19 +69,33 @@ class Payment(RaveBase):
         res = self._preliminaryResponseChecks(response, TransactionChargeError, txRef=txRef)
         
         responseJson = res["json"]
-        flwRef = responseJson["data"]["flwRef"]
 
         if isMpesa:
-            return {"error": False, "status": responseJson["status"], "validationRequired": True, "txRef": txRef, "flwRef": flwRef, "narration": responseJson["data"]["narration"]}
+            return {
+                "error": False, 
+                "status": responseJson["status"], 
+                "validationRequired": True, 
+                "txRef": txRef, 
+                "flwRef": responseJson["data"]["flwRef"], 
+                "narration": responseJson["data"]["narration"]
+                }
         else:
             # if all preliminary tests pass
             if not (responseJson["data"].get("chargeResponseCode", None) == "00"):
-                if responseJson["data"].get("currency", 'None') == 'UGX':
-                    return {"error": False, "status": responseJson["status"],  "validationRequired": True, "txRef": txRef, "flwRef": flwRef, "chargeResponseMessage": responseJson["data"]["chargeResponseMessage"]}
+                if responseJson.get("message", 'None') == 'Momo initiated':
+                    return {
+                            "error": False, 
+                            "status": responseJson["status"],  
+                            "message": responseJson["message"],
+                            "code": responseJson["data"]["code"],
+                            "transaction status": responseJson["data"]["status"],
+                            "ts": responseJson["data"]["ts"],
+                            "link": responseJson["data"]["link"]
+                        }
 
-                return {"error": False, "status": responseJson["status"],"validationRequired": True, "txRef": txRef, "flwRef": flwRef, "chargeResponseMessage": responseJson["data"]["chargeResponseMessage"]}
+                return {"error": False, "status": responseJson["status"],"validationRequired": True, "txRef": txRef, "flwRef": responseJson["data"]["flwRef"], "chargeResponseMessage": responseJson["data"]["chargeResponseMessage"]}
             else:
-                return {"error": True,  "validationRequired": False, "txRef": txRef, "flwRef": flwRef}
+                return {"error": True,  "validationRequired": False, "txRef": txRef, "flwRef": responseJson["data"]["flwRef"]}
     
     def _handleCaptureResponse(self, response, request=None):
         """ This handles transaction charge responses """
