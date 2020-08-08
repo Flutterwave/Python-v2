@@ -1,4 +1,4 @@
-import requests, json, copy
+import pycurl_requests as requests, json, copy
 from rave_python.rave_base import RaveBase
 from rave_python.rave_misc import checkIfParametersAreComplete, generateTransactionReference
 from rave_python.rave_exceptions import  ServerError, IncompletePaymentDetailsError, PlanCreationError, PlanStatusError

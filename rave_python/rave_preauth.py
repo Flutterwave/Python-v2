@@ -1,4 +1,4 @@
-import requests
+import pycurl_requests as requests
 import json
 from rave_python.rave_exceptions import ServerError, TransactionVerificationError, PreauthCaptureError, PreauthRefundVoidError
 from rave_python.rave_card import Card

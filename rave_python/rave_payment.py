@@ -1,4 +1,4 @@
-import requests, json, copy
+import pycurl_requests as requests, json, copy
 from rave_python.rave_base import RaveBase
 from rave_python.rave_exceptions import RaveError, IncompletePaymentDetailsError, AuthMethodNotSupportedError, TransactionChargeError, TransactionVerificationError, TransactionValidationError, ServerError, RefundError, PreauthCaptureError
 from rave_python.rave_misc import checkIfParametersAreComplete
