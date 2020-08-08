@@ -28,6 +28,6 @@ setuptools.setup(
     ),
     install_requires = [
         'pycryptodome',
-        'requests'
+        'pycurl-requests>=0.1.1'
     ]
 )
