@@ -1,4 +1,4 @@
-import os, hashlib, warnings, requests, json
+import os, hashlib, warnings, pycurl_requests as requests, json
 from rave_python.rave_exceptions import ServerError, RefundError
 import base64
 from Crypto.Cipher import DES3

@@ -1,4 +1,4 @@
-import json, requests, copy
+import json, pycurl_requests as requests, copy
 from rave_python.rave_base import RaveBase
 from rave_python.rave_misc import checkIfParametersAreComplete
 from rave_python.rave_exceptions import ServerError, IncompleteCardDetailsError, RecipientCreationError, RecipientStatusError
