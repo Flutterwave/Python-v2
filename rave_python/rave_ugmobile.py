@@ -27,6 +27,6 @@ class UGMobile(Payment):
         if not ("orderRef" in accountDetails):
             accountDetails.update({"orderRef": generateTransactionReference()})
         # Checking for required account components
-        requiredParameters = ["amount", "email", "phonenumber", "network", "IP", "redirect_url"]
+        requiredParameters = ["amount", "email", "phonenumber", "network", "IP"]
         return super(UGMobile, self).charge(accountDetails, requiredParameters, endpoint)
 

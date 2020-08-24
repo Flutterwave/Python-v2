@@ -68,6 +68,7 @@ class Payment(RaveBase):
         # If we cannot parse the json, it means there is a server error
         res = self._preliminaryResponseChecks(response, TransactionChargeError, txRef=txRef)
         
+        
         responseJson = res["json"]
 
         if isMpesa:
