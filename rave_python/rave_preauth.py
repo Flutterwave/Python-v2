@@ -32,7 +32,7 @@ class Preauth(Card):
     
 
     # capture payment
-    def capture(self, flwRef):
+    def capture(self, flwRef ):
         """ This is called to complete the transaction.\n
              Parameters include:
             flwRef (string) -- This is the flutterwave reference you receive from action["flwRef"]
