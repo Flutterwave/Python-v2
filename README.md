@@ -4,6 +4,8 @@
 
 # Rave Python Library
 ![PyPI](https://img.shields.io/pypi/v/rave_python)
+![PyPI - Downloads](https://img.shields.io/pypi/dm/rave_python)
+![PyPI - License](https://img.shields.io/pypi/l/rave_python)
 
 
 ## Introduction
