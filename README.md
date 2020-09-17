@@ -3,6 +3,8 @@
 </p>
 
 # Rave Python Library
+![PyPI](https://img.shields.io/pypi/v/rave_python)
+
 
 ## Introduction
 This is a Python wrapper around the [API](https://flutterwavedevelopers.readme.io/v2.0/reference) for [Rave by Flutterwave](https://rave.flutterwave.com).
