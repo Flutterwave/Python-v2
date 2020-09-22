@@ -3,6 +3,7 @@
 </p>
 
 # Rave Python Library
+![Upload Python Package](https://github.com/Flutterwave/rave-python/workflows/Upload%20Python%20Package/badge.svg)
 ![PyPI](https://img.shields.io/pypi/v/rave_python)
 ![PyPI - Downloads](https://img.shields.io/pypi/dm/rave_python)
 ![PyPI - License](https://img.shields.io/pypi/l/rave_python)
