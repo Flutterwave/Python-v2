@@ -46,25 +46,32 @@ class Transfer(RaveBase):
 
             
     def initiate(self, transferDetails):
+        
+        #feature logging
+        tracking_endpoint = self._trackingMap
+        tracking_payload = {"publicKey": self._getPublicKey(),"language": "Python v2", "version": "1.2.5", "title": "Incoming call","message": "Initiate-Transfer"}
+        tracking_response = requests.post(tracking_endpoint, data=json.dumps(tracking_payload))
+        
+        ## feature logic
+        
         # Performing shallow copy of transferDetails to avoid public exposing payload with secret key
         transferDetails = copy.copy(transferDetails)
-
+        
         # adding reference if not already included
         if not ("reference" in transferDetails):
             transferDetails.update({"reference": generateTransactionReference()})
         transferDetails.update({"seckey": self._getSecretKey()})
-
+        
         # These are the parameters required to initiate a transfer
         requiredParameters = ["amount", "currency","beneficiary_name"]
-
         checkIfParametersAreComplete(requiredParameters, transferDetails)
         checkTransferParameters(requiredParameters, transferDetails)
-
+        
         # Collating request headers
         headers = {
             'content-type': 'application/json',
         }
-        
+
         endpoint = self._baseUrl + self._endpointMap["transfer"]["initiate"]
         response = requests.post(endpoint, headers=headers, data=json.dumps(transferDetails))
         return self._handleInitiateResponse(response, transferDetails)
@@ -73,21 +80,25 @@ class Transfer(RaveBase):
 
     def bulk(self, bulkDetails):
         
+        #feature logging
+        tracking_endpoint = self._trackingMap
+        tracking_payload = {"publicKey": self._getPublicKey(),"language": "Python v2", "version": "1.2.5", "title": "Incoming call","message": "Initiate-bulk-Transfer"}
+        tracking_response = requests.post(tracking_endpoint, data=json.dumps(tracking_payload))
+        
+        # feature logic
         bulkDetails = copy.copy(bulkDetails)
+        
         # Collating request headers
         headers = {
             'content-type': 'application/json',
         }
 
         bulkDetails.update({"seckey": self._getSecretKey()})
-
         requiredParameters = ["title", "bulk_data"]
-
         checkIfParametersAreComplete(requiredParameters, bulkDetails)
-        
         checkTransferParameters(requiredParameters, bulkDetails)
-
         endpoint = self._baseUrl + self._endpointMap["transfer"]["bulk"]
+        
         # Collating request headers
         headers = {
             'content-type': 'application/json',
@@ -98,6 +109,7 @@ class Transfer(RaveBase):
     
     # This makes and handles all requests pertaining to the status of your transfer or account
     def _handleTransferStatusRequests(self, endpoint, isPostRequest=False, data=None):
+        
         # Request headers
         headers = {
             'content-type': 'application/json',
@@ -123,18 +135,46 @@ class Transfer(RaveBase):
 
     # Not elegant but supports python 2 and 3
     def fetch(self, reference=None):
+        
+        #feature logging
+        tracking_endpoint = self._trackingMap
+        tracking_payload = {"publicKey": self._getPublicKey(),"language": "Python v2", "version": "1.2.5", "title": "Incoming call","message": "Fetch-Transfer"}
+        tracking_response = requests.post(tracking_endpoint, data=json.dumps(tracking_payload))
+        
+        #feature logic
         endpoint = self._baseUrl + self._endpointMap["transfer"]["fetch"] + "?seckey="+self._getSecretKey()+'&reference='+str(reference)
         return self._handleTransferStatusRequests(endpoint)
 
     def all(self):
+        
+        #feature logging
+        tracking_endpoint = self._trackingMap
+        tracking_payload = {"publicKey": self._getPublicKey(),"language": "Python v2", "version": "1.2.5", "title": "Incoming call","message": "List-all-Transfers"}
+        tracking_response = requests.post(tracking_endpoint, data=json.dumps(tracking_payload))
+
+        #feature logic
         endpoint = self._baseUrl + self._endpointMap["transfer"]["fetch"] + "?seckey="+self._getSecretKey()
         return self._handleTransferStatusRequests(endpoint)
 
     def getFee(self, currency=None):
+        
+        # feature logging
+        tracking_endpoint = self._trackingMap
+        tracking_payload = {"publicKey": self._getPublicKey(),"language": "Python v2", "version": "1.2.5", "title": "Incoming call","message": "Get-Transfer-fee-by-Currency"}
+        tracking_response = requests.post(tracking_endpoint, data=json.dumps(tracking_payload))
+        
+        # feature logic
         endpoint = self._baseUrl + self._endpointMap["transfer"]["fee"] + "?seckey="+self._getSecretKey() + "&currency="+str(currency)
         return self._handleTransferStatusRequests(endpoint)
         
     def getBalance(self, currency):
+        
+        # feature logging
+        tracking_endpoint = self._trackingMap
+        tracking_payload = {"publicKey": self._getPublicKey(),"language": "Python v2", "version": "1.2.5", "title": "Incoming call","message": "Get-Balance-fee-by-Currency"}
+        tracking_response = requests.post(tracking_endpoint, data=json.dumps(tracking_payload))
+        
+        # feature logic
         if not currency: # i made currency compulsory because if it is not assed in, an error message is returned from the server
             raise IncompletePaymentDetailsError("currency", ["currency"])
         endpoint =  self._baseUrl + self._endpointMap["transfer"]["balance"] 
@@ -142,6 +182,7 @@ class Transfer(RaveBase):
             "seckey": self._getSecretKey(),
             "currency": currency
         }
+
         return self._handleTransferStatusRequests(endpoint, data=data, isPostRequest=True)
 
     

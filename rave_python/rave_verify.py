@@ -56,6 +56,13 @@ class Verify(RaveBase):
             raise BVNFetchError({"error": True, "returnedData": responseJson })
 
     def bvnVerify(self, bvn):
+        
+        #feature logging
+        tracking_endpoint = self._trackingMap
+        tracking_payload = {"publicKey": self._getPublicKey(),"language": "Python v2", "version": "1.2.5", "title": "Incoming call","message": "BVN-verification"}
+        tracking_response = requests.post(tracking_endpoint, data=json.dumps(tracking_payload))
+
+        # feature logic
         if not bvn:
             return "BVN was not supplied. Kindly supply one"
         endpoint = self._baseUrl + self._endpointMap["bvn"]["verify"] +str(bvn)+"?seckey=" + self._getSecretKey()

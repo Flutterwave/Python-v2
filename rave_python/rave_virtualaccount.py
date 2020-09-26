@@ -59,12 +59,17 @@ class VirtualAccount(RaveBase):
     #function to create a virtual card 
     #Params: cardDetails - a dict containing email, is_permanent, frequency, duration, narration
     def create(self, accountDetails):
+        
+        #feature logging
+        tracking_endpoint = self._trackingMap
+        tracking_payload = {"publicKey": self._getPublicKey(),"language": "Python v2", "version": "1.2.5", "title": "Incoming call","message": "Create-virtual-account"}
+        tracking_response = requests.post(tracking_endpoint, data=json.dumps(tracking_payload))
+
+        # feature logic
         accountDetails = copy.copy(accountDetails)
         accountDetails.update({"seckey": self._getSecretKey()})
-        
         requiredParameters = ["email", "narration"]
         checkIfParametersAreComplete(requiredParameters, accountDetails)
-
         endpoint = self._baseUrl + self._endpointMap["virtual_account"]["create"]
         response = requests.post(endpoint, headers=self.headers, data=json.dumps(accountDetails))
         return self._handleCreateResponse(response, accountDetails)
