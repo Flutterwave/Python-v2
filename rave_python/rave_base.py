@@ -95,7 +95,6 @@ class RaveBase(object):
         
 
         # Setting up public and private keys (private)
-        # 
         # If we are using environment variables to store secretKey
         if(usingEnv):  
             self.__publicKey = publicKey

@@ -2420,7 +2420,7 @@ A sample Create call is:
 
 ```py
 card_id = "660bae3b-333c-410f-b283-2d181587247f"
-res = rave.VirtualCard.getCard(card_id)
+res = rave.VirtualCard.get(card_id)
 print(res)
 ```
 
@@ -2465,7 +2465,7 @@ A sample Create call is:
 
 ```py
 card_id = "660bae3b-333c-410f-b283-2d181587247f"
-res = rave.VirtualCard.cancelCard(card_id)
+res = rave.VirtualCard.cancel(card_id)
 print(res)
 ```
 
@@ -2489,7 +2489,7 @@ A sample Create call is:
 
 ```py
 card_id = "660bae3b-333c-410f-b283-2d181587247f"
-res = rave.VirtualCard.freezeCard(card_id)
+res = rave.VirtualCard.freeze(card_id)
 print(res)
 ```
 
@@ -2513,7 +2513,7 @@ A sample Create call is:
 
 ```py
 card_id = "660bae3b-333c-410f-b283-2d181587247f"
-res = rave.VirtualCard.getCard(card_id)
+res = rave.VirtualCard.unfreeze(card_id)
 print(res)
 ```
 
@@ -2537,7 +2537,7 @@ A sample Create call is:
 
 ```py
 card_id = "660bae3b-333c-410f-b283-2d181587247f"
-res = rave.VirtualCard.fundCard(card_id, "NGN", 2000)
+res = rave.VirtualCard.fund(card_id, "NGN", 2000)
 print(res)
 ```
 
@@ -2553,7 +2553,7 @@ This call returns a dictionary. A sample response is:
 }
 ```
 
-### ```.Withdraw()```
+### ```.withdraw()```
 
 This allows a the user to withdraw funds from a card with a given id. the `card id` and `amount` are passed into the `.Withdraw()` method.
 
@@ -2561,7 +2561,7 @@ A sample Create call is:
 
 ```py
 card_id = "660bae3b-333c-410f-b283-2d181587247f"
-res = rave.VirtualCard.Withdraw(card_id, 1000)
+res = rave.VirtualCard.withdraw(card_id, 1000)
 print(res)
 ```
 
