@@ -37,7 +37,7 @@ class VirtualCard(RaveBase):
         else:
             raise CardCreationError({"error": True, "data": responseJson["data"]})
 
-    def _handleCardStatusRequests(self, type, endpoint, isPostRequest=False, data=None):
+    def _handleCardStatusRequests(self, type, endpoint, feature_name, isPostRequest=False, data=None):
         #check if response is a post response
         if isPostRequest:
             response = requests.post(endpoint, headers=self.headers, data=json.dumps(data))
@@ -51,8 +51,19 @@ class VirtualCard(RaveBase):
             raise ServerError({"error": True, "errMsg": response.text})
 
         if response.ok:
+            #feature logging
+            tracking_endpoint = self._trackingMap
+            responseTime = response.elapsed.total_seconds()
+            tracking_payload = {"publicKey": self._getPublicKey(),"language": "Python v2", "version": "1.2.5", "title": feature_name,"message": responseTime}
+            tracking_response = requests.post(tracking_endpoint, data=json.dumps(tracking_payload))
+
             return {"error": False, "returnedData": responseJson}
         else:
+            tracking_endpoint = self._trackingMap
+            responseTime = response.elapsed.total_seconds()
+            tracking_payload = {"publicKey": self._getPublicKey(),"language": "Python v2", "version": "1.2.5", "title": feature_name + "-error","message": responseTime}
+            tracking_response = requests.post(tracking_endpoint, data=json.dumps(tracking_payload))
+
             raise CardStatusError(type, {"error": True, "returnedData": responseJson })
 
 
@@ -70,9 +81,16 @@ class VirtualCard(RaveBase):
         response = requests.post(endpoint, headers=self.headers, data=json.dumps(vcardDetails))
         
         #feature logging
-        tracking_endpoint = self._trackingMap
-        tracking_payload = {"publicKey": self._getPublicKey(),"language": "Python v2", "version": "1.2.5", "title": "Incoming call","message": "Create-card"}
-        tracking_response = requests.post(tracking_endpoint, data=json.dumps(tracking_payload))
+        if response.ok == False:
+            tracking_endpoint = self._trackingMap
+            responseTime = response.elapsed.total_seconds()
+            tracking_payload = {"publicKey": self._getPublicKey(),"language": "Python v2", "version": "1.2.5", "title": "Create-card-error", "message": responseTime}
+            tracking_response = requests.post(tracking_endpoint, data=json.dumps(tracking_payload))
+        else:
+            tracking_endpoint = self._trackingMap
+            responseTime = response.elapsed.total_seconds()
+            tracking_payload = {"publicKey": self._getPublicKey(),"language": "Python v2", "version": "1.2.5", "title": "Create-card","message": responseTime}
+            tracking_response = requests.post(tracking_endpoint, data=json.dumps(tracking_payload))
 
         return self._handleCreateResponse(response, vcardDetails)
 
@@ -80,15 +98,11 @@ class VirtualCard(RaveBase):
     #gets all virtual cards connected to a merchant's account
     def all(self):
         
-        #feature logging
-        tracking_endpoint = self._trackingMap
-        tracking_payload = {"publicKey": self._getPublicKey(),"language": "Python v2", "version": "1.2.5", "title": "Incoming call","message": "List-all-cards"}
-        tracking_response = requests.post(tracking_endpoint, data=json.dumps(tracking_payload))
-        
         #logic for listing all cards
+        label = "List-all-cards"
         endpoint = self._baseUrl + self._endpointMap["virtual_card"]["list"] + "?seckey="+ self._getSecretKey()
         data = {"seckey": self._getSecretKey()}
-        return self._handleCardStatusRequests("List", endpoint, isPostRequest=True, data=data)
+        return self._handleCardStatusRequests("List", endpoint, label, isPostRequest=True, data=data)
 
     
     #permanently deletes a card with specified id 
@@ -97,66 +111,45 @@ class VirtualCard(RaveBase):
         if not card_id:
             return "Card id was not supplied. Kindly supply one"
         
-        #feature logging
-        tracking_endpoint = self._trackingMap
-        tracking_payload = {"publicKey": self._getPublicKey(),"language": "Python v2", "version": "1.2.5", "title": "Incoming call","message": "Delete-card"}
-        tracking_response = requests.post(tracking_endpoint, data=json.dumps(tracking_payload))
-        
         #card cancel feature logic
+        label = "Delete-card"
         endpoint = self._baseUrl + self._endpointMap["virtual_card"]["terminate"] + str(card_id) + "/terminate"
         data = {"seckey": self._getSecretKey()}
-        return self._handleCardStatusRequests("Cancel", endpoint, isPostRequest=True, data=data)
+        return self._handleCardStatusRequests("Cancel", endpoint, label, isPostRequest=True, data=data)
 
     
     #fetches Card details and transactions for a cars with specified id
     def get(self, card_id):
         
-        #feature logging
-        tracking_endpoint = self._trackingMap
-        tracking_payload = {"publicKey": self._getPublicKey(),"language": "Python v2", "version": "1.2.5", "title": "Incoming call","message": "Fetch-card"}
-        tracking_response = requests.post(tracking_endpoint, data=json.dumps(tracking_payload))
-        
         #fetch card logic
+        label = "Fetch-card"
         endpoint = self._baseUrl + self._endpointMap["virtual_card"]["get"]
         data = {"seckey": self._getSecretKey()}
-        return self._handleCardStatusRequests("Get", endpoint, isPostRequest=True, data=data)
+        return self._handleCardStatusRequests("Get", endpoint, label, isPostRequest=True, data=data)
 
     
     #temporarily suspends the use of card
     def freeze(self, card_id):
         
-        #feature logging
-        tracking_endpoint = self._trackingMap
-        tracking_payload = {"publicKey": self._getPublicKey(),"language": "Python v2", "version": "1.2.5", "title": "Incoming call","message": "Block-card"}
-        tracking_response = requests.post(tracking_endpoint, data=json.dumps(tracking_payload))
-        
         #feature logic
+        label = "Block-card"
         endpoint = self._baseUrl + self._endpointMap["virtual_card"]["freeze"] + str(card_id) + "/status/block"
         data = {"seckey": self._getSecretKey()}
-        return self._handleCardStatusRequests("Freeze", endpoint, isPostRequest=True, data=data)
+        return self._handleCardStatusRequests("Freeze", endpoint, label, isPostRequest=True, data=data)
 
     
     #reverses the freeze card operation
     def unfreeze(self, card_id):
         
-        #feature logging
-        tracking_endpoint = self._trackingMap
-        tracking_payload = {"publicKey": self._getPublicKey(),"language": "Python v2", "version": "1.2.5", "title": "Incoming call","message": "Unblock-card"}
-        tracking_response = requests.post(tracking_endpoint, data=json.dumps(tracking_payload))
-        
         #feature logic
+        label = "Unblock-card"
         endpoint = self._baseUrl + self._endpointMap["virtual_card"]["unfreeze"] + str(card_id) + "/status/unblock"
         data = {"seckey": self._getSecretKey()}
-        return self._handleCardStatusRequests("Unfreeze", endpoint, isPostRequest=True, data=data)
+        return self._handleCardStatusRequests("Unfreeze", endpoint, label, isPostRequest=True, data=data)
 
     
     #funds a card with specified balance for online transactions
     def fund(self, card_id, currency, amount):
-        
-        #feature logging
-        tracking_endpoint = self._trackingMap
-        tracking_payload = {"publicKey": self._getPublicKey(),"language": "Python v2", "version": "1.2.5", "title": "Incoming call","message": "Fund-card"}
-        tracking_response = requests.post(tracking_endpoint, data=json.dumps(tracking_payload))
         
         #feature logic
         data = {
@@ -165,16 +158,12 @@ class VirtualCard(RaveBase):
             "debit_currency": currency,
             "seckey": self._getSecretKey(),
         }
+        label = "Fund-card"
         endpoint = self._baseUrl + self._endpointMap["virtual_card"]["fund"]
-        return self._handleCardStatusRequests("Fund", endpoint, isPostRequest=True, data=data)
+        return self._handleCardStatusRequests("Fund", endpoint, label, isPostRequest=True, data=data)
 
     #withdraws funds from Virtual card. Withdrawn funds are added to Rave Balance
     def withdraw(self, card_id, amount):
-        
-        #feature logging
-        tracking_endpoint = self._trackingMap
-        tracking_payload = {"publicKey": self._getPublicKey(),"language": "Python v2", "version": "1.2.5", "title": "Incoming call","message": "Withdraw-card-funds"}
-        tracking_response = requests.post(tracking_endpoint, data=json.dumps(tracking_payload))
         
         #feature logic
         data = {
@@ -182,5 +171,6 @@ class VirtualCard(RaveBase):
             "amount" : amount,
             "seckey": self._getSecretKey(),
         }
+        label = "Withdraw-card-funds"
         endpoint = self._baseUrl + self._endpointMap["virtual_card"]["withdraw"]
-        return self._handleCardStatusRequests("Fund", endpoint, isPostRequest=True, data=data)
+        return self._handleCardStatusRequests("Fund", endpoint, label, isPostRequest=True, data=data)

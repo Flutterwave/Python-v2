@@ -93,6 +93,7 @@ class Card(Payment):
             hasFailed (bool) -- This indicates whether the request had previously failed for timeout handling
         """
         # setting the endpoint
+        feature_name = "Initiate-Card-charge"
         if not chargeWithToken:
             endpoint = self._baseUrl + self._endpointMap["card"]["charge"]
             requiredParameters = ["cardno", "cvv", "expirymonth", "expiryyear", "amount", "email", "IP", "phonenumber", "firstname", "lastname"]
@@ -111,17 +112,18 @@ class Card(Payment):
         if not ("txRef" in cardDetails):
             cardDetails.update({"txRef":generateTransactionReference()})
 
-        
-        return super(Card, self).charge(cardDetails, requiredParameters, endpoint)
+        return super(Card, self).charge(feature_name, cardDetails, requiredParameters, endpoint)
     
 
     def validate(self, flwRef, otp):
+        feature_name = "Validate-Card-charge"
         endpoint = self._baseUrl + self._endpointMap["card"]["validate"]
-        return super(Card, self).validate(flwRef, otp, endpoint)
+        return super(Card, self).validate(feature_name, flwRef, otp, endpoint)
 
     def verify(self, txRef):
+        feature_name = "Verify-Card-charge"
         endpoint = self._baseUrl + self._endpointMap["card"]["verify"]
-        return super(Card, self).verify(txRef, endpoint)
+        return super(Card, self).verify(feature_name, txRef, endpoint)
 
 
 

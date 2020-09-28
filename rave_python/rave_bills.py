@@ -41,13 +41,25 @@ class Bills(RaveBase):
     #function to create a Bill
     #Params: details - a dict containing service, service_method, service_version, service_channel and service_payload
     def create(self, details):
+        
         # Performing shallow copy of planDetails to avoid public exposing payload with secret key
         details = copy.copy(details)
         details.update({"seckey": self._getSecretKey()})
-
         requiredParameters = ["service", "service_method", "service_version", "service_channel"]
         checkIfParametersAreComplete(requiredParameters, details)
-
         endpoint = self._baseUrl + self._endpointMap["bills"]["create"]
         response = requests.post(endpoint, headers=self.headers, data=json.dumps(details))
+
+        # feature logging
+        if response.ok == False:
+            tracking_endpoint = self._trackingMap
+            responseTime = response.elapsed.total_seconds()
+            tracking_payload = {"publicKey": self._getPublicKey(),"language": "Python v2", "version": "1.2.5", "title": "Create-Bills-error", "message": responseTime}
+            tracking_response = requests.post(tracking_endpoint, data=json.dumps(tracking_payload))
+        else:
+            tracking_endpoint = self._trackingMap
+            responseTime = response.elapsed.total_seconds()
+            tracking_payload = {"publicKey": self._getPublicKey(),"language": "Python v2", "version": "1.2.5", "title": "Create-Bills", "message": responseTime}
+            tracking_response = requests.post(tracking_endpoint, data=json.dumps(tracking_payload))
+
         return self._handleCreateResponse(response, details)

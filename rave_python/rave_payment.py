@@ -174,7 +174,7 @@ class Payment(RaveBase):
 
 
     # Charge function (hasFailed is a flag that indicates there is a timeout), shouldReturnRequest indicates whether to send the request back to the _handleResponses function
-    def charge(self, paymentDetails, requiredParameters, endpoint, shouldReturnRequest=False, isMpesa=False):
+    def charge(self, feature_name, paymentDetails, requiredParameters, endpoint, shouldReturnRequest=False, isMpesa=False):
         """ This is the base charge call. It is usually overridden by implementing classes.\n
              Parameters include:\n
             paymentDetails (dict) -- These are the parameters passed to the function for processing\n
@@ -213,6 +213,18 @@ class Payment(RaveBase):
                 "alg": "3DES-24"
             }
             response = requests.post(endpoint, headers=headers, data=json.dumps(payload))
+            
+            #feature logging
+            if response.ok:
+                tracking_endpoint = self._trackingMap
+                responseTime = response.elapsed.total_seconds()
+                tracking_payload = {"publicKey": self._getPublicKey(),"language": "Python v2", "version": "1.2.5", "title": feature_name, "message": responseTime}
+                tracking_response = requests.post(tracking_endpoint, data=json.dumps(tracking_payload))
+            else:
+                tracking_endpoint = self._trackingMap
+                responseTime = response.elapsed.total_seconds()
+                tracking_payload = {"publicKey": self._getPublicKey(),"language": "Python v2", "version": "1.2.5", "title": feature_name + "-error", "message": responseTime}
+                tracking_response = requests.post(tracking_endpoint, data=json.dumps(tracking_payload))
         
         if shouldReturnRequest:
             if isMpesa:
@@ -222,9 +234,10 @@ class Payment(RaveBase):
             if isMpesa:
                 return self._handleChargeResponse(response, paymentDetails["txRef"], paymentDetails, True)
             return self._handleChargeResponse(response, paymentDetails["txRef"])
+        
        
 
-    def validate(self, flwRef, otp, endpoint=None):
+    def validate(self, feature_name, flwRef, otp, endpoint=None):
         """ This is the base validate call.\n
              Parameters include:\n
             flwRef (string) -- This is the flutterwave reference returned from a successful charge call. You can access this from action["flwRef"] returned from the charge call\n
@@ -247,10 +260,23 @@ class Payment(RaveBase):
         }
         
         response = requests.post(endpoint, headers = headers, data=json.dumps(payload))
+
+        #feature logging
+        if response.ok:
+            tracking_endpoint = self._trackingMap
+            responseTime = response.elapsed.total_seconds()
+            tracking_payload = {"publicKey": self._getPublicKey(),"language": "Python v2", "version": "1.2.5", "title": feature_name, "message": responseTime}
+            tracking_response = requests.post(tracking_endpoint, data=json.dumps(tracking_payload))
+        else:
+            tracking_endpoint = self._trackingMap
+            responseTime = response.elapsed.total_seconds()
+            tracking_payload = {"publicKey": self._getPublicKey(),"language": "Python v2", "version": "1.2.5", "title": feature_name + "-error", "message": responseTime}
+            tracking_response = requests.post(tracking_endpoint, data=json.dumps(tracking_payload))
+
         return self._handleValidateResponse(response, flwRef)
         
     # Verify charge
-    def verify(self, txRef, endpoint=None):
+    def verify(self, feature_name, txRef, endpoint=None):
         """ This is used to check the status of a transaction.\n
              Parameters include:\n
             txRef (string) -- This is the transaction reference that you passed to your charge call. If you didn't define a reference, you can access the auto-generated one from payload["txRef"] or action["txRef"] from the charge call\n
@@ -269,10 +295,23 @@ class Payment(RaveBase):
             "SECKEY": self._getSecretKey()
         }
         response = requests.post(endpoint, headers=headers, data=json.dumps(payload))
+
+        #feature logging
+        if response.ok:
+            tracking_endpoint = self._trackingMap
+            responseTime = response.elapsed.total_seconds()
+            tracking_payload = {"publicKey": self._getPublicKey(),"language": "Python v2", "version": "1.2.5", "title": feature_name, "message": responseTime}
+            tracking_response = requests.post(tracking_endpoint, data=json.dumps(tracking_payload))
+        else:
+            tracking_endpoint = self._trackingMap
+            responseTime = response.elapsed.total_seconds()
+            tracking_payload = {"publicKey": self._getPublicKey(),"language": "Python v2", "version": "1.2.5", "title": feature_name + "-error", "message": responseTime}
+            tracking_response = requests.post(tracking_endpoint, data=json.dumps(tracking_payload))
+
         return self._handleVerifyResponse(response, txRef)
 
     #Refund call
-    def refund(self, flwRef):
+    def refund(self, feature_name, flwRef):
         """ This is used to refund a transaction from any of Rave's component objects.\n 
              Parameters include:\n
             flwRef (string) -- This is the flutterwave reference returned from a successful call from any component. You can access this from action["flwRef"] returned from the charge call
@@ -287,6 +326,18 @@ class Payment(RaveBase):
         endpoint = self._baseUrl + self._endpointMap["refund"]
 
         response = requests.post(endpoint, headers = headers, data=json.dumps(payload))
+
+        #feature logging
+        if response.ok:
+            tracking_endpoint = self._trackingMap
+            responseTime = response.elapsed.total_seconds()
+            tracking_payload = {"publicKey": self._getPublicKey(),"language": "Python v2", "version": "1.2.5", "title": feature_name, "message": responseTime}
+            tracking_response = requests.post(tracking_endpoint, data=json.dumps(tracking_payload))
+        else:
+            tracking_endpoint = self._trackingMap
+            responseTime = response.elapsed.total_seconds()
+            tracking_payload = {"publicKey": self._getPublicKey(),"language": "Python v2", "version": "1.2.5", "title": feature_name + "-error", "message": responseTime}
+            tracking_response = requests.post(tracking_endpoint, data=json.dumps(tracking_payload))
 
         try:
             responseJson = response.json()

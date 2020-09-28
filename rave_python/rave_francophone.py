@@ -49,6 +49,7 @@ class Francophone(Payment):
             hasFailed (boolean) -- This is a flag to determine if the attempt had previously failed due to a timeout\n
         """
 
+        feature_name = "Initiate-Francophone-mobile-money-charge"
         endpoint = self._baseUrl + self._endpointMap["account"]["charge"]
         # It is faster to add boilerplate than to check if each one is present
         accountDetails.update({"payment_type": "mobilemoneyfrancophone", "is_mobile_money_franco":"1"})
@@ -62,4 +63,4 @@ class Francophone(Payment):
         # Checking for required account components
         # requiredParameters = ["amount", "email", "phonenumber", "IP", "redirect_url"]
         requiredParameters = ["amount"]
-        return super(Francophone, self).charge(accountDetails, requiredParameters, endpoint)
+        return super(Francophone, self).charge(feature_name, accountDetails, requiredParameters, endpoint)

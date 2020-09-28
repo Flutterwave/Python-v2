@@ -16,14 +16,9 @@ class Mpesa(Payment):
             accountDetails (dict) -- These are the parameters passed to the function for processing\n
             hasFailed (boolean) -- This is a flag to determine if the attempt had previously failed due to a timeout\n
         """
-        
-        #feature logging
-        tracking_endpoint = self._trackingMap
-        tracking_payload = {"publicKey": self._getPublicKey(),"language": "Python v2", "version": "1.2.5", "title": "Incoming call","message": "Initiate-Mpesa-charge"}
-        tracking_response = requests.post(tracking_endpoint, data=json.dumps(tracking_payload))
-        
         ## feature logic
         # Setting the endpoint
+        feature_name = "Initiate-Mpesa-charge"
         endpoint = self._baseUrl + self._endpointMap["account"]["charge"]
         # Adding boilerplate mpesa requirements
         accountDetails.update({"payment_type": "mpesa", "country":"KE", "is_mpesa":"1", "is_mpesa_lipa":"1", "currency":"KES"})
@@ -36,9 +31,10 @@ class Mpesa(Payment):
 
         # Checking for required account components
         requiredParameters = ["amount", "email", "phonenumber", "IP"]
-        res = super(Mpesa, self).charge(accountDetails, requiredParameters, endpoint, isMpesa=True)
+        res = super(Mpesa, self).charge(feature_name, accountDetails, requiredParameters, endpoint, isMpesa=True)
         return res
 
     def verify(self, txRef):
+        feature_name = "Verify-Mpesa_charge"
         endpoint = self._baseUrl + self._endpointMap["account"]["verify"]
-        return super(Mpesa, self).verify(txRef, endpoint)
+        return super(Mpesa, self).verify(feature_name, txRef, endpoint)
