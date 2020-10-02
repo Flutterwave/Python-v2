@@ -34,7 +34,7 @@ class Verify(RaveBase):
     #     else:
     #         raise CardCreationError({"error": True, "data": responseJson["data"]})
 
-    def _handleVerifyStatusRequests(self, endpoint, isPostRequest=False, data=None):
+    def _handleVerifyStatusRequests(self, endpoint, feature_name, isPostRequest=False, data=None):
         self.headers = {
             'content-type' : 'application/json'
         }
@@ -51,19 +51,25 @@ class Verify(RaveBase):
             raise ServerError({"error": True, "errMsg": response.text})
 
         if response.ok:
+            #feature logging
+            tracking_endpoint = self._trackingMap
+            responseTime = response.elapsed.total_seconds()
+            tracking_payload = {"publicKey": self._getPublicKey(),"language": "Python v2", "version": "1.2.5", "title": feature_name,"message": responseTime}
+            tracking_response = requests.post(tracking_endpoint, data=json.dumps(tracking_payload))
             return {"error": False, "returnedData": responseJson}
         else:
+            tracking_endpoint = self._trackingMap
+            responseTime = response.elapsed.total_seconds()
+            tracking_payload = {"publicKey": self._getPublicKey(),"language": "Python v2", "version": "1.2.5", "title": feature_name + "-error", "message": responseTime}
+            tracking_response = requests.post(tracking_endpoint, data=json.dumps(tracking_payload))
+
             raise BVNFetchError({"error": True, "returnedData": responseJson })
 
     def bvnVerify(self, bvn):
-        
-        #feature logging
-        tracking_endpoint = self._trackingMap
-        tracking_payload = {"publicKey": self._getPublicKey(),"language": "Python v2", "version": "1.2.5", "title": "Incoming call","message": "BVN-verification"}
-        tracking_response = requests.post(tracking_endpoint, data=json.dumps(tracking_payload))
 
         # feature logic
         if not bvn:
             return "BVN was not supplied. Kindly supply one"
+        feature_name = "BVN-verification"
         endpoint = self._baseUrl + self._endpointMap["bvn"]["verify"] +str(bvn)+"?seckey=" + self._getSecretKey()
-        return self._handleVerifyStatusRequests(endpoint)
+        return self._handleVerifyStatusRequests(endpoint, feature_name)

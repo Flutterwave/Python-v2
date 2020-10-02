@@ -17,12 +17,8 @@ class ZBMobile(Payment):
             hasFailed (boolean) -- This is a flag to determine if the attempt had previously failed due to a timeout\n
         """
 
-        #feature logging
-        tracking_endpoint = self._trackingMap
-        tracking_payload = {"publicKey": self._getPublicKey(),"language": "Python v2", "version": "1.2.5", "title": "Incoming call","message": "Initiate-Zambia-mobile-money-charge"}
-        tracking_response = requests.post(tracking_endpoint, data=json.dumps(tracking_payload))
-
         ## Feature logic
+        feature_name = "Initiate-Zambia-mobile-money-charge"
         endpoint = self._baseUrl + self._endpointMap["account"]["charge"]
         # It is faster to add boilerplate than to check if each one is present
         accountDetails.update({"payment_type": "mobilemoneyzambia", "country":"NG", "is_mobile_money_ug":"1", "currency":"ZMW", "network": "MTN"})
@@ -34,5 +30,5 @@ class ZBMobile(Payment):
             accountDetails.update({"orderRef": generateTransactionReference()})
         # Checking for required account components
         requiredParameters = ["amount", "email", "phonenumber", "network", "IP", "redirect_url"]
-        return super(ZBMobile, self).charge(accountDetails, requiredParameters, endpoint)
+        return super(ZBMobile, self).charge(feature_name, accountDetails, requiredParameters, endpoint)
 

@@ -44,9 +44,7 @@ class Account(Payment):
 
         # setting the endpoint
         endpoint = self._baseUrl + self._endpointMap['account']['charge']
-        # tracking_endpoint = self._trackingMap
-        # tracking_payload = {"publicKey": self._getPublicKey(),"language": "Python v2", "version": "1.2.5", "title": "Incoming call","message": "Initiate Account charge"}
-        # tracking_response = requests.post(tracking_endpoint, data=json.dumps(tracking_payload))
+        feature_name = "Initiate-Account-charge"
 
         # It is faster to just update rather than check if it is already present
         accountDetails.update({'payment_type': 'account'})
@@ -57,8 +55,9 @@ class Account(Payment):
         # Checking for required account components
         requiredParameters = ['accountbank', 'accountnumber', 'amount', 'email', 'phonenumber', 'IP']
 
-        return super().charge(accountDetails, requiredParameters, endpoint)
+        return super().charge(feature_name, accountDetails, requiredParameters, endpoint)
 
     def verify(self, txRef):
         endpoint = self._baseUrl + self._endpointMap['account']['verify']
-        return super().verify(txRef, endpoint)
+        feature_name = "Account-charge-verify"
+        return super().verify(feature_name, txRef, endpoint)

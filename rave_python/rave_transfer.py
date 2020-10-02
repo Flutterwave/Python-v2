@@ -47,13 +47,8 @@ class Transfer(RaveBase):
             
     def initiate(self, transferDetails):
         
-        #feature logging
-        tracking_endpoint = self._trackingMap
-        tracking_payload = {"publicKey": self._getPublicKey(),"language": "Python v2", "version": "1.2.5", "title": "Incoming call","message": "Initiate-Transfer"}
-        tracking_response = requests.post(tracking_endpoint, data=json.dumps(tracking_payload))
         
         ## feature logic
-        
         # Performing shallow copy of transferDetails to avoid public exposing payload with secret key
         transferDetails = copy.copy(transferDetails)
         
@@ -74,16 +69,23 @@ class Transfer(RaveBase):
 
         endpoint = self._baseUrl + self._endpointMap["transfer"]["initiate"]
         response = requests.post(endpoint, headers=headers, data=json.dumps(transferDetails))
+
+        if response.ok == False:
+            #feature logging
+            tracking_endpoint = self._trackingMap
+            responseTime = response.elapsed.total_seconds()
+            tracking_payload = {"publicKey": self._getPublicKey(),"language": "Python v2", "version": "1.2.5", "title": "Initiate-Transfer-error","message": responseTime}
+            tracking_response = requests.post(tracking_endpoint, data=json.dumps(tracking_payload))
+        else:
+            tracking_endpoint = self._trackingMap
+            responseTime = response.elapsed.total_seconds()
+            tracking_payload = {"publicKey": self._getPublicKey(),"language": "Python v2", "version": "1.2.5", "title": "Initiate-Transfer","message": responseTime}
+            tracking_response = requests.post(tracking_endpoint, data=json.dumps(tracking_payload))
         return self._handleInitiateResponse(response, transferDetails)
 
 
 
     def bulk(self, bulkDetails):
-        
-        #feature logging
-        tracking_endpoint = self._trackingMap
-        tracking_payload = {"publicKey": self._getPublicKey(),"language": "Python v2", "version": "1.2.5", "title": "Incoming call","message": "Initiate-bulk-Transfer"}
-        tracking_response = requests.post(tracking_endpoint, data=json.dumps(tracking_payload))
         
         # feature logic
         bulkDetails = copy.copy(bulkDetails)
@@ -104,11 +106,24 @@ class Transfer(RaveBase):
             'content-type': 'application/json',
         }
         response = requests.post(endpoint, headers=headers, data=json.dumps(bulkDetails))
+        
+        if response.ok == False:
+            #feature logging
+            tracking_endpoint = self._trackingMap
+            responseTime = response.elapsed.total_seconds()
+            tracking_payload = {"publicKey": self._getPublicKey(),"language": "Python v2", "version": "1.2.5", "title": "Initiate-Bulk-error","message": responseTime}
+            tracking_response = requests.post(tracking_endpoint, data=json.dumps(tracking_payload))
+        else:
+            tracking_endpoint = self._trackingMap
+            responseTime = response.elapsed.total_seconds()
+            tracking_payload = {"publicKey": self._getPublicKey(),"language": "Python v2", "version": "1.2.5", "title": "Initiate-Bulk","message": responseTime}
+            tracking_response = requests.post(tracking_endpoint, data=json.dumps(tracking_payload))
+
         return self._handleBulkResponse(response, bulkDetails)
 
     
     # This makes and handles all requests pertaining to the status of your transfer or account
-    def _handleTransferStatusRequests(self, endpoint, isPostRequest=False, data=None):
+    def _handleTransferStatusRequests(self, endpoint, feature_name, isPostRequest=False, data=None):
         
         # Request headers
         headers = {
@@ -129,52 +144,43 @@ class Transfer(RaveBase):
 
         # Checks if it returns a 2xx code
         if response.ok:
+            tracking_endpoint = self._trackingMap
+            responseTime = response.elapsed.total_seconds()
+            tracking_payload = {"publicKey": self._getPublicKey(),"language": "Python v2", "version": "1.2.5", "title": feature_name,"message": responseTime}
+            tracking_response = requests.post(tracking_endpoint, data=json.dumps(tracking_payload))
             return {"error": False, "returnedData": responseJson}
         else:
+            tracking_endpoint = self._trackingMap
+            responseTime = response.elapsed.total_seconds()
+            tracking_payload = {"publicKey": self._getPublicKey(),"language": "Python v2", "version": "1.2.5", "title": feature_name + "-error","message": responseTime}
             raise TransferFetchError({"error": True, "returnedData": responseJson })
 
     # Not elegant but supports python 2 and 3
     def fetch(self, reference=None):
         
-        #feature logging
-        tracking_endpoint = self._trackingMap
-        tracking_payload = {"publicKey": self._getPublicKey(),"language": "Python v2", "version": "1.2.5", "title": "Incoming call","message": "Fetch-Transfer"}
-        tracking_response = requests.post(tracking_endpoint, data=json.dumps(tracking_payload))
-        
         #feature logic
+        label = "Fetch-Transfer"
         endpoint = self._baseUrl + self._endpointMap["transfer"]["fetch"] + "?seckey="+self._getSecretKey()+'&reference='+str(reference)
-        return self._handleTransferStatusRequests(endpoint)
+        return self._handleTransferStatusRequests(label, endpoint)
 
     def all(self):
         
-        #feature logging
-        tracking_endpoint = self._trackingMap
-        tracking_payload = {"publicKey": self._getPublicKey(),"language": "Python v2", "version": "1.2.5", "title": "Incoming call","message": "List-all-Transfers"}
-        tracking_response = requests.post(tracking_endpoint, data=json.dumps(tracking_payload))
-
         #feature logic
+        label = "List-all-Transfers"
         endpoint = self._baseUrl + self._endpointMap["transfer"]["fetch"] + "?seckey="+self._getSecretKey()
-        return self._handleTransferStatusRequests(endpoint)
+        return self._handleTransferStatusRequests(label, endpoint)
 
     def getFee(self, currency=None):
         
-        # feature logging
-        tracking_endpoint = self._trackingMap
-        tracking_payload = {"publicKey": self._getPublicKey(),"language": "Python v2", "version": "1.2.5", "title": "Incoming call","message": "Get-Transfer-fee-by-Currency"}
-        tracking_response = requests.post(tracking_endpoint, data=json.dumps(tracking_payload))
-        
         # feature logic
+        label = "Get-Transfer-fee-by-Currency"
         endpoint = self._baseUrl + self._endpointMap["transfer"]["fee"] + "?seckey="+self._getSecretKey() + "&currency="+str(currency)
-        return self._handleTransferStatusRequests(endpoint)
+        return self._handleTransferStatusRequests(label, endpoint)
         
     def getBalance(self, currency):
         
-        # feature logging
-        tracking_endpoint = self._trackingMap
-        tracking_payload = {"publicKey": self._getPublicKey(),"language": "Python v2", "version": "1.2.5", "title": "Incoming call","message": "Get-Balance-fee-by-Currency"}
-        tracking_response = requests.post(tracking_endpoint, data=json.dumps(tracking_payload))
-        
         # feature logic
+        label = "Get-Balance-fee-by-Currency"
         if not currency: # i made currency compulsory because if it is not assed in, an error message is returned from the server
             raise IncompletePaymentDetailsError("currency", ["currency"])
         endpoint =  self._baseUrl + self._endpointMap["transfer"]["balance"] 
@@ -183,7 +189,7 @@ class Transfer(RaveBase):
             "currency": currency
         }
 
-        return self._handleTransferStatusRequests(endpoint, data=data, isPostRequest=True)
+        return self._handleTransferStatusRequests(label, endpoint, data=data, isPostRequest=True)
 
     
 
