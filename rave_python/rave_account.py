@@ -58,7 +58,7 @@ class Account(Payment):
         return super().charge(feature_name, accountDetails, requiredParameters, endpoint)
 
     def validate(self, flwRef, otp):
-        endpoint = self._baseUrl + self._endpointMap['account']['verify']
+        endpoint = self._baseUrl + self._endpointMap['account']['validate']
         feature_name = "Account-charge-verify"
         return super().validate(feature_name, flwRef, endpoint)
 
