@@ -321,7 +321,7 @@ except RaveExceptions.CardChargeError as e:
 ### Complete card charge flow
 
 ```py
-from rave_python import Rave
+from rave_python import Rave, RaveExceptions, Misc
 rave = Rave("YOUR_PUBLIC_KEY", "YOUR_SECRET_KEY", usingEnv = False)
 
 # Payload with pin
