@@ -54,12 +54,24 @@ class Bills(RaveBase):
         if response.ok == False:
             tracking_endpoint = self._trackingMap
             responseTime = response.elapsed.total_seconds()
-            tracking_payload = {"publicKey": self._getPublicKey(),"language": "Python v2", "version": "1.2.5", "title": "Create-Bills-error", "message": responseTime}
+            tracking_payload = {
+                "publicKey": self._getPublicKey(),
+                "language": "Python v2", 
+                "version": "1.2.5", 
+                "title": "Create-Bills-error", 
+                "message": responseTime
+                }
             tracking_response = requests.post(tracking_endpoint, data=json.dumps(tracking_payload))
         else:
             tracking_endpoint = self._trackingMap
             responseTime = response.elapsed.total_seconds()
-            tracking_payload = {"publicKey": self._getPublicKey(),"language": "Python v2", "version": "1.2.5", "title": "Create-Bills", "message": responseTime}
+            tracking_payload = {
+                "publicKey": self._getPublicKey(),
+                "language": "Python v2", 
+                "version": "1.2.5", 
+                "title": "Create-Bills", 
+                "message": responseTime
+                }
             tracking_response = requests.post(tracking_endpoint, data=json.dumps(tracking_payload))
 
         return self._handleCreateResponse(response, details)
