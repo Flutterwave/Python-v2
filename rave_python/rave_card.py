@@ -96,7 +96,7 @@ class Card(Payment):
         feature_name = "Initiate-Card-charge"
         if not chargeWithToken:
             endpoint = self._baseUrl + self._endpointMap["card"]["charge"]
-            requiredParameters = ["cardno", "cvv", "expirymonth", "expiryyear", "amount", "email", "IP", "phonenumber", "firstname", "lastname"]
+            requiredParameters = ["cardno", "cvv", "expirymonth", "expiryyear", "amount", "email"]
             # optionalParameters = ["phonenumber", "firstname", "lastname"]
         else: 
             if "charge_type" in cardDetails and cardDetails["charge_type"] == 'preauth':
@@ -104,7 +104,7 @@ class Card(Payment):
             else: 
                 endpoint = self._baseUrl + self._endpointMap["card"]["chargeSavedCard"]
 
-            requiredParameters = ["currency", "token", "country", "amount", "email", "txRef", "IP"]
+            requiredParameters = ["currency", "token", "country", "amount", "email", "txRef"]
             # optionalParameters = ["firstname", "lastname"]
             # add token to requiredParameters
             # requiredParameters.append("token")
