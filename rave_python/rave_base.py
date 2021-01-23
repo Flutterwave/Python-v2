@@ -21,6 +21,7 @@ class RaveBase(object):
                 "validate": "flwv3-pug/getpaidx/api/validatecharge",
                 "verify": "flwv3-pug/getpaidx/api/v2/verify",
                 "chargeSavedCard": "flwv3-pug/getpaidx/api/tokenized/charge",
+                "refund": "gpx/merchant/transactions/refund"
             },
             "ebills": {
                 "create": "flwv3-pug/getpaidx/api/ebills/generateorder/",
@@ -34,7 +35,8 @@ class RaveBase(object):
             "account": {
                 "charge": "flwv3-pug/getpaidx/api/charge",
                 "validate": "flwv3-pug/getpaidx/api/validate",
-                "verify": "flwv3-pug/getpaidx/api/v2/verify"
+                "verify": "flwv3-pug/getpaidx/api/v2/verify",
+                "refund": "gpx/merchant/transactions/refund"
             },
             "payment_plan": {
                 "create": "v2/gpx/paymentplans/create",

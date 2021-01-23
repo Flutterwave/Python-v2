@@ -36,7 +36,7 @@ class Account(Payment):
 
     # Charge account function
     def charge(self, accountDetails, hasFailed=False):
-        """ This is the ghMobile charge call.\n
+        """ This is the direct account charge call.\n
              Parameters include:\n
             accountDetails (dict) -- These are the parameters passed to the function for processing\n
             hasFailed (boolean) -- This is a flag to determine if the attempt had previously failed due to a timeout\n
@@ -66,3 +66,8 @@ class Account(Payment):
         endpoint = self._baseUrl + self._endpointMap['account']['verify']
         feature_name = "Account-charge-verify"
         return super().verify(feature_name, txRef, endpoint)
+
+    def refund(self, flwRef, amount):
+        feature_name = "Account-charge-refund"
+        endpoint = self._baseUrl + self._endpointMap["account"]["refund"]
+        return super().refund(feature_name, flwRef, amount)

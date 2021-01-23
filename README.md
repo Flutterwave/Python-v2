@@ -89,6 +89,8 @@ This is used to facilitate card transactions.
 
 * ```.verify```
 
+* ```.refund```
+
 * ```.getTypeOfArgsRequired```
 
 * ```.updatePayload```
@@ -318,6 +320,27 @@ except RaveExceptions.CardChargeError as e:
 ```
 #### NB: when charging saved cards, you do not need to call rave.card.Validate()
 
+
+### ```.refund(flwRef, amount)```
+
+You can call this to refund a full or partial amount of a transaction that was completed successfully. You have to pass the flw reference generated at the point of verifing the transaction. This is the ```flwRef``` in the ```res``` parameter returned any of the calls (```charge``` or ```validate```). 
+
+A sample verify call is:
+
+```py
+res = rave.Card.refund(data["flwRef"], amount)
+```
+
+#### Returns
+
+This call returns a dict with ```status```, ```AmountRefunded```, ```disburse_ref``` and ```disburse_status``` which indicates whether the transaction was completed successfully. 
+
+Sample
+```py
+(True, {'settlement_id': 'NEW', 'id': 36071, 'AccountId': 49278, 'TransactionId': 1664979, 'FlwRef': 'FLW-MOCK-62986ef948d6dd127102cdb58813d216', 'walletId': 50309, 'AmountRefunded': '5000', 'status': 'completed', 'destination': 'payment_source', 'meta': '{"source":"ledgerbalance","uniquereference":"62472228710"}', 'updatedAt': '2021-01-23T01:27:11.969Z', 'createdAt': '2021-01-23T01:27:08.672Z'})
+```
+
+
 ### Complete card charge flow
 
 ```py
@@ -508,6 +531,24 @@ except RaveExceptions.TransactionVerificationError as e:
     print(e.err["flwRef"])
 ```
 
+### ```.refund(flwRef, amount)```
+
+You can call this to refund a full or partial amount of a transaction that was completed successfully. You have to pass the flw reference generated at the point of verifing the transaction. This is the ```flwRef``` in the ```res``` parameter returned any of the calls (```charge``` or ```validate```). 
+
+A sample verify call is:
+
+```py
+res = rave.Account.refund(data["flwRef"], amount)
+```
+
+#### Returns
+
+This call returns a dict with ```status```, ```AmountRefunded```, ```disburse_ref``` and ```disburse_status``` which indicates whether the transaction was completed successfully. 
+
+Sample
+```py
+(True, {'settlement_id': 'NEW', 'id': 36070, 'AccountId': 49278, 'TransactionId': 1664654, 'FlwRef': '9792859961', 'walletId': 71139, 'AmountRefunded': '1500', 'status': 'pending-momo', 'destination': 'mobilemoney', 'meta': '{"source":"ledgerbalance","disburse_ref":"CC-REFD-31101658361-9792859961","disburse_status":"pending"}', 'updatedAt': '2021-01-23T01:17:43.665Z', 'createdAt': '2021-01-23T01:17:38.327Z'})
+```
 
 
 <br>
@@ -634,6 +675,25 @@ This call returns a dict with ```txRef```, ```flwRef``` and ```transactionComple
 
 If your call could not be completed successfully, a ```TransactionVerificationError``` is raised.
 
+### ```.refund(flwRef, amount)```
+
+You can call this to refund a full or partial amount of a transaction that was completed successfully. You have to pass the flw reference generated at the point of verifing the transaction. This is the ```flwRef``` in the ```res``` parameter returned any of the calls (```charge``` or ```validate```). 
+
+A sample verify call is:
+
+```py
+res = rave.GhMobile.refund(data["flwRef"], amount)
+```
+
+#### Returns
+
+This call returns a dict with ```status```, ```AmountRefunded```, ```disburse_ref``` and ```disburse_status``` which indicates whether the transaction was completed successfully. 
+
+Sample
+```py
+(True, {'settlement_id': 'NEW', 'id': 36070, 'AccountId': 49278, 'TransactionId': 1664654, 'FlwRef': '9792859961', 'walletId': 71139, 'AmountRefunded': '1500', 'status': 'pending-momo', 'destination': 'mobilemoney', 'meta': '{"source":"ledgerbalance","disburse_ref":"CC-REFD-31101658361-9792859961","disburse_status":"pending"}', 'updatedAt': '2021-01-23T01:17:43.665Z', 'createdAt': '2021-01-23T01:17:38.327Z'})
+```
+
 <br>
 
 ### Complete GhMobile charge flow
@@ -742,6 +802,26 @@ res = rave.Mpesa.verify(data["txRef"])
 This call returns a dict with ```txRef```, ```flwRef``` and ```transactionComplete``` which indicates whether the transaction was completed successfully. 
 
 If your call could not be completed successfully, a ```TransactionVerificationError``` is raised.
+
+
+### ```.refund(flwRef, amount)```
+
+You can call this to refund a full or partial amount of a transaction that was completed successfully. You have to pass the flw reference generated at the point of verifing the transaction. This is the ```flwRef``` in the ```res``` parameter returned any of the calls (```charge``` or ```validate```). 
+
+A sample verify call is:
+
+```py
+res = rave.Mpesa.refund(data["flwRef"], amount)
+```
+
+#### Returns
+
+This call returns a dict with ```status```, ```AmountRefunded```, ```disburse_ref``` and ```disburse_status``` which indicates whether the transaction was completed successfully. 
+
+Sample
+```py
+(True, {'settlement_id': 'NEW', 'id': 36070, 'AccountId': 49278, 'TransactionId': 1664654, 'FlwRef': '9792859961', 'walletId': 71139, 'AmountRefunded': '1500', 'status': 'pending-momo', 'destination': 'mobilemoney', 'meta': '{"source":"ledgerbalance","disburse_ref":"CC-REFD-31101658361-9792859961","disburse_status":"pending"}', 'updatedAt': '2021-01-23T01:17:43.665Z', 'createdAt': '2021-01-23T01:17:38.327Z'})
+```
 
 <br>
 
@@ -853,6 +933,26 @@ This call returns a dict with ```txRef```, ```flwRef``` and ```transactionComple
 
 If your call could not be completed successfully, a ```TransactionVerificationError``` is raised.
 
+
+### ```.refund(flwRef, amount)```
+
+You can call this to refund a full or partial amount of a transaction that was completed successfully. You have to pass the flw reference generated at the point of verifing the transaction. This is the ```flwRef``` in the ```res``` parameter returned any of the calls (```charge``` or ```validate```). 
+
+A sample verify call is:
+
+```py
+res = rave.UGMobile.refund(data["flwRef"], amount)
+```
+
+#### Returns
+
+This call returns a dict with ```status```, ```AmountRefunded```, ```disburse_ref``` and ```disburse_status``` which indicates whether the transaction was completed successfully. 
+
+Sample
+```py
+(True, {'settlement_id': 'NEW', 'id': 36070, 'AccountId': 49278, 'TransactionId': 1664654, 'FlwRef': '9792859961', 'walletId': 71139, 'AmountRefunded': '1500', 'status': 'pending-momo', 'destination': 'mobilemoney', 'meta': '{"source":"ledgerbalance","disburse_ref":"CC-REFD-31101658361-9792859961","disburse_status":"pending"}', 'updatedAt': '2021-01-23T01:17:43.665Z', 'createdAt': '2021-01-23T01:17:38.327Z'})
+```
+
 <br>
 
 ### Complete UGMobile charge flow
@@ -962,6 +1062,27 @@ res = rave.ZBMobile.verify(data["txRef"])
 This call returns a dict with ```txRef```, ```flwRef``` and ```transactionComplete``` which indicates whether the transaction was completed successfully. 
 
 If your call could not be completed successfully, a ```TransactionVerificationError``` is raised.
+
+
+### ```.refund(flwRef, amount)```
+
+You can call this to refund a full or partial amount of a transaction that was completed successfully. You have to pass the flw reference generated at the point of verifing the transaction. This is the ```flwRef``` in the ```res``` parameter returned any of the calls (```charge``` or ```validate```). 
+
+A sample verify call is:
+
+```py
+res = rave.ZBMobile.refund(data["flwRef"], amount)
+```
+
+#### Returns
+
+This call returns a dict with ```status```, ```AmountRefunded```, ```disburse_ref``` and ```disburse_status``` which indicates whether the transaction was completed successfully. 
+
+Sample
+```py
+(True, {'settlement_id': 'NEW', 'id': 36070, 'AccountId': 49278, 'TransactionId': 1664654, 'FlwRef': '9792859961', 'walletId': 71139, 'AmountRefunded': '1500', 'status': 'pending-momo', 'destination': 'mobilemoney', 'meta': '{"source":"ledgerbalance","disburse_ref":"CC-REFD-31101658361-9792859961","disburse_status":"pending"}', 'updatedAt': '2021-01-23T01:17:43.665Z', 'createdAt': '2021-01-23T01:17:38.327Z'})
+```
+
 
 <br>
 

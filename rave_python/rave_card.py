@@ -124,3 +124,8 @@ class Card(Payment):
         feature_name = "Verify-Card-charge"
         endpoint = self._baseUrl + self._endpointMap["card"]["verify"]
         return super(Card, self).verify(feature_name, txRef, endpoint)
+
+    def refund(self, flwRef, amount):
+        feature_name = "Card-refund"
+        endpoint = self._baseUrl + self._endpointMap["card"]["refund"]
+        return super(Card, self).refund(feature_name, flwRef, amount)

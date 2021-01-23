@@ -22,9 +22,11 @@ class GhMobile(Payment):
         
         # It is faster to add boilerplate than to check if each one is present
         accountDetails.update({"payment_type": "mobilemoneygh", "country":"GH", "is_mobile_money_gh":"1", "currency":"GHS"})
+        
         # If transaction reference is not set 
         if not ("txRef" in accountDetails):
             accountDetails.update({"txRef": generateTransactionReference()})
+        
         # If order reference is not set
         if not ("orderRef" in accountDetails):
             accountDetails.update({"orderRef": generateTransactionReference()})
@@ -32,4 +34,9 @@ class GhMobile(Payment):
         # Checking for required account components
         requiredParameters = ["amount", "email", "phonenumber", "network", "IP", "redirect_url"]
         return super(GhMobile, self).charge(feature_name, accountDetails, requiredParameters, endpoint)
+
+    def refund(self, flwRef, amount):
+        feature_name = "Ghana-mobile-money-charge-refund"
+        endpoint = self._baseUrl + self._endpointMap["refund"]
+        return super(GhMobile, self).refund(feature_name, flwRef, amount)
 

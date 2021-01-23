@@ -54,13 +54,13 @@ class Verify(RaveBase):
             #feature logging
             tracking_endpoint = self._trackingMap
             responseTime = response.elapsed.total_seconds()
-            tracking_payload = {"publicKey": self._getPublicKey(),"language": "Python v2", "version": "1.2.5", "title": feature_name,"message": responseTime}
+            tracking_payload = {"publicKey": self._getPublicKey(),"language": "Python v2", "version": "1.2.9", "title": feature_name,"message": responseTime}
             tracking_response = requests.post(tracking_endpoint, data=json.dumps(tracking_payload))
             return {"error": False, "returnedData": responseJson}
         else:
             tracking_endpoint = self._trackingMap
             responseTime = response.elapsed.total_seconds()
-            tracking_payload = {"publicKey": self._getPublicKey(),"language": "Python v2", "version": "1.2.5", "title": feature_name + "-error", "message": responseTime}
+            tracking_payload = {"publicKey": self._getPublicKey(),"language": "Python v2", "version": "1.2.9", "title": feature_name + "-error", "message": responseTime}
             tracking_response = requests.post(tracking_endpoint, data=json.dumps(tracking_payload))
 
             raise BVNFetchError({"error": True, "returnedData": responseJson })
