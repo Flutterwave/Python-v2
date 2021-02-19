@@ -1621,6 +1621,10 @@ This is used to initiate and manage payouts
 
 * ```.getBalance```
 
+*```.retryTransfer```
+
+*```fetchRetries```
+
 <br>
 
 ### ```.initiate(transferDetails)```
@@ -1817,7 +1821,44 @@ This call returns a dictionary. A sample response is:
 ```
 
 
+### ```.retryTransfer(transfer_id)```
+
+This allows you to retry a previously failed transfer attempt. You are expected to pass the id for the failed transfer into this call (ids can be gotten in data object from the initial transfer response)
+
+A sample fetch call is:
+
+```py
+res2 = rave.retryTransfer.Balance("169680")
+```
+
+#### Returns
+
+This call returns a dictionary. A sample response is:
+
+```py
+{'error': False, 'returnedData': {'status': 'success', 'message': 'Transfer retry attempt queued.', 'data': {'id': 169681, 'account_number': '0690000044', 'bank_code': '044', 'fullname': 'Mercedes Daniel', 'date_created': '2021-02-19T15:56:57.000Z', 'currency': 'NGN', 'amount': 500, 'fee': 10.75, 'status': 'NEW', 'reference': 'SampleTransfer4_PMCK_ST_FDU_1_RETRY_1', 'meta': None, 'narration': 'Test_Transfer_for_new_features', 'complete_message': '', 'requires_approval': 0, 'is_approved': 1, 'bank_name': 'ACCESS BANK NIGERIA'}}}
+```
+
 <br>
+
+### ```.fetchRetries(transfer_id)```
+
+This allows you to get all retry attempts for all previously failed transfer attempts.
+
+A sample fetch call is:
+
+```py
+res2 = rave.fetchRetries.Balance("169680")
+```
+
+#### Returns
+
+This call returns a dictionary. A sample response is:
+
+```py
+{'error': False, 'returnedData': {'status': 'success', 'message': 'Transfer retry attempts retrieved.', 'data': [{'id': 169681, 'account_number': '0690000044', 'bank_code': '044', 'bank_name': 'ACCESS BANK NIGERIA', 'fullname': 'Mercedes Daniel', 'currency': 'NGN', 'debit_currency': None, 'amount': 500, 'fee': 10.75, 'status': 'FAILED', 'reference': 'SampleTransfer4_PMCK_ST_FDU_1_RETRY_1', 'narration': 'Test_Transfer_for_new_features', 'complete_message': 'DISBURSE FAILED: Transfer failed. Please contact support', 'meta': None, 'requires_approval': 0, 'is_approved': 1, 'date_created': '2021-02-19T15:56:57.000Z'}]}}
+```
+
 
 ### Complete transfer flow
 

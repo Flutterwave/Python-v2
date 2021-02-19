@@ -68,7 +68,9 @@ class RaveBase(object):
                 "fetch": "v2/gpx/transfers",
                 "fee": "v2/gpx/transfers/fee",
                 "balance": "v2/gpx/balance",
-                "accountVerification": "flwv3-pug/getpaidx/api/resolve_account"
+                "accountVerification": "flwv3-pug/getpaidx/api/resolve_account",
+                "retry": "v2/gpx/transfers/retry",
+                "inter_wallet": "v2/gpx/transfers/wallet"
             },
             "recipient":{
                 "create": "v2/gpx/transfers/beneficiaries/create",

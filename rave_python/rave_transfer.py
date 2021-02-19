@@ -43,8 +43,74 @@ class Transfer(RaveBase):
             return {"error": False, "status": responseJson["status"], "message":responseJson["message"], "id": responseJson["data"].get("id", None), "data": responseJson["data"]}
         else:
             raise InitiateTransferError({"error": True, "data": responseJson["data"]})
+    
+    # This makes and handles all requests pertaining to the status of your transfer or account
+    def _handleTransferStatusRequests(self, feature_name, endpoint, isPostRequest=False, data=None):
+        
+        # Request headers
+        headers = {
+            'content-type': 'application/json',
+        }
 
-            
+        # Checks if it is a post request
+        if isPostRequest:
+            response = requests.post(endpoint, headers=headers, data=json.dumps(data))
+        else:
+            response = requests.get(endpoint, headers=headers)
+
+        # Checks if it can be parsed to json
+        try:
+            responseJson = response.json()
+        except:
+            raise ServerError({"error": True, "errMsg": response.text })
+
+        # Checks if it returns a 2xx code
+        if response.ok:
+            tracking_endpoint = self._trackingMap
+            responseTime = response.elapsed.total_seconds()
+            tracking_payload = {"publicKey": self._getPublicKey(),"language": "Python v2", "version": "1.2.10", "title": feature_name,"message": responseTime}
+            tracking_response = requests.post(tracking_endpoint, data=json.dumps(tracking_payload))
+            return {"error": False, "returnedData": responseJson}
+        else:
+            tracking_endpoint = self._trackingMap
+            responseTime = response.elapsed.total_seconds()
+            tracking_payload = {"publicKey": self._getPublicKey(),"language": "Python v2", "version": "1.2.10", "title": feature_name + "-error","message": responseTime}
+            raise TransferFetchError({"error": True, "returnedData": responseJson })
+
+    def _handleTransferRetriesRequests(self, feature_name, endpoint, isPostRequest=False, data=None):
+        
+        # Request headers
+        headers = {
+            'content-type': 'application/json',
+        }
+
+        # Checks if it is a post request
+        if isPostRequest:
+            response = requests.post(endpoint, headers=headers, data=json.dumps(data))
+        else:
+            response = requests.get(endpoint, headers=headers)
+
+        # Checks if it can be parsed to json
+        try:
+            responseJson = response.json()
+            errorMessage = responseJson["message"]
+        except:
+            raise ServerError({"error": True, "errMsg": response.text })
+
+        # Checks if it returns a 2xx code
+        if response.ok:
+            tracking_endpoint = self._trackingMap
+            responseTime = response.elapsed.total_seconds()
+            tracking_payload = {"publicKey": self._getPublicKey(),"language": "Python v2", "version": "1.2.10", "title": feature_name,"message": responseTime}
+            tracking_response = requests.post(tracking_endpoint, data=json.dumps(tracking_payload))
+            return {"error": False, "returnedData": responseJson}
+        else:
+            tracking_endpoint = self._trackingMap
+            responseTime = response.elapsed.total_seconds()
+            tracking_payload = {"publicKey": self._getPublicKey(),"language": "Python v2", "version": "1.2.10", "title": feature_name + "-error","message": responseTime}
+            return {"error": True, "returnedData": errorMessage }
+
+
     def initiate(self, transferDetails):
         
         
@@ -74,12 +140,12 @@ class Transfer(RaveBase):
             #feature logging
             tracking_endpoint = self._trackingMap
             responseTime = response.elapsed.total_seconds()
-            tracking_payload = {"publicKey": self._getPublicKey(),"language": "Python v2", "version": "1.2.9", "title": "Initiate-Transfer-error","message": responseTime}
+            tracking_payload = {"publicKey": self._getPublicKey(),"language": "Python v2", "version": "1.2.10", "title": "Initiate-Transfer-error","message": responseTime}
             tracking_response = requests.post(tracking_endpoint, data=json.dumps(tracking_payload))
         else:
             tracking_endpoint = self._trackingMap
             responseTime = response.elapsed.total_seconds()
-            tracking_payload = {"publicKey": self._getPublicKey(),"language": "Python v2", "version": "1.2.9", "title": "Initiate-Transfer","message": responseTime}
+            tracking_payload = {"publicKey": self._getPublicKey(),"language": "Python v2", "version": "1.2.10", "title": "Initiate-Transfer","message": responseTime}
             tracking_response = requests.post(tracking_endpoint, data=json.dumps(tracking_payload))
         return self._handleInitiateResponse(response, transferDetails)
 
@@ -89,12 +155,7 @@ class Transfer(RaveBase):
         
         # feature logic
         bulkDetails = copy.copy(bulkDetails)
-        
-        # Collating request headers
-        headers = {
-            'content-type': 'application/json',
-        }
-
+    
         bulkDetails.update({"seckey": self._getSecretKey()})
         requiredParameters = ["title", "bulk_data"]
         checkIfParametersAreComplete(requiredParameters, bulkDetails)
@@ -111,49 +172,15 @@ class Transfer(RaveBase):
             #feature logging
             tracking_endpoint = self._trackingMap
             responseTime = response.elapsed.total_seconds()
-            tracking_payload = {"publicKey": self._getPublicKey(),"language": "Python v2", "version": "1.2.9", "title": "Initiate-Bulk-error","message": responseTime}
+            tracking_payload = {"publicKey": self._getPublicKey(),"language": "Python v2", "version": "1.2.10", "title": "Initiate-Bulk-error","message": responseTime}
             tracking_response = requests.post(tracking_endpoint, data=json.dumps(tracking_payload))
         else:
             tracking_endpoint = self._trackingMap
             responseTime = response.elapsed.total_seconds()
-            tracking_payload = {"publicKey": self._getPublicKey(),"language": "Python v2", "version": "1.2.9", "title": "Initiate-Bulk","message": responseTime}
+            tracking_payload = {"publicKey": self._getPublicKey(),"language": "Python v2", "version": "1.2.10", "title": "Initiate-Bulk","message": responseTime}
             tracking_response = requests.post(tracking_endpoint, data=json.dumps(tracking_payload))
 
         return self._handleBulkResponse(response, bulkDetails)
-
-    
-    # This makes and handles all requests pertaining to the status of your transfer or account
-    def _handleTransferStatusRequests(self, endpoint, feature_name, isPostRequest=False, data=None):
-        
-        # Request headers
-        headers = {
-            'content-type': 'application/json',
-        }
-
-        # Checks if it is a post request
-        if isPostRequest:
-            response = requests.post(endpoint, headers=headers, data=json.dumps(data))
-        else:
-            response = requests.get(endpoint, headers=headers)
-
-        # Checks if it can be parsed to json
-        try:
-            responseJson = response.json()
-        except:
-            raise ServerError({"error": True, "errMsg": response.text })
-
-        # Checks if it returns a 2xx code
-        if response.ok:
-            tracking_endpoint = self._trackingMap
-            responseTime = response.elapsed.total_seconds()
-            tracking_payload = {"publicKey": self._getPublicKey(),"language": "Python v2", "version": "1.2.9", "title": feature_name,"message": responseTime}
-            tracking_response = requests.post(tracking_endpoint, data=json.dumps(tracking_payload))
-            return {"error": False, "returnedData": responseJson}
-        else:
-            tracking_endpoint = self._trackingMap
-            responseTime = response.elapsed.total_seconds()
-            tracking_payload = {"publicKey": self._getPublicKey(),"language": "Python v2", "version": "1.2.9", "title": feature_name + "-error","message": responseTime}
-            raise TransferFetchError({"error": True, "returnedData": responseJson })
 
     # Not elegant but supports python 2 and 3
     def fetch(self, reference=None):
@@ -190,6 +217,51 @@ class Transfer(RaveBase):
         }
 
         return self._handleTransferStatusRequests(label, endpoint, data=data, isPostRequest=True)
+    
+    def retryTransfer(self, transfer_id):
+        
+        #feature logic
+        label = "retry_failed_transfer"
+        endpoint = self._baseUrl + self._endpointMap["transfer"]["retry"]
+        data = {
+            "seckey": self._getSecretKey(),
+            "id": transfer_id
+        }
+        return self._handleTransferRetriesRequests(label, endpoint, data=data, isPostRequest=True)
+
+    def fetchRetries(self, transfer_id):
+        label = "fetch_transfer_retries"
+        endpoint = self._baseUrl + self._endpointMap["transfer"]["fetch"] + "/" + str(transfer_id) + "/retries?seckey=" + self._getSecretKey()
+        return self._handleTransferRetriesRequests(label, endpoint)
+
+    # def walletTransfer(self, transferDetails):
+    #     data = {
+    #         "seckey": self._getSecretKey(),
+    #         "currency": transferDetails["currency"],
+    #         "amount": transferDetails["amount"],
+    #         "merchant_id": transferDetails["merchant_id"]
+    #     }
+
+    #     headers = {
+    #         'content-type': 'application/json',
+    #     }
+
+
+    #     endpoint = self._baseUrl + self._endpointMap["transfer"]["inter_wallet"]
+    #     response = requests.post(endpoint, headers=headers, data=json.dumps(data))
+
+    #     if response.ok == False:
+    #         #feature logging
+    #         tracking_endpoint = self._trackingMap
+    #         responseTime = response.elapsed.total_seconds()
+    #         tracking_payload = {"publicKey": self._getPublicKey(),"language": "Python v2", "version": "1.2.10", "title": "interwallet_transfers-error","message": responseTime}
+    #         tracking_response = requests.post(tracking_endpoint, data=json.dumps(tracking_payload))
+    #     else:
+    #         tracking_endpoint = self._trackingMap
+    #         responseTime = response.elapsed.total_seconds()
+    #         tracking_payload = {"publicKey": self._getPublicKey(),"language": "Python v2", "version": "1.2.10", "title": "interwallet_transfers","message": responseTime}
+    #         tracking_response = requests.post(tracking_endpoint, data=json.dumps(tracking_payload))
+    #     return self._handleInitiateInterWalletResponse(response, data)
 
     
 

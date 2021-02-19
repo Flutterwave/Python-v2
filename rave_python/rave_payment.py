@@ -218,12 +218,12 @@ class Payment(RaveBase):
             if response.ok:
                 tracking_endpoint = self._trackingMap
                 responseTime = response.elapsed.total_seconds()
-                tracking_payload = {"publicKey": self._getPublicKey(),"language": "Python v2", "version": "1.2.9", "title": feature_name, "message": responseTime}
+                tracking_payload = {"publicKey": self._getPublicKey(),"language": "Python v2", "version": "1.2.10", "title": feature_name, "message": responseTime}
                 tracking_response = requests.post(tracking_endpoint, data=json.dumps(tracking_payload))
             else:
                 tracking_endpoint = self._trackingMap
                 responseTime = response.elapsed.total_seconds()
-                tracking_payload = {"publicKey": self._getPublicKey(),"language": "Python v2", "version": "1.2.9", "title": feature_name + "-error", "message": responseTime}
+                tracking_payload = {"publicKey": self._getPublicKey(),"language": "Python v2", "version": "1.2.10", "title": feature_name + "-error", "message": responseTime}
                 tracking_response = requests.post(tracking_endpoint, data=json.dumps(tracking_payload))
         
         if shouldReturnRequest:
@@ -265,12 +265,12 @@ class Payment(RaveBase):
         if response.ok:
             tracking_endpoint = self._trackingMap
             responseTime = response.elapsed.total_seconds()
-            tracking_payload = {"publicKey": self._getPublicKey(),"language": "Python v2", "version": "1.2.9", "title": feature_name, "message": responseTime}
+            tracking_payload = {"publicKey": self._getPublicKey(),"language": "Python v2", "version": "1.2.10", "title": feature_name, "message": responseTime}
             tracking_response = requests.post(tracking_endpoint, data=json.dumps(tracking_payload))
         else:
             tracking_endpoint = self._trackingMap
             responseTime = response.elapsed.total_seconds()
-            tracking_payload = {"publicKey": self._getPublicKey(),"language": "Python v2", "version": "1.2.9", "title": feature_name + "-error", "message": responseTime}
+            tracking_payload = {"publicKey": self._getPublicKey(),"language": "Python v2", "version": "1.2.10", "title": feature_name + "-error", "message": responseTime}
             tracking_response = requests.post(tracking_endpoint, data=json.dumps(tracking_payload))
 
         return self._handleValidateResponse(response, flwRef)
@@ -300,12 +300,12 @@ class Payment(RaveBase):
         if response.ok:
             tracking_endpoint = self._trackingMap
             responseTime = response.elapsed.total_seconds()
-            tracking_payload = {"publicKey": self._getPublicKey(),"language": "Python v2", "version": "1.2.9", "title": feature_name, "message": responseTime}
+            tracking_payload = {"publicKey": self._getPublicKey(),"language": "Python v2", "version": "1.2.10", "title": feature_name, "message": responseTime}
             tracking_response = requests.post(tracking_endpoint, data=json.dumps(tracking_payload))
         else:
             tracking_endpoint = self._trackingMap
             responseTime = response.elapsed.total_seconds()
-            tracking_payload = {"publicKey": self._getPublicKey(),"language": "Python v2", "version": "1.2.9", "title": feature_name + "-error", "message": responseTime}
+            tracking_payload = {"publicKey": self._getPublicKey(),"language": "Python v2", "version": "1.2.10", "title": feature_name + "-error", "message": responseTime}
             tracking_response = requests.post(tracking_endpoint, data=json.dumps(tracking_payload))
 
         return self._handleVerifyResponse(response, txRef)
@@ -332,12 +332,12 @@ class Payment(RaveBase):
         if response.ok:
             tracking_endpoint = self._trackingMap
             responseTime = response.elapsed.total_seconds()
-            tracking_payload = {"publicKey": self._getPublicKey(),"language": "Python v2", "version": "1.2.9", "title": feature_name, "message": responseTime}
+            tracking_payload = {"publicKey": self._getPublicKey(),"language": "Python v2", "version": "1.2.10", "title": feature_name, "message": responseTime}
             tracking_response = requests.post(tracking_endpoint, data=json.dumps(tracking_payload))
         else:
             tracking_endpoint = self._trackingMap
             responseTime = response.elapsed.total_seconds()
-            tracking_payload = {"publicKey": self._getPublicKey(),"language": "Python v2", "version": "1.2.9", "title": feature_name + "-error", "message": responseTime}
+            tracking_payload = {"publicKey": self._getPublicKey(),"language": "Python v2", "version": "1.2.10", "title": feature_name + "-error", "message": responseTime}
             tracking_response = requests.post(tracking_endpoint, data=json.dumps(tracking_payload))
 
         try:
