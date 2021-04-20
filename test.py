@@ -406,228 +406,228 @@ class TestRavePaymentOptions(unittest.TestCase):
         }
 
         #please replace the keys with your public and secret keys
-        self.rave = Rave("FLWPUBK_TEST-********************-X", "FLWSECK_TEST-***************************-X", production=False, usingEnv = False)
+        self.rave = Rave("FLWPUBK_TEST-f979e2e755dd20c71cad2b96f35fbea1-X", "FLWSECK_TEST-13ba16aae9acdad7f1759084e3da8727-X", production=False, usingEnv = False)
 
-    # def test_account(self):
-    #     # This test case checks that on initiating a payment, the user is requested to validate the payment
-    #     res = self.rave.Account.charge(self.account_details)
-    #     self.assertEqual(res["validationRequired"], True)
-    #     with self.assertRaises(AccountChargeError):
-    #         self.rave.Account.charge(self.faulty_account_details) 
+    def test_account(self):
+        # This test case checks that on initiating a payment, the user is requested to validate the payment
+        res = self.rave.Account.charge(self.account_details)
+        self.assertEqual(res["validationRequired"], True)
+        with self.assertRaises(AccountChargeError):
+            self.rave.Account.charge(self.faulty_account_details) 
 
-    #     # This test case checks that a user validates a transaction appropriately
-    #     self.assertEqual(self.rave.Account.validate(res["flwRef"], "12345")["error"], False)
-    #     with self.assertRaises(TransactionValidationError):
-    #         self.rave.Account.validate(res["flwRef"], "123") # a wrong otp to ensure TransactionValidationError is raised anytime a wrong otp is passed
+        # This test case checks that a user validates a transaction appropriately
+        self.assertEqual(self.rave.Account.validate(res["flwRef"], "12345")["error"], False)
+        with self.assertRaises(TransactionValidationError):
+            self.rave.Account.validate(res["flwRef"], "123") # a wrong otp to ensure TransactionValidationError is raised anytime a wrong otp is passed
 
-    #     self.assertEqual(self.rave.Account.verify(res["txRef"])["transactionComplete"], True)
-    #     with self.assertRaises(TransactionVerificationError):
-    #         self.rave.Account.verify("MC-8883838388881") # a wrong txRef to ensure TransactionVerificationError is raised anytime a wrong transaction reference is passed
+        self.assertEqual(self.rave.Account.verify(res["txRef"])["transactionComplete"], True)
+        with self.assertRaises(TransactionVerificationError):
+            self.rave.Account.verify("MC-8883838388881") # a wrong txRef to ensure TransactionVerificationError is raised anytime a wrong transaction reference is passed
         
-    # def test_card(self):
+    def test_card(self):
 
-    #     res = self.rave.Card.charge(self.card_details)
-    #     self.assertIsNotNone(res["suggestedAuth"])
-    #     with self.assertRaises(IncompletePaymentDetailsError):
-    #         self.rave.Card.charge(self.faulty_card_details)
+        res = self.rave.Card.charge(self.card_details)
+        self.assertIsNotNone(res["suggested_auth"])
+        with self.assertRaises(IncompletePaymentDetailsError):
+            self.rave.Card.charge(self.faulty_card_details)
 
-    #     arg = Misc.getTypeOfArgsRequired(res["suggestedAuth"])
-    #     if arg == "pin":
-    #         Misc.updatePayload(res["suggestedAuth"], self.card_details, pin="3310")
-    #     if arg == "address":
-    #         Misc.updatePayload(res["suggestedAuth"], self.card_details, address= {"billingzip": "07205", "billingcity": "Hillside", "billingaddress": "470 Mundet PI", "billingstate": "NJ", "billingcountry": "US"})
+        arg = Misc.getTypeOfArgsRequired(res["suggested_auth"])
+        if arg == "PIN":
+            Misc.updatePayload(res["suggested_auth"], self.card_details, pin="3310")
+        if arg == "address":
+            Misc.updatePayload(res["suggested_auth"], self.card_details, address= {"billingzip": "07205", "billingcity": "Hillside", "billingaddress": "470 Mundet PI", "billingstate": "NJ", "billingcountry": "US"})
 
-    #     res = self.rave.Card.charge(self.card_details)
-    #     # This test case checks that a user validates a transaction appropriately
-    #     self.assertEqual(res["validationRequired"], True)
-    #     self.assertEqual(self.rave.Card.validate(res["flwRef"], "12345")["error"], False)
-    #     with self.assertRaises(TransactionValidationError):
-    #         self.rave.Card.validate("FLW-MOCK-5a039c016e64da9b226c2562dcd76756", "12345") # a wrong otp to ensure TransactionValidationError is raised anytime a wrong otp is passed
+        res = self.rave.Card.charge(self.card_details)
+        # This test case checks that a user validates a transaction appropriately
+        self.assertEqual(res["validationRequired"], True)
+        self.assertEqual(self.rave.Card.validate(res["flwRef"], "12345")["error"], False)
+        with self.assertRaises(TransactionValidationError):
+            self.rave.Card.validate("FLW-MOCK-5a039c016e64da9b226c2562dcd76756", "12345") # a wrong otp to ensure TransactionValidationError is raised anytime a wrong otp is passed
 
-    #     verify_res = self.rave.Card.verify(res["txRef"])
-    #     self.assertEqual(verify_res["transactionComplete"], True)
-    #     with self.assertRaises(TransactionVerificationError):
-    #         self.rave.Card.verify("MC-8883838388881") # a wrong txRef to ensure TransactionVerificationError is raised anytime a wrong transaction reference is passed
+        verify_res = self.rave.Card.verify(res["txRef"])
+        self.assertEqual(verify_res["transactionComplete"], True)
+        with self.assertRaises(TransactionVerificationError):
+            self.rave.Card.verify("MC-8883838388881") # a wrong txRef to ensure TransactionVerificationError is raised anytime a wrong transaction reference is passed
 
-    # def test_mobile_money_gh(self):
-    #     res = self.rave.GhMobile.charge(self.ghDetails)
-    #     self.assertIsNotNone(res["error"])
-    #     self.assertIsNotNone(res["status"])
-    #     self.assertEqual(res["error"], False)
-    #     self.assertEqual(res["status"], "success")
+    def test_mobile_money_gh(self):
+        res = self.rave.GhMobile.charge(self.ghDetails)
+        self.assertIsNotNone(res["error"])
+        self.assertIsNotNone(res["status"])
+        self.assertEqual(res["error"], False)
+        self.assertEqual(res["status"], "success")
     
-    # def test_saved_card(self):
-    #     res = self.rave.Card.charge(self.saved_card_details, chargeWithToken=True)
-    #     self.assertIsNotNone(res["status"])
-    #     self.assertEqual(res["status"], 'success')
+    def test_saved_card(self):
+        res = self.rave.Card.charge(self.saved_card_details, chargeWithToken=True)
+        self.assertIsNotNone(res["status"])
+        self.assertEqual(res["status"], 'success')
 
-    #     with self.assertRaises(IncompletePaymentDetailsError):
-    #         self.rave.Card.charge(self.faulty_saved_card_details, chargeWithToken=True)
+        with self.assertRaises(IncompletePaymentDetailsError):
+            self.rave.Card.charge(self.faulty_saved_card_details, chargeWithToken=True)
         
-    #     self.assertEqual(self.rave.Card.verify(res["txRef"])["transactionComplete"], True)
-    #     with self.assertRaises(TransactionVerificationError):
-    #         self.rave.Card.verify("MC-8883838388881") # a wrong txRef to ensure TransactionVerificationError is raised anytime a wrong transaction reference is passed
+        self.assertEqual(self.rave.Card.verify(res["txRef"])["transactionComplete"], True)
+        with self.assertRaises(TransactionVerificationError):
+            self.rave.Card.verify("MC-8883838388881") # a wrong txRef to ensure TransactionVerificationError is raised anytime a wrong transaction reference is passed
 
-    # def test_preauth(self):
-    #     res = self.rave.Preauth.charge(self.preauthDetails)
-    #     self.assertIsNotNone(res["error"])
-    #     self.assertIsNotNone(res["status"])
-    #     self.assertEqual(res["error"], False)
-    #     self.assertEqual(res["status"], "success")
+    def test_preauth(self):
+        res = self.rave.Preauth.charge(self.preauthDetails)
+        self.assertIsNotNone(res["error"])
+        self.assertIsNotNone(res["status"])
+        self.assertEqual(res["error"], False)
+        self.assertEqual(res["status"], "success")
 
-    #     with self.assertRaises(IncompletePaymentDetailsError):
-    #         self.rave.Preauth.charge(self.faulty_preauthDetails) 
+        with self.assertRaises(IncompletePaymentDetailsError):
+            self.rave.Preauth.charge(self.faulty_preauthDetails) 
 
-    #     with self.assertRaises(CardChargeError):
-    #         self.rave.Preauth.charge(self.faulty_preauthDetails_2) 
+        with self.assertRaises(CardChargeError):
+            self.rave.Preauth.charge(self.faulty_preauthDetails_2) 
 
-    #     # capture
-    #     res = self.rave.Preauth.capture(res["flwRef"])
-    #     self.assertIsNotNone(res["error"])
-    #     self.assertIsNotNone(res["status"])
-    #     self.assertEqual(res["error"], False)
-    #     self.assertEqual(res["status"], "success")
+        # capture
+        res = self.rave.Preauth.capture(res["flwRef"])
+        self.assertIsNotNone(res["error"])
+        self.assertIsNotNone(res["status"])
+        self.assertEqual(res["error"], False)
+        self.assertEqual(res["status"], "success")
 
 
 
-    # def test_transfer(self):
-    #     #initiation - single transfer
-    #     res = self.rave.Transfer.initiate(self.transferDetails)
-    #     self.assertIsNotNone(res["error"])
-    #     self.assertIsNotNone(res["data"]["is_approved"])
-    #     self.assertEqual(res["data"]["is_approved"], 1)
-    #     self.assertEqual(res["error"], False)
+    def test_transfer(self):
+        #initiation - single transfer
+        res = self.rave.Transfer.initiate(self.transferDetails)
+        self.assertIsNotNone(res["error"])
+        self.assertIsNotNone(res["data"]["is_approved"])
+        self.assertEqual(res["data"]["is_approved"], 1)
+        self.assertEqual(res["error"], False)
 
-    #     # with self.assertRaises(InitiateTransferError):
-    #     #     self.rave.Transfer.initiate(self.faulty_transferDetails)
+        # with self.assertRaises(InitiateTransferError):
+        #     self.rave.Transfer.initiate(self.faulty_transferDetails)
         
-    #     with self.assertRaises(IncompletePaymentDetailsError):
-    #         self.rave.Transfer.initiate(self.faulty_transferDetails)
+        with self.assertRaises(IncompletePaymentDetailsError):
+            self.rave.Transfer.initiate(self.faulty_transferDetails)
         
-    #     #initiation - bulk transfer
-    #     res = self.rave.Transfer.bulk(self.bulk_transferDetails)
-    #     self.assertIsNotNone(res["error"])
-    #     self.assertIsNotNone(res["status"])
-    #     self.assertEqual(res["status"], "success")
-    #     self.assertEqual(res["error"], False)
+        #initiation - bulk transfer
+        res = self.rave.Transfer.bulk(self.bulk_transferDetails)
+        self.assertIsNotNone(res["error"])
+        self.assertIsNotNone(res["status"])
+        self.assertEqual(res["status"], "success")
+        self.assertEqual(res["error"], False)
 
-    #     with self.assertRaises(InitiateTransferError):
-    #         self.rave.Transfer.bulk(self.faulty_bulk_transferDetails)
+        with self.assertRaises(InitiateTransferError):
+            self.rave.Transfer.bulk(self.faulty_bulk_transferDetails)
         
-    #     #fetch
-    #     res = self.rave.Transfer.fetch("MC-1539086007702")
-    #     self.assertIsNotNone(res["error"])
-    #     self.assertIsNotNone(res["returnedData"]["status"])
-    #     self.assertEqual(res["returnedData"]["status"], "success")
-    #     self.assertEqual(res["error"], False)
+        #fetch
+        res = self.rave.Transfer.fetch("MC-1539086007702")
+        self.assertIsNotNone(res["error"])
+        self.assertIsNotNone(res["returnedData"]["status"])
+        self.assertEqual(res["returnedData"]["status"], "success")
+        self.assertEqual(res["error"], False)
 
-    #     #all transfers
-    #     res = self.rave.Transfer.allTransfers()
-    #     self.assertIsNotNone(res["error"])
-    #     self.assertIsNotNone(res["returnedData"]["status"])
-    #     self.assertEqual(res["returnedData"]["status"], "success")
-    #     self.assertEqual(res["error"], False)
+        #all transfers
+        res = self.rave.Transfer.allTransfers()
+        self.assertIsNotNone(res["error"])
+        self.assertIsNotNone(res["returnedData"]["status"])
+        self.assertEqual(res["returnedData"]["status"], "success")
+        self.assertEqual(res["error"], False)
 
-    #     #get fee
-    #     res = self.rave.Transfer.getFee('NGN')
-    #     self.assertIsNotNone(res["error"])
-    #     self.assertIsNotNone(res["returnedData"]["status"])
-    #     self.assertEqual(res["returnedData"]["status"], "success")
-    #     self.assertEqual(res["error"], False)
+        #get fee
+        res = self.rave.Transfer.getFee('NGN')
+        self.assertIsNotNone(res["error"])
+        self.assertIsNotNone(res["returnedData"]["status"])
+        self.assertEqual(res["returnedData"]["status"], "success")
+        self.assertEqual(res["error"], False)
 
-    #     #get balance
-    #     res = self.rave.Transfer.getBalance('NGN')
-    #     self.assertIsNotNone(res["error"])
-    #     self.assertIsNotNone(res["returnedData"]["status"])
-    #     self.assertEqual(res["returnedData"]["status"], "success")
-    #     self.assertEqual(res["error"], False)
+        #get balance
+        res = self.rave.Transfer.getBalance('NGN')
+        self.assertIsNotNone(res["error"])
+        self.assertIsNotNone(res["returnedData"]["status"])
+        self.assertEqual(res["returnedData"]["status"], "success")
+        self.assertEqual(res["error"], False)
 
 
-    # def test_payment_plan(self):
-    #     #create plan
-    #     res = self.rave.PaymentPlan.createPlan(self.planDetails)
-    #     self.assertIsNotNone(res["error"])
-    #     self.assertIsNotNone(res["data"]["status"])
-    #     self.assertIsNotNone(res["data"]["plan_token"])
-    #     self.assertEqual(res["error"], False)
+    def test_payment_plan(self):
+        #create plan
+        res = self.rave.PaymentPlan.createPlan(self.planDetails)
+        self.assertIsNotNone(res["error"])
+        self.assertIsNotNone(res["data"]["status"])
+        self.assertIsNotNone(res["data"]["plan_token"])
+        self.assertEqual(res["error"], False)
 
-    #     with self.assertRaises(IncompletePaymentDetailsError):
-    #         self.rave.PaymentPlan.createPlan(self.faulty_planDetails)
-
-        
-    #     #fetch
-    #     res = self.rave.PaymentPlan.fetchPlan(898)
-    #     self.assertIsNotNone(res["error"])
-    #     self.assertIsNotNone(res["returnedData"]["status"])
-    #     self.assertEqual(res["returnedData"]["status"], "success")
-    #     self.assertEqual(res["error"], False)
-
-    #     #all plans
-    #     res = self.rave.PaymentPlan.allPlans()
-    #     self.assertIsNotNone(res["error"])
-    #     self.assertIsNotNone(res["returnedData"]["status"])
-    #     self.assertEqual(res["returnedData"]["status"], "success")
-    #     self.assertEqual(res["error"], False)
-
-    #     #cancel plan
-    #     res = self.rave.PaymentPlan.cancelPlan(898)
-    #     self.assertIsNotNone(res["error"])
-    #     self.assertIsNotNone(res["returnedData"]["status"])
-    #     self.assertEqual(res["returnedData"]["status"], "success")
-    #     self.assertEqual(res["error"], False)
-
-    # def test_subaccount(self):
-    #     #create plan
-    #     res = self.rave.SubAccount.createSubaccount(self.subaccountDetails)
-    #     self.assertIsNotNone(res["error"])
-    #     self.assertIsNotNone(res["data"]['subaccount_id'])
-
-    #     with self.assertRaises(IncompletePaymentDetailsError):
-    #         self.rave.SubAccount.createSubaccount(self.faulty_subaccountDetails_1)
-
-    #     with self.assertRaises(SubaccountCreationError):
-    #         self.rave.SubAccount.createSubaccount(self.faulty_subaccountDetails_2)
+        with self.assertRaises(IncompletePaymentDetailsError):
+            self.rave.PaymentPlan.createPlan(self.faulty_planDetails)
 
         
-    #     #fetch
-    #     res = self.rave.SubAccount.fetchSubaccount('RS_BF94DDF6AA2AB40BE874EA32DBD4DAA1')
-    #     self.assertIsNotNone(res["error"])
-    #     self.assertIsNotNone(res["returnedData"]["status"])
-    #     self.assertEqual(res["returnedData"]["status"], "success")
-    #     self.assertEqual(res["error"], False)
+        #fetch
+        res = self.rave.PaymentPlan.fetchPlan(898)
+        self.assertIsNotNone(res["error"])
+        self.assertIsNotNone(res["returnedData"]["status"])
+        self.assertEqual(res["returnedData"]["status"], "success")
+        self.assertEqual(res["error"], False)
 
-    #     #all plans
-    #     res = self.rave.SubAccount.allSubaccounts()
-    #     self.assertIsNotNone(res["error"])
-    #     self.assertIsNotNone(res["returnedData"]["status"])
-    #     self.assertEqual(res["returnedData"]["status"], "success")
-    #     self.assertEqual(res["error"], False)
+        #all plans
+        res = self.rave.PaymentPlan.allPlans()
+        self.assertIsNotNone(res["error"])
+        self.assertIsNotNone(res["returnedData"]["status"])
+        self.assertEqual(res["returnedData"]["status"], "success")
+        self.assertEqual(res["error"], False)
 
-    # def test_ugmobile(self):
-    #     #charge
-    #     res = self.rave.UGMobile.charge(self.ugDetails)
-    #     print(res)
+        #cancel plan
+        res = self.rave.PaymentPlan.cancelPlan(898)
+        self.assertIsNotNone(res["error"])
+        self.assertIsNotNone(res["returnedData"]["status"])
+        self.assertEqual(res["returnedData"]["status"], "success")
+        self.assertEqual(res["error"], False)
 
-    # def test_bills_payment(self):
-    #     #single airtime purchase
-    #     res = self.rave.Bills.create(self.bills_payment_details_1)
-    #     self.assertIsNotNone(res["error"])
-    #     self.assertIsNotNone(res["data"]["Status"])
-    #     self.assertEqual(res["error"], False)
-    #     self.assertEqual(res["data"]["Status"], "success")
-    #     with self.assertRaises(IncompletePaymentDetailsError):
-    #         self.rave.Bills.create(self.faulty_bills_payment_details_1)
+    def test_subaccount(self):
+        #create plan
+        res = self.rave.SubAccount.createSubaccount(self.subaccountDetails)
+        self.assertIsNotNone(res["error"])
+        self.assertIsNotNone(res["data"]['subaccount_id'])
 
-    #     #bulk airtime purchase
-    #     res = self.rave.Bills.create(self.bills_payment_details_2)
-    #     self.assertIsNotNone(res["error"])
-    #     self.assertIsNotNone(res["data"]["Status"])
-    #     self.assertEqual(res["error"], False)
-    #     self.assertEqual(res["data"]["Status"], "success")
+        with self.assertRaises(IncompletePaymentDetailsError):
+            self.rave.SubAccount.createSubaccount(self.faulty_subaccountDetails_1)
 
-    # def test_virtual_card(self):
-    #     res = self.rave.VirtualCard.create(self.virtual_card_details)
-    #     print(res)
+        with self.assertRaises(SubaccountCreationError):
+            self.rave.SubAccount.createSubaccount(self.faulty_subaccountDetails_2)
+
+        
+        #fetch
+        res = self.rave.SubAccount.fetchSubaccount('RS_BF94DDF6AA2AB40BE874EA32DBD4DAA1')
+        self.assertIsNotNone(res["error"])
+        self.assertIsNotNone(res["returnedData"]["status"])
+        self.assertEqual(res["returnedData"]["status"], "success")
+        self.assertEqual(res["error"], False)
+
+        #all plans
+        res = self.rave.SubAccount.allSubaccounts()
+        self.assertIsNotNone(res["error"])
+        self.assertIsNotNone(res["returnedData"]["status"])
+        self.assertEqual(res["returnedData"]["status"], "success")
+        self.assertEqual(res["error"], False)
+
+    def test_ugmobile(self):
+        #charge
+        res = self.rave.UGMobile.charge(self.ugDetails)
+        print(res)
+
+    def test_bills_payment(self):
+        #single airtime purchase
+        res = self.rave.Bills.create(self.bills_payment_details_1)
+        self.assertIsNotNone(res["error"])
+        self.assertIsNotNone(res["data"]["Status"])
+        self.assertEqual(res["error"], False)
+        self.assertEqual(res["data"]["Status"], "success")
+        with self.assertRaises(IncompletePaymentDetailsError):
+            self.rave.Bills.create(self.faulty_bills_payment_details_1)
+
+        #bulk airtime purchase
+        res = self.rave.Bills.create(self.bills_payment_details_2)
+        self.assertIsNotNone(res["error"])
+        self.assertIsNotNone(res["data"]["Status"])
+        self.assertEqual(res["error"], False)
+        self.assertEqual(res["data"]["Status"], "success")
+
+    def test_virtual_card(self):
+        res = self.rave.VirtualCard.create(self.virtual_card_details)
+        print(res)
 
     def test_francophone_charge(self):
         res = self.rave.Francophone.charge(self.francophone_mobile_charge_details)

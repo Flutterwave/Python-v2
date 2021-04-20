@@ -636,8 +636,20 @@ res = rave.GhMobile.charge(payload)
 This call returns a dictionary. A sample response is:
 
 ```py
-{'error': False, 'validationRequired': True, 'txRef': 'MC-1530910216380', 'flwRef': 'N/A'}
+{
+    "status": "success",
+    "message": "Momo initiated",
+    "data": {
+        "code": "02",
+        "status": "pending",
+        "ts": 1591798138846,
+        "link": "https://ravemodal-dev.herokuapp.com/captcha/verify/123:49fa60c0db04f0017d717a0a662194cd"
+    }
+}
 ```
+
+
+In order to complete the charge, kindly redirect users to the link returned as `data.link` from the charge response.
 
  This call raises a ```TransactionChargeError``` if there was a problem processing your transaction. The ```TransactionChargeError``` contains some information about your transaction. You can handle this as such:
 
@@ -895,8 +907,20 @@ res = rave.UGMobile.charge(payload)
 This call returns a dictionary. A sample response is:
 
 ```py
-{'error': False, 'status': 'success', 'validationRequired': True, 'txRef': 'MC-1544013787279', 'flwRef': 'flwm3s4m0c1544013788481'}
+{
+    "status": "success",
+    "message": "Momo initiated",
+    "data": {
+        "code": "02",
+        "status": "pending",
+        "ts": 1591798138846,
+        "link": "https://ravemodal-dev.herokuapp.com/captcha/verify/123:49fa60c0db04f0017d717a0a662194cd"
+    }
+}
 ```
+
+
+In order to complete the charge, kindly redirect users to the link returned as `data.link` from the charge response.
 
  This call raises a ```TransactionChargeError``` if there was a problem processing your transaction. The ```TransactionChargeError``` contains some information about your transaction. You can handle this as such:
 
@@ -1025,8 +1049,19 @@ res = rave.ZBMobile.charge(payload)
 This call returns a dictionary. A sample response is:
 
 ```py
-{'error': False, 'status': 'success', 'validationRequired': True, 'txRef': 'MC-1544013787279', 'flwRef': 'flwm3s4m0c1544013788481'}
+{
+    "status": "success",
+    "message": "Momo initiated",
+    "data": {
+        "code": "02",
+        "status": "pending",
+        "ts": 1591798138846,
+        "link": "https://ravemodal-dev.herokuapp.com/captcha/verify/123:49fa60c0db04f0017d717a0a662194cd"
+    }
+}
 ```
+
+In order to complete the charge, kindly redirect users to the link returned as `data.link` from the charge response.
 
  This call raises a ```TransactionChargeError``` if there was a problem processing your transaction. The ```TransactionChargeError``` contains some information about your transaction. You can handle this as such:
 
