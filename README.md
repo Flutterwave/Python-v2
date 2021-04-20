@@ -240,7 +240,7 @@ Sample
 {'flwRef': None, 'cardToken': u'flw-t1nf-5b0f12d565cd961f73c51370b1340f1f-m03k', 'chargedAmount': 100, 'amount': 100, 'transactionComplete': True, 'error': False, 'txRef': u'MC-1538095718251'}
 ```
 
-#### Please note that after charging a card successfully on rave, if you wish to save the card for further charges, in your verify payment response you will find an object: "cardtoken": "flw-t0-f6f915f53a094671d98560272572993e-m03k".  This is the token you will use for card tokenization. Details are provided below.
+> Please note that after charging a card successfully on rave, if you wish to save the card for further charges, in your verify payment response you will find an object: `"cardtoken": "flw-t0-f6f915f53a094671d98560272572993e-m03k"`.  This is the token you will use for card tokenization. Details are provided below.
 
 If your call could not be completed successfully, a ```TransactionVerificationError``` is raised.
 
