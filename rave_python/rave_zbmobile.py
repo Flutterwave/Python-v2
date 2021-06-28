@@ -37,3 +37,8 @@ class ZBMobile(Payment):
         feature_name = "Zambia-mobile-money-charge-refund"
         endpoint = self._baseUrl + self._endpointMap["refund"]
         return super(ZBMobile, self).refund(feature_name, flwRef, amount)
+
+    def verify(self, txRef):
+        feature_name = "Zambia-mobile-money-charge-verify"
+        endpoint = self._baseUrl + self._endpointMap["verify"]
+        return super(ZBMobile, self).verify(feature_name, txRef)
