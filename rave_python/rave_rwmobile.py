@@ -18,7 +18,7 @@ class RWMobile(Payment):
         """
 
         #feature logic
-        feature_name = "Initiate-Rwanda-mobile-money-charge" 
+        feature_name = "Rwanda-MoMo-charge" 
         endpoint = self._baseUrl + self._endpointMap["account"]["charge"]
         
         # It is faster to add boilerplate than to check if each one is present
@@ -37,7 +37,12 @@ class RWMobile(Payment):
         return super(RWMobile, self).charge(feature_name, accountDetails, requiredParameters, endpoint)
 
     def refund(self, flwRef, amount):
-        feature_name = "Rwanda-mobile-money-charge-refund"
+        feature_name = "Rwanda-MoMo-refund"
         endpoint = self._baseUrl + self._endpointMap["refund"]
         return super(RWMobile, self).refund(feature_name, flwRef, amount)
+
+    def verify(self, txRef):
+        feature_name = "Rwanda-MoMo-verify"
+        endpoint = self._baseUrl + self._endpointMap["verify"]
+        return super(RWMobile, self).verify(feature_name, txRef)
 

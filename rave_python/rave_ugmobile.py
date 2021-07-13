@@ -16,7 +16,7 @@ class UGMobile(Payment):
             hasFailed (boolean) -- This is a flag to determine if the attempt had previously failed due to a timeout\n
         """
         
-        feature_name = "Initiate-Uganda-mobile-money-charge"
+        feature_name = "Uganda-MoMo-charge"
         endpoint = self._baseUrl + self._endpointMap["account"]["charge"]
         
         # It is faster to add boilerplate than to check if each one is present
@@ -35,7 +35,12 @@ class UGMobile(Payment):
         return super(UGMobile, self).charge(feature_name, accountDetails, requiredParameters, endpoint)
 
     def refund(self, flwRef, amount):
-        feature_name = "Uganda-mobile-money-charge-refund"
+        feature_name = "Uganda-MoMo-refund"
         endpoint = self._baseUrl + self._endpointMap["refund"]
         return super(UGMobile, self).refund(feature_name, flwRef, amount)
+
+    def verify(self, txRef):
+        feature_name = "Uganda-MoMo-verify"
+        endpoint = self._baseUrl + self._endpointMap["verify"]
+        return super(UGMobile, self).verify(feature_name, txRef)
 

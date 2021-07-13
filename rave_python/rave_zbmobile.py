@@ -15,7 +15,7 @@ class ZBMobile(Payment):
             accountDetails (dict) -- These are the parameters passed to the function for processing\n
             hasFailed (boolean) -- This is a flag to determine if the attempt had previously failed due to a timeout\n
         """
-        feature_name = "Initiate-Zambia-mobile-money-charge"
+        feature_name = "Zambia-MoMo-charge"
         endpoint = self._baseUrl + self._endpointMap["account"]["charge"]
         
         # It is faster to add boilerplate than to check if each one is present
@@ -34,11 +34,11 @@ class ZBMobile(Payment):
         return super(ZBMobile, self).charge(feature_name, accountDetails, requiredParameters, endpoint)
 
     def refund(self, flwRef, amount):
-        feature_name = "Zambia-mobile-money-charge-refund"
+        feature_name = "Zambia-MoMo-refund"
         endpoint = self._baseUrl + self._endpointMap["refund"]
         return super(ZBMobile, self).refund(feature_name, flwRef, amount)
 
     def verify(self, txRef):
-        feature_name = "Zambia-mobile-money-charge-verify"
+        feature_name = "Zambia-MoMo-verify"
         endpoint = self._baseUrl + self._endpointMap["verify"]
         return super(ZBMobile, self).verify(feature_name, txRef)

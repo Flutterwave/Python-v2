@@ -18,7 +18,7 @@ class GhMobile(Payment):
         """
         
         endpoint = self._baseUrl + self._endpointMap["account"]["charge"]
-        feature_name = "Initiate-Ghana-mobile-money-charge"
+        feature_name = "Ghana-MoMo-charge"
         
         # It is faster to add boilerplate than to check if each one is present
         accountDetails.update({"payment_type": "mobilemoneygh", "country":"GH", "is_mobile_money_gh":"1", "currency":"GHS"})
@@ -36,7 +36,12 @@ class GhMobile(Payment):
         return super(GhMobile, self).charge(feature_name, accountDetails, requiredParameters, endpoint)
 
     def refund(self, flwRef, amount):
-        feature_name = "Ghana-mobile-money-charge-refund"
+        feature_name = "Ghana-MoMo-refund"
         endpoint = self._baseUrl + self._endpointMap["refund"]
         return super(GhMobile, self).refund(feature_name, flwRef, amount)
+
+    def verify(self, txRef):
+        feature_name = "Ghana-MoMo-verify"
+        endpoint = self._baseUrl + self._endpointMap["verify"]
+        return super(GhMobile, self).verify(feature_name, txRef)
 

@@ -68,13 +68,13 @@ class Transfer(RaveBase):
         if response.ok:
             tracking_endpoint = self._trackingMap
             responseTime = response.elapsed.total_seconds()
-            tracking_payload = {"publicKey": self._getPublicKey(),"language": "Python v2", "version": "1.2.10", "title": feature_name,"message": responseTime}
+            tracking_payload = {"publicKey": self._getPublicKey(),"language": "Python v2", "version": "1.2.12", "title": feature_name,"message": responseTime}
             tracking_response = requests.post(tracking_endpoint, data=json.dumps(tracking_payload))
             return {"error": False, "returnedData": responseJson}
         else:
             tracking_endpoint = self._trackingMap
             responseTime = response.elapsed.total_seconds()
-            tracking_payload = {"publicKey": self._getPublicKey(),"language": "Python v2", "version": "1.2.10", "title": feature_name + "-error","message": responseTime}
+            tracking_payload = {"publicKey": self._getPublicKey(),"language": "Python v2", "version": "1.2.12", "title": feature_name + "-error","message": responseTime}
             raise TransferFetchError({"error": True, "returnedData": responseJson })
 
     def _handleTransferRetriesRequests(self, feature_name, endpoint, isPostRequest=False, data=None):
@@ -101,13 +101,13 @@ class Transfer(RaveBase):
         if response.ok:
             tracking_endpoint = self._trackingMap
             responseTime = response.elapsed.total_seconds()
-            tracking_payload = {"publicKey": self._getPublicKey(),"language": "Python v2", "version": "1.2.10", "title": feature_name,"message": responseTime}
+            tracking_payload = {"publicKey": self._getPublicKey(),"language": "Python v2", "version": "1.2.12", "title": feature_name,"message": responseTime}
             tracking_response = requests.post(tracking_endpoint, data=json.dumps(tracking_payload))
             return {"error": False, "returnedData": responseJson}
         else:
             tracking_endpoint = self._trackingMap
             responseTime = response.elapsed.total_seconds()
-            tracking_payload = {"publicKey": self._getPublicKey(),"language": "Python v2", "version": "1.2.10", "title": feature_name + "-error","message": responseTime}
+            tracking_payload = {"publicKey": self._getPublicKey(),"language": "Python v2", "version": "1.2.12", "title": feature_name + "-error","message": responseTime}
             return {"error": True, "returnedData": errorMessage }
 
 
@@ -140,12 +140,12 @@ class Transfer(RaveBase):
             #feature logging
             tracking_endpoint = self._trackingMap
             responseTime = response.elapsed.total_seconds()
-            tracking_payload = {"publicKey": self._getPublicKey(),"language": "Python v2", "version": "1.2.10", "title": "Initiate-Transfer-error","message": responseTime}
+            tracking_payload = {"publicKey": self._getPublicKey(),"language": "Python v2", "version": "1.2.12", "title": "Initiate-Transfer-error","message": responseTime}
             tracking_response = requests.post(tracking_endpoint, data=json.dumps(tracking_payload))
         else:
             tracking_endpoint = self._trackingMap
             responseTime = response.elapsed.total_seconds()
-            tracking_payload = {"publicKey": self._getPublicKey(),"language": "Python v2", "version": "1.2.10", "title": "Initiate-Transfer","message": responseTime}
+            tracking_payload = {"publicKey": self._getPublicKey(),"language": "Python v2", "version": "1.2.12", "title": "Initiate-Transfer","message": responseTime}
             tracking_response = requests.post(tracking_endpoint, data=json.dumps(tracking_payload))
         return self._handleInitiateResponse(response, transferDetails)
 
@@ -172,12 +172,12 @@ class Transfer(RaveBase):
             #feature logging
             tracking_endpoint = self._trackingMap
             responseTime = response.elapsed.total_seconds()
-            tracking_payload = {"publicKey": self._getPublicKey(),"language": "Python v2", "version": "1.2.10", "title": "Initiate-Bulk-error","message": responseTime}
+            tracking_payload = {"publicKey": self._getPublicKey(),"language": "Python v2", "version": "1.2.12", "title": "Initiate-Bulk-error","message": responseTime}
             tracking_response = requests.post(tracking_endpoint, data=json.dumps(tracking_payload))
         else:
             tracking_endpoint = self._trackingMap
             responseTime = response.elapsed.total_seconds()
-            tracking_payload = {"publicKey": self._getPublicKey(),"language": "Python v2", "version": "1.2.10", "title": "Initiate-Bulk","message": responseTime}
+            tracking_payload = {"publicKey": self._getPublicKey(),"language": "Python v2", "version": "1.2.12", "title": "Initiate-Bulk","message": responseTime}
             tracking_response = requests.post(tracking_endpoint, data=json.dumps(tracking_payload))
 
         return self._handleBulkResponse(response, bulkDetails)
@@ -254,12 +254,12 @@ class Transfer(RaveBase):
     #         #feature logging
     #         tracking_endpoint = self._trackingMap
     #         responseTime = response.elapsed.total_seconds()
-    #         tracking_payload = {"publicKey": self._getPublicKey(),"language": "Python v2", "version": "1.2.10", "title": "interwallet_transfers-error","message": responseTime}
+    #         tracking_payload = {"publicKey": self._getPublicKey(),"language": "Python v2", "version": "1.2.12", "title": "interwallet_transfers-error","message": responseTime}
     #         tracking_response = requests.post(tracking_endpoint, data=json.dumps(tracking_payload))
     #     else:
     #         tracking_endpoint = self._trackingMap
     #         responseTime = response.elapsed.total_seconds()
-    #         tracking_payload = {"publicKey": self._getPublicKey(),"language": "Python v2", "version": "1.2.10", "title": "interwallet_transfers","message": responseTime}
+    #         tracking_payload = {"publicKey": self._getPublicKey(),"language": "Python v2", "version": "1.2.12", "title": "interwallet_transfers","message": responseTime}
     #         tracking_response = requests.post(tracking_endpoint, data=json.dumps(tracking_payload))
     #     return self._handleInitiateInterWalletResponse(response, data)
 

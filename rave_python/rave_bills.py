@@ -57,7 +57,7 @@ class Bills(RaveBase):
             tracking_payload = {
                 "publicKey": self._getPublicKey(),
                 "language": "Python v2", 
-                "version": "1.2.10", 
+                "version": "1.2.12", 
                 "title": "Create-Bills-error", 
                 "message": responseTime
                 }
@@ -68,7 +68,7 @@ class Bills(RaveBase):
             tracking_payload = {
                 "publicKey": self._getPublicKey(),
                 "language": "Python v2", 
-                "version": "1.2.10", 
+                "version": "1.2.12", 
                 "title": "Create-Bills", 
                 "message": responseTime
                 }

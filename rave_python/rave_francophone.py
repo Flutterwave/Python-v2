@@ -9,37 +9,6 @@ class Francophone(Payment):
     def __init__(self, publicKey, secretKey, production, usingEnv):
         super(Francophone, self).__init__(publicKey, secretKey, production, usingEnv)
 
-
-    # returns true if further action is required, false if it isn't    
-    # def _handleChargeResponse(self, response, txRef, request=None):
-    #     """ This handles charge responses """
-    #     res =  self._preliminaryResponseChecks(response, MobileChargeError, txRef=txRef)
-
-    #     responseJson = res["json"]
-    #     flwRef = res["flwRef"]
-
-    #     # Checking if there is redirect url
-
-    #     if responseJson["data"]["data"].get("redirect_url", "N/A") == "N/A":
-    #         redirectUrl = None
-    #     else:
-    #         redirectUrl = responseJson["data"]["data"]["redirect_url"]
-
-    #     # If all preliminary checks passed
-    #     if not (responseJson["data"].get("chargeResponseCode", None) == "00"):
-    #         # Otherwise we return that further action is required, along with the response
-    #         # suggestedAuth = responseJson["data"].get("suggested_auth", None)
-    #         return {
-    #                     "error": False, 
-    #                     "status": responseJson["status"],  
-    #                     "message": responseJson["message"],
-    #                     "code": responseJson["data"]["code"],
-    #                     "transaction status": responseJson["data"]["status"],
-    #                     "ts": responseJson["data"]["ts"],
-    #                     "link": responseJson["data"]["link"]
-    #                 }
-    #     else:
-    #         return {"error": False, "status": responseJson["status"],  "validationRequired": False, "txRef": txRef, "flwRef": flwRef, "suggestedAuth": None, "redirectUrl": redirectUrl}
     
     # Charge mobile money function
     def charge(self, accountDetails, hasFailed=False):
@@ -49,7 +18,7 @@ class Francophone(Payment):
             hasFailed (boolean) -- This is a flag to determine if the attempt had previously failed due to a timeout\n
         """
 
-        feature_name = "Initiate-Francophone-mobile-money-charge"
+        feature_name = "Francophone-MoMo-charge"
         endpoint = self._baseUrl + self._endpointMap["account"]["charge"]
 
         # It is faster to add boilerplate than to check if each one is present
@@ -69,6 +38,12 @@ class Francophone(Payment):
         return super(Francophone, self).charge(feature_name, accountDetails, requiredParameters, endpoint)
 
     def refund(self, flwRef, amount):
-        feature_name = "Francophone-charge-refund"
+        feature_name = "Francophone-MoMo-refund"
         endpoint = self._baseUrl + self._endpointMap["refund"]
         return super(Francophone, self).refund(feature_name, flwRef, amount)
+
+    def verify(self, txRef):
+        feature_name = "Francophone-MoMo-verify"
+        endpoint = self._baseUrl + self._endpointMap["verify"]
+        return super(Francophone, self).verify(feature_name, txRef)
+

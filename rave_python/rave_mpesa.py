@@ -18,7 +18,7 @@ class Mpesa(Payment):
         """
         ## feature logic
         # Setting the endpoint
-        feature_name = "Initiate-Mpesa-charge"
+        feature_name = "Mpesa-charge"
         endpoint = self._baseUrl + self._endpointMap["account"]["charge"]
         
         # Adding boilerplate mpesa requirements
@@ -38,11 +38,11 @@ class Mpesa(Payment):
         return res
 
     def verify(self, txRef):
-        feature_name = "Verify-Mpesa_charge"
+        feature_name = "Verify-Mpesa"
         endpoint = self._baseUrl + self._endpointMap["account"]["verify"]
         return super(Mpesa, self).verify(feature_name, txRef, endpoint)
 
     def refund(self, flwRef, amount):
-        feature_name = "Mpesa-charge-refund"
+        feature_name = "Mpesa-refund"
         endpoint = self._baseUrl + self._endpointMap["account"]["refund"]
         return super(Mpesa, self).refund(feature_name, flwRef, amount)
