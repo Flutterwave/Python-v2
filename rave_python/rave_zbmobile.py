@@ -19,7 +19,7 @@ class ZBMobile(Payment):
         endpoint = self._baseUrl + self._endpointMap["account"]["charge"]
         
         # It is faster to add boilerplate than to check if each one is present
-        accountDetails.update({"payment_type": "mobilemoneyzambia", "country":"NG", "is_mobile_money_ug":"1", "currency":"ZMW", "network": "MTN"})
+        accountDetails.update({"payment_type": "mobilemoneyzambia", "country":"NG", "is_mobile_money_ug":"1", "currency":"ZMW"})
         
         # If transaction reference is not set 
         if not ("txRef" in accountDetails):

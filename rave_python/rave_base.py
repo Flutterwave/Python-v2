@@ -8,7 +8,6 @@ class RaveBase(object):
 
         # config variables (protected)
         self._baseUrlMap = ["https://ravesandboxapi.flutterwave.com/", "https://api.ravepay.co/"]
-        self._trackingMap = "https://kgelfdz7mf.execute-api.us-east-1.amazonaws.com/staging/sendevent"
         self._endpointMap = {
             "bills": {
                 "create":"v2/services/confluence",

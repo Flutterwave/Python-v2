@@ -10,6 +10,7 @@ class Bills(RaveBase):
         }
         super(Bills, self).__init__(publicKey, secretKey, production, usingEnv)
 
+
     def _preliminaryResponseChecks(self, response, TypeOfErrorToRaise, name):
         #check if we can get json
         try:
