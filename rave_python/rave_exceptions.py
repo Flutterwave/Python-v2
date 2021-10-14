@@ -169,7 +169,7 @@ class RecipientStatusError(RaveError):
         return self.type +"ing recepient failed with error: " + self.err["errMsg"]
 
 class RefundError(RaveError):
-    """ Raised when refund fails """IN
+    """ Raised when refund fails """
     def __init__(self, message):
         msg = "Your refund call failed with message: "+str(message)
         super(RefundError, self).__init__(msg)
