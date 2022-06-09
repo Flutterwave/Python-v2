@@ -10,48 +10,55 @@
 
 
 ## Introduction
-This is a Python wrapper around the [API](https://flutterwavedevelopers.readme.io/v2.0/reference) for [Rave by Flutterwave](https://rave.flutterwave.com).
+The Python library provides easy access to Flutterwave for Business (F4B) v2 APIs from Django, Flask, and other Python apps. It abstracts the complexity involved in direct integration and allows you to make quick calls to the APIs.
 
-#### Payment types implemented:
-* Card Payments
-* Bank Account Payments
-* Ghana Mobile Money Payments
-* Mpesa Payments
-* Rwanda Mobile Money Payments
-* Uganda Mobile Money Payments
-* Zambia Mobile Money Payments
-* Mobile Money Payments for Francophone countries
-* Subaccounts
-* Transfer
-* Subscription (Recurring Payments)
-* Bills payment
-* Payment Plan
-* USSD Payments (Still in Beta Mode)
+Available features include:
 
-#### Other features include:
-* Preauthorization charges
-* Refunds
-* Transaction Verification
-* Transfer Recipients
-* Virtual Cards
-* Virtual Accounts
+- Collections: Card, Account, Mobile money, Bank Transfers, USSD, Barter, NQR.
+- Payouts and Beneficiaries.
+- Recurring payments: Tokenization and Subscriptions.
+- Split payments
+- Card issuing
+- Transactions dispute management: Refunds.
+- Transaction reporting: Collections, Payouts, Settlements, and Refunds.
+- Bill payments: Airtime, Data bundle, Cable, Power, Toll, E-bills, and Remitta.
+- Identity verification: Resolve bank account, resolve BVN information.
+
+## Table of Contents
+1. [Requirements](#requirements)
+2. [Installation](#installation)
+3. [Initialization](#initialization)
+4. [Usage](#usage)
+5. [Testing](#testing)
+6. [Debugging Errors](#debugging-errors)
+7. [Support](#support)
+8. [Contribution guidelines](#)
+9. [License](#)
+10. [Changelog](#)
+
+## Requirements
+1. Flutterwave for business [API Keys](https://developer.flutterwave.com/docs/integration-guides/authentication)
+2. Acceptable Python versions: >=2.7, !=3.0.\*, !=3.1.\*, !=3.2.\*, !=3.3.\*, !=3.4.\*
+
 
 ## Installation
-To install, run
+To install the library, run
 
 ```sh
 pip install rave_python
 ```
 
 Note: This is currently under active development
-## Import Package
+
+
+## Initialization
+
+### Import Package
 The base class for this package is 'Rave'. To use this class, add:
 
 ```py
 from rave_python import Rave
 ```
-
-## Initialization
 
 #### To instantiate in sandbox:
 To use Rave, instantiate the Rave class with your public key. We recommend that you store your secret key in an environment variable named, ```RAVE_SECRET_KEY```. Instantiating your rave object is therefore as simple as:
@@ -75,7 +82,9 @@ To initialize in production, simply set the ```production``` flag to ```True```.
 rave = Rave("YOUR_PUBLIC_KEY", production=True)
 ```
 
-# Rave Objects
+
+
+# Usage
 This is the documentation for all of the components of rave_python
 
 ## ```rave.Card```
@@ -2775,7 +2784,8 @@ This call returns a dictionary. A sample response is:
 ```
 <br>
 
-## Run Tests
+
+## Testing
 
 All of the SDK's tests are written with Python's ```unittest``` module. The tests currently test:
 ```rave.Account```
@@ -2797,5 +2807,26 @@ python test.py
 >**NOTE:** The test may fail for account validation - ``` Pending OTP validation``` depending on whether the service is down or not
 <br>
 
+
+## Debugging Errors
+We understand that you may run into some errors while integrating our library. You can read more about our error messages [here](https://developer.flutterwave.com/docs/integration-guides/errors).
+
+For `authorization` and `validation` error responses, double-check your API keys and request. If you get a `server` error, kindly engage the team for support.
+
+
+
 ## Support
-For further assistance in using the SDK, you can contact the Developers on [Slack](https://join.slack.com/t/flutterwavedevelopers/shared_invite/enQtNTk3MjgxMjU3ODI5LWFkMjBkYTc0ZGJhM2Q5MTY3YjFkYzAyYmM1ZDZjZjUwMjE4YTc2NjQ1ZGM5ZWE4NDUxMzc4MmExYmI1Yjg5ZWU) and [Email](mailto:developers@flutterwavego.com). You can get more information about the amazing features here [here](https://developer.flutterwave.com/reference#introduction).
+For additional assistance using this library, contact the developer experience (DX) team via [email](mailto:developers@flutterwavego.com) or on [slack](https://bit.ly/34Vkzcg). 
+
+You can also follow us [@FlutterwaveEng](https://twitter.com/FlutterwaveEng) and let us know what you think 😊.
+
+
+## Contribution guidelines
+Read more about our community contribution guidelines [here](/CONTRIBUTING.md)
+
+
+## License
+
+By contributing to this library, you agree that your contributions will be licensed under its [MIT license](/LICENSE).
+
+Copyright (c) Flutterwave Inc.

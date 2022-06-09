@@ -1,39 +1,54 @@
-<!--- Provide a general summary of your changes in the Title above -->
+### Requirements for contributing to the library
 
-#### Description
-<!--- Describe your changes in detail -->
+* Fill out the template below. Any pull request that does not include enough information to be reviewed in a timely manner may be closed at the maintainers' discretion.
+* Include the issue link for bug fixes.
+* The pull request must include a test suite to demonstrate the changed functionality.
+* After you create the pull request, all status checks must pass before a maintainer reviews your contribution.
 
-#### Related Issue
-<!--- This project only accepts pull requests related to open issues -->
-<!--- If suggesting a new feature or change, please discuss it in an issue first -->
-<!--- If fixing a bug, there should be an issue describing it with steps to reproduce -->
-<!--- Please link to the issue here: -->
+### Type of change
+[] Bug fix
+[] Performance improvement
+[] Documentation update
 
-#### Motivation and Context
-<!--- Why is this change required? What problem does it solve? -->
+### Description of the change
 
-#### How Has This Been Tested?
-<!--- Please describe in detail how you tested your changes. -->
-<!--- Include details of your testing environment, and the tests you ran to -->
-<!--- see how your change affects other areas of the code, etc. -->
+<!--
 
-#### Types of changes
-<!--- What types of changes does your code introduce? Put an `x` in all the boxes that apply: -->
-- [ ] Bug fix (non-breaking change which fixes an issue)
-- [ ] Refactor (non-breaking change which improves implementation)
-- [ ] Performance (non-breaking change which improves performance. Please add associated performance test and results)
-- [ ] New feature (non-breaking change which adds functionality)
-- [ ] Breaking change (fix or feature that would cause existing functionality to change)
-- [ ] Non-functional change (xml comments/documentation/etc)
+We should understand the purpose of your change from this description. We would not review PRs with inadequate descriptions.
 
-#### Checklist:
-<!--- The following is a checklist of items that MUST be completed before a PR is accepted -->
-<!--- If you're unsure about any of these, don't hesitate to ask. We're here to help! -->
-- [ ] My code follows the code style of this project.
-- [ ] I have read the **CONTRIBUTING** [document](https://github.com/QuantConnect/Lean/blob/master/CONTRIBUTING.md).
-- [ ] I have added tests to cover my changes. <!--- If not applicable, please explain why -->
-- [ ] All new and existing tests passed.
-- [ ] My branch follows the naming convention `bug-<issue#>-<description>` or `feature-<issue#>-<description>`
+-->
 
 
-@Flutterwave/Corvus97 What do you think about these updates?
+### Related issue
+
+<!--
+
+Link to the issue that your change relates to. For feature requests, send us an email at developers@flutterwavego.com
+
+-->
+
+
+### Checklist
+
+[] I have read the contribution document.
+[] I have added tests to cover my changes.
+[] All new and existing tests passed.
+
+
+### Release Notes
+
+<!--
+
+Please describe the changes in a single line that explains this improvement in
+a user-friendly manner.  This text will be used in our release notes.
+
+If said change is not user-facing or notable enough to be included in release notes
+you may use "N/A" here.
+
+Examples:
+
+- The GitHub package now allows you to charge XAF payments.
+- Fixed an issue where payment plan creation returns an error.
+- Increased the performance of searching paginated responses.
+
+-->

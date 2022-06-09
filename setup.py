@@ -5,10 +5,10 @@ with open("README.md", "r") as fh:
 
 setuptools.setup(
     name="rave_python",
-    version="1.2.15",
+    version="1.2.16",
     author="Flutterwave",
     author_email="developers@flutterwavego.com",
-    description="Official Rave Python Wrapper By Flutterwave",
+    description="Python library for Flutterwave for Business (F4B) v2 APIs.",
     long_description=long_description,
     long_description_content_type="text/markdown",
     url="https://github.com/Flutterwave/rave-python",
