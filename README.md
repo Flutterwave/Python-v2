@@ -2,7 +2,7 @@
     <img title="Flutterwave" height="200" src="https://flutterwave.com/images/logo/full.svg" width="50%"/>
 </p>
 
-# Rave Python Library.
+# Flutterwave Python Library.
 ![Upload Python Package](https://github.com/Flutterwave/rave-python/workflows/Upload%20Python%20Package/badge.svg)
 ![PyPI](https://img.shields.io/pypi/v/rave_python)
 ![PyPI - Downloads](https://img.shields.io/pypi/dm/rave_python)
