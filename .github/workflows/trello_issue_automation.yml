@@ -3,6 +3,7 @@ name: Create Trello card for new issue
 on:
   issues:
     types: [opened, reopened]
+    label: 'type: bug'
     
 jobs:
   create_card:
