@@ -1,16 +1,11 @@
-Thank you for taking the time to contribute to our library🙌🏾.
-
-In this section, we detail everything you need to know about contributing to this library.
-
+Thank you for taking the time to contribute to our library🙌🏾. In this section, we detail everything you need to know about contributing to this library.
 
 **[Code of Conduct](https://github.com/probot/template/blob/master/CODE_OF_CONDUCT.md)**
 
 ## **I don't want to contribute, I have a question**
-
 Please don't raise an issue to ask a question. You can ask questions on our [forum](http://forum.flutterwave.com) or developer [slack](https://bit.ly/34Vkzcg). We have an army of Engineers on hand to answer your questions there.
 
 ## How can I contribute?
-
 ### Reporting a bug
 
 Have you spotted a bug? Fantastic! Before raising an issue, here are some things to do:
@@ -29,14 +24,44 @@ When you report an issue, it is important to:
     - Did you experience the bug on test mode or live?
     - Do you have the recommended versions of the library dependencies?
 
-<aside>
+> 💡 Please make use of the issue template when reporting bugs.
+```markdown
+### Description
 
-💡 Please make use of the issue template when reporting bugs.
+<!-- Description of the issue -->
 
-</aside>
+### Steps to Reproduce
+
+1. <!-- First Step -->
+2. <!-- Second Step -->
+3. <!-- and so on… -->
+
+**Expected behaviour:**
+
+<!-- What you expect to happen -->
+
+**Actual behaviour:**
+
+<!-- What actually happens -->
+
+**Reproduces how often:**
+
+<!-- What percentage of the time does it reproduce? -->
+
+### Configuration
+
+- API Version: <!-- v2 or v3 -->
+- Environment: <!-- test mode or live mode  -->
+- Browser: <!-- [all | Chrome XX | Firefox XX | IE XX | Safari XX | Mobile Chrome XX | Android X.X Web Browser | iOS XX Safari | iOS XX UIWebView | iOS XX WKWebView ]  -->
+- Language: <!-- [all | Node X.X | TypeScript X.X | Python X.X | ES6/7 | ES5 | Dart | Android X.X | PHP X.X | Laravel X.X ]  -->
+
+### Additional Information
+
+<!-- Any additional information, configuration or data that might be necessary to reproduce the issue e.g. detailed explanation, stack traces, related issues, suggestions on how to fix, links for us to have more context like StackOverflow, Gitter, etc. -->
+```
+
 
 ### Requesting a feature
-
 If you need an additional feature added to the library, kindly send us an email at developers@flutterwavego.com. Be sure to include the following in your request:
 
 1. A clear title that helps us to identify the requested feature.
@@ -45,7 +70,6 @@ If you need an additional feature added to the library, kindly send us an email 
 4. Library name and version.
 
 ### Submitting changes (PR)
-
 Generally, you can make any of the following changes to the library:
 
 1. Bug fixes
@@ -53,11 +77,8 @@ Generally, you can make any of the following changes to the library:
 3. Documentation update
 4. Functionality change (usually new features)
 
-<aside>
+> 💡 Changes that are cosmetic in nature and do not add anything substantial to the stability, functionality, or testability of the library will generally not be accepted.
 
-💡 Changes that are cosmetic in nature and do not add anything substantial to the stability, functionality, or testability of the library will generally not be accepted.
-
-</aside>
 
 Follow these steps when making a pull request to the library:
 
@@ -78,14 +99,9 @@ $ git commit -m "A brief summary of the commit
 > A paragraph describing what changed and its impact."
 ```
 
-<aside>
-
-💡 For your pull request to be reviewed, you need to meet the requirements above. We may ask you to complete additional tests, or other changes before your pull request can be ultimately accepted.
-
-</aside>
+> 💡 For your pull request to be reviewed, you need to meet the requirements above. We may ask you to include additional tests, or changes before your pull request can be ultimately accepted.
 
 We encourage you to contribute and help make the library better for the community. Got questions? send us a [message](https://bit.ly/34Vkzcg).
 
 Thank you.
-
 The Flutterwave team 🦋
