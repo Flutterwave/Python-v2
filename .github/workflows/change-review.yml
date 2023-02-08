@@ -8,7 +8,7 @@ on:
       - opened
 
 jobs:
-  Code checks[unit tests and coverage scans]:
+  Unit tests and coverage scans:
     runs-on: ${{ matrix.os }}
     strategy:
       matrix:
