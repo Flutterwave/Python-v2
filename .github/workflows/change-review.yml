@@ -31,4 +31,7 @@ jobs:
         coverage run test.py
 
     - name: upload coverage report
-      run: codecov/codecov-action@v3
+      run: |
+        curl -Os https://uploader.codecov.io/latest/linux/codecov
+        chmod +x codecov
+        ./codecov -t ${CODECOV_TOKEN}
