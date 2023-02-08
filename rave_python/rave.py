@@ -23,7 +23,7 @@ from rave_python.rave_zbmobile import ZBMobile
 
 
 class Rave:
-    
+
     def __init__(self, publicKey, secretKey, production=False, usingEnv=True):
         """ This is main organizing object. It contains the following:\n
             rave.Account -- For bank account transactions\n
@@ -41,17 +41,34 @@ class Rave:
             rave.UGMobile -- For Uganda mobile money transactions\n
             rave.Ussd -- For ussd transactions\n
             rave.VirtualAccount -- For virtual account transactions\n
-            rave.VirtualCard -- For virtual card transactions\n 
+            rave.VirtualCard -- For virtual card transactions\n
             rave.ZBMobile -- For Zambia mobile money transactions\n
-            
+
         """
 
         classes = (
-            Account, Bills, Card, Ebills, Francophone, GhMobile, Mpesa, PaymentPlan, Preauth, Recipient, RWMobile, Settlement, SubAccount, Subscriptions, Transfer, UGMobile, Ussd, Verify, VirtualAccount, VirtualCard, ZBMobile
-        )
+            Account,
+            Bills,
+            Card,
+            Ebills,
+            Francophone,
+            GhMobile,
+            Mpesa,
+            PaymentPlan,
+            Preauth,
+            Recipient,
+            RWMobile,
+            Settlement,
+            SubAccount,
+            Subscriptions,
+            Transfer,
+            UGMobile,
+            Ussd,
+            Verify,
+            VirtualAccount,
+            VirtualCard,
+            ZBMobile)
 
         for _class in classes:
             attr = _class(publicKey, secretKey, production, usingEnv)
             setattr(self, _class.__name__, attr)
-        
-      

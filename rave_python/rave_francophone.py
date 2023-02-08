@@ -4,13 +4,20 @@ from rave_python.rave_misc import generateTransactionReference
 import json
 import webbrowser
 
-class Francophone(Payment):
-    
-    def __init__(self, publicKey, secretKey, production, usingEnv):
-        super(Francophone, self).__init__(publicKey, secretKey, production, usingEnv)
 
-    
+class Francophone(Payment):
+
+    def __init__(self, publicKey, secretKey, production, usingEnv):
+        super(
+            Francophone,
+            self).__init__(
+            publicKey,
+            secretKey,
+            production,
+            usingEnv)
+
     # Charge mobile money function
+
     def charge(self, accountDetails, hasFailed=False):
         """ This is the charge call for central francophone countries.
              Parameters include:\n
@@ -22,9 +29,10 @@ class Francophone(Payment):
         endpoint = self._baseUrl + self._endpointMap["account"]["charge"]
 
         # It is faster to add boilerplate than to check if each one is present
-        accountDetails.update({"payment_type": "mobilemoneyfrancophone", "is_mobile_money_franco":"1"})
-        
-        # If transaction reference is not set 
+        accountDetails.update(
+            {"payment_type": "mobilemoneyfrancophone", "is_mobile_money_franco": "1"})
+
+        # If transaction reference is not set
         if not ("txRef" in accountDetails):
             accountDetails.update({"txRef": generateTransactionReference()})
 
@@ -35,7 +43,13 @@ class Francophone(Payment):
         # Checking for required account components
         # requiredParameters = ["amount", "email", "phonenumber", "IP", "redirect_url"]
         requiredParameters = ["amount"]
-        return super(Francophone, self).charge(feature_name, accountDetails, requiredParameters, endpoint)
+        return super(
+            Francophone,
+            self).charge(
+            feature_name,
+            accountDetails,
+            requiredParameters,
+            endpoint)
 
     def refund(self, flwRef, amount):
         feature_name = "Francophone-MoMo-refund"
@@ -46,4 +60,3 @@ class Francophone(Payment):
         feature_name = "Francophone-MoMo-verify"
         endpoint = self._baseUrl + self._endpointMap["verify"]
         return super(Francophone, self).verify(feature_name, txRef)
-

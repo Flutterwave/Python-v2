@@ -9,10 +9,12 @@ class Account(Payment):
         .validate -- This is called if further action is required i.e. OTP validation\n
         .verify -- This checks the status of your transaction\n
     """
+
     def _handleChargeResponse(self, response, txRef, request=None):
         """ This handles account charge responses """
         # This checks if we can parse the json successfully
-        res =  self._preliminaryResponseChecks(response, AccountChargeError, txRef=txRef)
+        res = self._preliminaryResponseChecks(
+            response, AccountChargeError, txRef=txRef)
 
         response_json = res['json']
         # change - added data before flwRef
@@ -46,14 +48,21 @@ class Account(Payment):
         endpoint = self._baseUrl + self._endpointMap['account']['charge']
         feature_name = "Initiate-Account-charge"
 
-        # It is faster to just update rather than check if it is already present
+        # It is faster to just update rather than check if it is already
+        # present
         accountDetails.update({'payment_type': 'account'})
 
         # Generate transaction reference if txRef doesn't exist
         accountDetails.setdefault('txRef', generateTransactionReference())
 
         # Checking for required account components
-        requiredParameters = ['accountbank', 'accountnumber', 'amount', 'email', 'phonenumber', 'IP']
+        requiredParameters = [
+            'accountbank',
+            'accountnumber',
+            'amount',
+            'email',
+            'phonenumber',
+            'IP']
 
         return super().charge(feature_name, accountDetails, requiredParameters, endpoint)
 

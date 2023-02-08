@@ -1,0 +1,32 @@
+name: Review changes on Dev (Commits/PRs)
+
+on:
+  push:
+    branches: ['dev']
+  pull_request:
+    types:
+      - opened
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v2
+    - name: Set up Python
+      uses: actions/setup-python@v2
+      with:
+        python-version: '3.x'
+        
+    - name: Install dependencies
+      run: |
+        python -m pip install --upgrade pip
+        pip install -r requirements.txt
+
+    - name: run unit tests and coverage scan
+        env:
+          PUBLIC_KEY: ${{ secrets.PUBLIC_KEY }}
+          RAVE_SECRET_KEY: ${{ secrets.SECRET_KEY }}
+        run: coverage run test.py
+
+    - name: upload coverage report
+      run: codecov/codecov-action@v3
