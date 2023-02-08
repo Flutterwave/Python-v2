@@ -23,10 +23,10 @@ jobs:
         pip install -r requirements.txt
 
     - name: run unit tests and coverage scan
-        env:
-          PUBLIC_KEY: ${{ secrets.PUBLIC_KEY }}
-          RAVE_SECRET_KEY: ${{ secrets.SECRET_KEY }}
-        run: coverage run test.py
+      env:
+        PUBLIC_KEY: ${{ secrets.PUBLIC_KEY }}
+        RAVE_SECRET_KEY: ${{ secrets.SECRET_KEY }}
+      run: coverage run test.py
 
     - name: upload coverage report
       run: codecov/codecov-action@v3
