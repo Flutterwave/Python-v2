@@ -6,7 +6,7 @@ on:
 
 jobs:
   check-docs-update:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-latest 
     env:
       OS: ubuntu-latest
       PYTHON: '3.7'
@@ -18,13 +18,16 @@ jobs:
         github.ref == 'refs/heads/dev'
       uses: technote-space/get-diff-action@v6
       with:
-        PATTERNS: |
-          +(documentation)/*.md
-          *.md
+          PATTERNS: |
+            +(documentation)/*.md
+            *.md
+          FILES: |
+            CHANGELOG.md
     - name: Check for git diff in source code
-      # run only if there are differences in the .md code else skip or terminate
-      run: echo ${{ env.GIT_DIFF }}
-      if: env.GIT_DIFF 
+      if: (env.GIT_DIFF == '')
+      run: |
+        echo Update documentation files or README.md before push
+        exit 1 
     
 
   # distribute:
