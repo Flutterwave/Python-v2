@@ -1,31 +1,51 @@
-# This workflows will upload a Python Package using Twine when a release is created
-# For more information see: https://help.github.com/en/actions/language-and-framework-guides/using-python-with-github-actions#publishing-to-package-registries
-
-name: Upload Python Package
+name: Publish to PyPi 
 
 on:
   release:
     types: [created]
 
 jobs:
-  deploy:
-
+  check-docs-update:
     runs-on: ubuntu-latest
-
+    env:
+      OS: ubuntu-latest
+      PYTHON: '3.7'
     steps:
     - uses: actions/checkout@v2
-    - name: Set up Python
-      uses: actions/setup-python@v2
+    
+    - name: Check for changes in .md files
+      if: 
+        github.ref == 'refs/heads/dev'
+      uses: technote-space/get-diff-action@v6
       with:
-        python-version: '3.x'
-    - name: Install dependencies
-      run: |
-        python -m pip install --upgrade pip
-        pip install setuptools wheel twine
-    - name: Build and publish
-      env:
-        TWINE_USERNAME: ${{ secrets.PYPI_USERNAME }}
-        TWINE_PASSWORD: ${{ secrets.PYPI_PASSWORD }}
-      run: |
-        python setup.py sdist bdist_wheel
-        twine upload dist/*
+        PATTERNS: |
+          +(documentation)/*.md
+          *.md
+    - name: Check for git diff in source code
+      # run only if there are differences in the .md code else skip or terminate
+      run: echo ${{ env.GIT_DIFF }}
+      if: env.GIT_DIFF 
+    
+
+  # distribute:
+  #   runs-on: ubuntu-latest
+  #   env:
+  #     OS: ubuntu-latest
+  #     PYTHON: '3.7'
+  #   steps:
+  #   - uses: actions/checkout@v2
+  #   - name: Set up Python
+  #     uses: actions/setup-python@v2
+  #     with:
+  #       python-version: '3.7'
+  #   - name: Install dependencies
+  #     run: |
+  #       python -m pip install --upgrade pip
+  #       pip install setuptools wheel twine
+  #   - name: Build and publish
+  #     env:
+  #       TWINE_USERNAME: ${{ secrets.PYPI_USERNAME }}
+  #       TWINE_PASSWORD: ${{ secrets.PYPI_PASSWORD }}
+  #     run: |
+  #       python setup.py sdist bdist_wheel
+  #       twine upload dist/*

@@ -24,3 +24,4 @@ rave_python.egg-info/
 staging
 zero
 .coverage
+example.py
