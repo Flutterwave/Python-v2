@@ -21,8 +21,8 @@ jobs:
           PATTERNS: |
             +(documentation)/*.md
             *.md
-          FILES: |
-            CHANGELOG.md
+          # FILES: |
+          #   CHANGELOG.md
       - name: Check if README.md or Doc/** is updated else exit 
         if: (env.GIT_DIFF == '')
         run: |
