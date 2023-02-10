@@ -24,7 +24,7 @@ jobs:
           FILES: |
             CHANGELOG.md
     - name: Check for git diff in source code
-      if: (env.GIT_DIFF != '')
+      if: (env.GIT_DIFF == '')
       run: |
         echo Update documentation files or README.md before push
         exit 1 
