@@ -23,4 +23,4 @@ This release test the deployment flow 0
 ### Test issue
 
 - [FIXED] [0000](https://github.com/Flutterwave/rave-android/pull/274)  Example Commit 0.5
-- [FIXED] [0000](https://github.com/Flutterwave/rave-android/pull/274)  God abeg! another commit again?
+- [FIXED] [0000](https://github.com/Flutterwave/rave-android/pull/274)  God abeg! another commit again? We go again

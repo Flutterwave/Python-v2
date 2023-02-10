@@ -28,7 +28,7 @@ jobs:
       - name: log git diff
         run: |
           echo ${{ env.GIT_DIFF }}
-          echo ${{ env..MATCHED_FILES }}
+          echo ${{ env.MATCHED_FILES }}
           echo ${{ env.GIT_DIFF_FILTERED }}
       - name: Check if README.md or Doc/** is updated else exit 
         if: (env.GIT_DIFF == '')
