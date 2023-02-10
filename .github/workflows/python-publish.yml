@@ -1,8 +1,12 @@
 name: Publish to PyPi 
 
+# on:
+#   release:
+#     types: [created]
+
 on:
-  release:
-    types: [created]
+  push:
+    branches: ['dev']
 
 jobs:
   check-docs-update:
