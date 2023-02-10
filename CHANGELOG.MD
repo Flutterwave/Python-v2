@@ -14,7 +14,7 @@ This release test the deployment flow 1
 
 ### Test issue
 
-- [FIXED] [0003](https://github.com/Flutterwave/rave-android/pull/274)  Example Commit
+- [FIXED] [0003](https://github.com/Flutterwave/rave-android/pull/274)  Bro rest.
 
 ## 0.0.0 | 2023-02-01
 
@@ -22,4 +22,5 @@ This release test the deployment flow 0
 
 ### Test issue
 
-- [FIXED] [0000](https://github.com/Flutterwave/rave-android/pull/274)  Example Commit 0
+- [FIXED] [0000](https://github.com/Flutterwave/rave-android/pull/274)  Example Commit 0.5
+- [FIXED] [0000](https://github.com/Flutterwave/rave-android/pull/274)  God abeg! another commit again?
