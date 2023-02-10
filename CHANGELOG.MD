@@ -14,7 +14,7 @@ This release test the deployment flow 1
 
 ### Test issue
 
-- [FIXED] [0003](https://github.com/Flutterwave/rave-android/pull/274)  Bro rest.
+- [FIXED] [0003](https://github.com/Flutterwave/rave-android/pull/274)  Bro rest. You fit sleep
 
 ## 0.0.0 | 2023-02-01
 
