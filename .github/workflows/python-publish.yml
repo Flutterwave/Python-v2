@@ -11,23 +11,19 @@ jobs:
       OS: ubuntu-latest
       PYTHON: '3.7'
     steps:
-    - uses: actions/checkout@v2
-    
-    - name: Check for changes in .md files
-      if: 
-        github.ref == 'refs/heads/dev'
-      uses: technote-space/get-diff-action@v6
-      with:
+      - uses: actions/checkout@v2
+      - uses: technote-space/get-diff-action@v6
+        with:
           PATTERNS: |
             +(documentation)/*.md
             *.md
           FILES: |
             CHANGELOG.md
-    - name: Check for git diff in source code
-      if: (env.GIT_DIFF == '')
-      run: |
-        echo Update documentation files or README.md before push
-        exit 1 
+      - name: Check if README.md or Doc/** is updated else exit 
+        if: (env.GIT_DIFF == '')
+        run: |
+         echo Update documentation files or README.md before push
+         exit 1 
     
 
   # distribute:
