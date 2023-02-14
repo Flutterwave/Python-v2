@@ -1,12 +1,8 @@
 name: Publish to PyPi 
 
-# on:
-#   release:
-#     types: [created]
-
 on:
-  push:
-    branches: ['dev']
+  release:
+    types: [created]
 
 jobs:
   check-docs-update:
@@ -47,36 +43,36 @@ jobs:
         if: always()
     
 
-  # distribute:
-  #   runs-on: ubuntu-latest
-  #   env:
-  #     OS: ubuntu-latest
-  #     PYTHON: '3.7'
-  #   steps:
-  #   - uses: actions/checkout@v2
-  #   - name: Set up Python
-  #     uses: actions/setup-python@v2
-  #     with:
-  #       python-version: '3.7'
+  distribute:
+    runs-on: ubuntu-latest
+    env:
+      OS: ubuntu-latest
+      PYTHON: '3.7'
+    steps:
+    - uses: actions/checkout@v2
+    - name: Set up Python
+      uses: actions/setup-python@v2
+      with:
+        python-version: '3.7'
 
-  #   - name: Install dependencies
-  #     run: |
-  #       python -m pip install --upgrade pip
-  #       pip install setuptools wheel twine
+    - name: Install dependencies
+      run: |
+        python -m pip install --upgrade pip
+        pip install setuptools wheel twine
 
-  #   - name: Build and publish
-  #     env:
-  #       TWINE_USERNAME: ${{ secrets.PYPI_USERNAME }}
-  #       TWINE_PASSWORD: ${{ secrets.PYPI_PASSWORD }}
-  #     run: |
-  #       python setup.py sdist bdist_wheel
-  #       twine upload dist/*
+    - name: Build and publish
+      env:
+        TWINE_USERNAME: ${{ secrets.PYPI_USERNAME }}
+        TWINE_PASSWORD: ${{ secrets.PYPI_PASSWORD }}
+      run: |
+        python setup.py sdist bdist_wheel
+        twine upload dist/*
 
-  #   - name: push build status to Slack
-  #     uses: 8398a7/action-slack@v3
-  #     with:
-  #       status: ${{ job.status }}
-  #       fields: repo,message,commit,author,action,eventName,ref,workflow,job,took,pullRequest
-  #     env:
-  #       SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
-  #     if: always()
+    - name: push build status to Slack
+      uses: 8398a7/action-slack@v3
+      with:
+        status: ${{ job.status }}
+        fields: repo,message,commit,author,action,eventName,ref,workflow,job,took,pullRequest
+      env:
+        SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
+      if: always()
