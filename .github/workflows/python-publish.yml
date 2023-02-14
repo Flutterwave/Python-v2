@@ -1,40 +1,40 @@
-name: Publish to PyPi 
+# name: Publish to PyPi 
+
+# # on:
+# #   release:
+# #     types: [created]
 
 # on:
-#   release:
-#     types: [created]
+#   push:
+#     branches: ['dev']
 
-on:
-  push:
-    branches: ['dev']
-
-jobs:
-  check-docs-update:
-    runs-on: ubuntu-latest 
-    env:
-      OS: ubuntu-latest
-      PYTHON: '3.7'
-    steps:
-      - uses: actions/checkout@v2
-      - uses: technote-space/get-diff-action@v6
-        with:
-          # PATTERNS: |
-          #   +(documentation)/*.md
-          #   *.md
-          FILES: |
-            CHANGELOG.md
-            README.md
-            +(documentation)/*.md
-      - name: log git diff
-        run: |
-          echo ${{ env.GIT_DIFF }}
-          echo ${{ env.MATCHED_FILES }}
-          echo ${{ env.GIT_DIFF_FILTERED }}
-      - name: Check if README.md or Doc/** is updated else exit 
-        if: (env.GIT_DIFF == '')
-        run: |
-         echo Update documentation files or README.md before push
-         exit 1 
+# jobs:
+#   check-docs-update:
+#     runs-on: ubuntu-latest 
+#     env:
+#       OS: ubuntu-latest
+#       PYTHON: '3.7'
+#     steps:
+#       - uses: actions/checkout@v2
+#       - uses: technote-space/get-diff-action@v6
+#         with:
+#           # PATTERNS: |
+#           #   +(documentation)/*.md
+#           #   *.md
+#           FILES: |
+#             CHANGELOG.md
+#             README.md
+#             +(documentation)/*.md
+#       - name: log git diff
+#         run: |
+#           echo ${{ env.GIT_DIFF }}
+#           echo ${{ env.MATCHED_FILES }}
+#           echo ${{ env.GIT_DIFF_FILTERED }}
+#       - name: Check if README.md or Doc/** is updated else exit 
+#         if: (env.GIT_DIFF == '')
+#         run: |
+#          echo Update documentation files or README.md before push
+#          exit 1 
     
 
   # distribute:
