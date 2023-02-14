@@ -8,6 +8,7 @@ This release test the deployment flow
 - [FIXED] [0001](https://github.com/Flutterwave/rave-android/pull/274)  Test rCommit 2
 - [FIXED] [0002](https://github.com/Flutterwave/rave-android/pull/274)  Test Commit 435g7
 - [FIXED] [0002](https://github.com/Flutterwave/rave-android/pull/274)  Test Commit 70002346
+- [ADDED] [0003](https://github.com/Flutterwave/rave-android/pull/274)  Test Commit 0.04
 
 
 ## 0.0.2 | 2023-02-12
