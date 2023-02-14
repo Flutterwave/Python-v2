@@ -18,13 +18,13 @@ jobs:
       - uses: actions/checkout@v2
       - uses: technote-space/get-diff-action@v6
         with:
-          # PATTERNS: |
-          #   +(documentation)/*.md
-          #   *.md
-          FILES: |
-            CHANGELOG.md
-            README.md
+          PATTERNS: |
             +(documentation)/*.md
+            CHANGE*.md
+          # FILES: |
+          #   CHANGELOG.md
+          #   README.md
+          #   +(documentation)/*.md
 
       - name: log git diff
         run: |
