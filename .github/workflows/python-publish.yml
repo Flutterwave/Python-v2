@@ -1,40 +1,51 @@
-# name: Publish to PyPi 
-
-# # on:
-# #   release:
-# #     types: [created]
+name: Publish to PyPi 
 
 # on:
-#   push:
-#     branches: ['dev']
+#   release:
+#     types: [created]
 
-# jobs:
-#   check-docs-update:
-#     runs-on: ubuntu-latest 
-#     env:
-#       OS: ubuntu-latest
-#       PYTHON: '3.7'
-#     steps:
-#       - uses: actions/checkout@v2
-#       - uses: technote-space/get-diff-action@v6
-#         with:
-#           # PATTERNS: |
-#           #   +(documentation)/*.md
-#           #   *.md
-#           FILES: |
-#             CHANGELOG.md
-#             README.md
-#             +(documentation)/*.md
-#       - name: log git diff
-#         run: |
-#           echo ${{ env.GIT_DIFF }}
-#           echo ${{ env.MATCHED_FILES }}
-#           echo ${{ env.GIT_DIFF_FILTERED }}
-#       - name: Check if README.md or Doc/** is updated else exit 
-#         if: (env.GIT_DIFF == '')
-#         run: |
-#          echo Update documentation files or README.md before push
-#          exit 1 
+on:
+  push:
+    branches: ['dev']
+
+jobs:
+  check-docs-update:
+    runs-on: ubuntu-latest 
+    env:
+      OS: ubuntu-latest
+      PYTHON: '3.7'
+    steps:
+      - uses: actions/checkout@v2
+      - uses: technote-space/get-diff-action@v6
+        with:
+          # PATTERNS: |
+          #   +(documentation)/*.md
+          #   *.md
+          FILES: |
+            CHANGELOG.md
+            README.md
+            +(documentation)/*.md
+
+      - name: log git diff
+        run: |
+          echo ${{ env.GIT_DIFF }}
+          echo ${{ env.MATCHED_FILES }}
+          echo ${{ env.GIT_DIFF_FILTERED }}
+
+      - name: Check if README.md or Doc/** is updated else exit 
+        if: (env.GIT_DIFF == '')
+        run: |
+         echo Update documentation files or README.md before push
+         exit 1
+
+      - name: push build status to Slack
+        uses: 8398a7/action-slack@v3
+        with:
+          status: ${{ job.status }}
+          fields: repo,message,commit,author,action,eventName,ref,workflow,job,took,pullRequest
+        env:
+          SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
+        if: always()
     
 
   # distribute:
@@ -48,10 +59,12 @@
   #     uses: actions/setup-python@v2
   #     with:
   #       python-version: '3.7'
+
   #   - name: Install dependencies
   #     run: |
   #       python -m pip install --upgrade pip
   #       pip install setuptools wheel twine
+
   #   - name: Build and publish
   #     env:
   #       TWINE_USERNAME: ${{ secrets.PYPI_USERNAME }}
@@ -59,3 +72,12 @@
   #     run: |
   #       python setup.py sdist bdist_wheel
   #       twine upload dist/*
+
+  #   - name: push build status to Slack
+  #     uses: 8398a7/action-slack@v3
+  #     with:
+  #       status: ${{ job.status }}
+  #       fields: repo,message,commit,author,action,eventName,ref,workflow,job,took,pullRequest
+  #     env:
+  #       SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
+  #     if: always()

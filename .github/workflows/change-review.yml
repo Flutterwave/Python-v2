@@ -36,7 +36,7 @@ jobs:
     - name: upload coverage report to codecov
       uses: codecov/codecov-action@v2
 
-    - name: push build status as webhook to Slack
+    - name: push build status to Slack
       uses: 8398a7/action-slack@v3
       with:
         status: ${{ job.status }}
