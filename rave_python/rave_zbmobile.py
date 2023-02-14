@@ -1,14 +1,22 @@
 from rave_python.rave_payment import Payment
 from rave_python.rave_misc import generateTransactionReference
-import json, requests
+import json
+import requests
+
 
 class ZBMobile(Payment):
-    
-    def __init__(self, publicKey, secretKey, production, usingEnv):
-        super(ZBMobile, self).__init__(publicKey, secretKey, production, usingEnv)
 
+    def __init__(self, publicKey, secretKey, production, usingEnv):
+        super(
+            ZBMobile,
+            self).__init__(
+            publicKey,
+            secretKey,
+            production,
+            usingEnv)
 
     # Charge mobile money function
+
     def charge(self, accountDetails, hasFailed=False):
         """ This is the ghMobile charge call.
              Parameters include:\n
@@ -17,21 +25,36 @@ class ZBMobile(Payment):
         """
         feature_name = "Zambia-MoMo-charge"
         endpoint = self._baseUrl + self._endpointMap["account"]["charge"]
-        
+
         # It is faster to add boilerplate than to check if each one is present
-        accountDetails.update({"payment_type": "mobilemoneyzambia", "country":"NG", "is_mobile_money_ug":"1", "currency":"ZMW"})
-        
-        # If transaction reference is not set 
+        accountDetails.update({"payment_type": "mobilemoneyzambia",
+                               "country": "NG",
+                               "is_mobile_money_ug": "1",
+                               "currency": "ZMW"})
+
+        # If transaction reference is not set
         if not ("txRef" in accountDetails):
             accountDetails.update({"txRef": generateTransactionReference()})
-        
+
         # If order reference is not set
         if not ("orderRef" in accountDetails):
             accountDetails.update({"orderRef": generateTransactionReference()})
-        
+
         # Checking for required account components
-        requiredParameters = ["amount", "email", "phonenumber", "network", "IP", "redirect_url"]
-        return super(ZBMobile, self).charge(feature_name, accountDetails, requiredParameters, endpoint)
+        requiredParameters = [
+            "amount",
+            "email",
+            "phonenumber",
+            "network",
+            "IP",
+            "redirect_url"]
+        return super(
+            ZBMobile,
+            self).charge(
+            feature_name,
+            accountDetails,
+            requiredParameters,
+            endpoint)
 
     def refund(self, flwRef, amount):
         feature_name = "Zambia-MoMo-refund"
