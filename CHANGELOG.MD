@@ -20,6 +20,7 @@ This release test the deployment flow
 - [FIXED] [0003](https://github.com/Flutterwave/rave-android/pull/274)  Test Commit
 - [FIXED] [0001](https://github.com/Flutterwave/rave-android/pull/274)  Test rCommit 2
 - [FIXED] [0002](https://github.com/Flutterwave/rave-android/pull/274)  Test Commit 4000
+- [ADDED] [00030](https://github.com/Flutterwave/rave-android/pull/274)  Test Commit 0.01
 
 ## 0.0.1 | 2023-02-05
 
@@ -28,6 +29,7 @@ This release test the deployment flow 1
 ### Test issue
 
 - [FIXED] [0003](https://github.com/Flutterwave/rave-android/pull/274)  Bro rest. You fit sleep
+- [ADDED] [00023](https://github.com/Flutterwave/rave-android/pull/274)  Test Commit 0.056
 
 ## 0.0.0 | 2023-02-01
 

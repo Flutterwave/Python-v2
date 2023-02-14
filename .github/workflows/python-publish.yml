@@ -20,12 +20,10 @@ jobs:
         with:
           PATTERNS: |
             +(documentation)/*.md
+            *.md
             CHANGE*.md
-            READ*.md
-          # FILES: |
-          #   CHANGELOG.md
-          #   README.md
-          #   +(documentation)/*.md
+          FILES: |
+            CHANGELOG.md
 
       - name: log git diff
         run: |
