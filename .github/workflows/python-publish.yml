@@ -1,37 +1,27 @@
-name: Publish to PyPi 
+name: Publish changes to Python library 
 
 on:
   release:
     types: [created]
 
 jobs:
-  check-docs-update:
+  check-readme-and-changelog:
     runs-on: ubuntu-latest 
     env:
       OS: ubuntu-latest
       PYTHON: '3.7'
     steps:
-      - uses: actions/checkout@v2
-      - uses: technote-space/get-diff-action@v6
-        with:
-          PATTERNS: |
-            +(documentation)/*.md
-            *.md
-            CHANGE*.md
-          FILES: |
-            CHANGELOG.md
-
-      - name: log git diff
+      - name: checkout code
+        uses: actions/checkout@v2
+        
+      - name: check for changes in readme and changelog files
         run: |
-          echo ${{ env.GIT_DIFF }}
-          echo ${{ env.MATCHED_FILES }}
-          echo ${{ env.GIT_DIFF_FILTERED }}
-
-      - name: Check if README.md or Doc/** is updated else exit 
-        if: (env.GIT_DIFF == '')
-        run: |
-         echo Update documentation files and README.md before push
-         exit 1
+          if ! git diff --quiet HEAD~ HEAD -- README.md CHANGELOG.md; then
+            echo "README and/or CHANGELOG have been modified. Proceeding with deployment."
+          else
+            echo "README and/or CHANGELOG have not been modified. Terminating deployment."
+            exit 1
+          fi
 
       - name: push build status to Slack
         uses: 8398a7/action-slack@v3
@@ -40,27 +30,31 @@ jobs:
           fields: repo,message,commit,author,action,eventName,ref,workflow,job,took,pullRequest
         env:
           SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
+          MATRIX_CONTEXT: ${{ toJson(matrix) }}
         if: always()
     
 
-  distribute:
+  publish:
+    needs: check-readme-and-changelog
     runs-on: ubuntu-latest
     env:
       OS: ubuntu-latest
       PYTHON: '3.7'
     steps:
-    - uses: actions/checkout@v2
-    - name: Set up Python
+    - name: checkout code
+      uses: actions/checkout@v2
+      
+    - name: Setup python environment
       uses: actions/setup-python@v2
       with:
         python-version: '3.7'
 
-    - name: Install dependencies
+    - name: install python dependencies
       run: |
         python -m pip install --upgrade pip
         pip install setuptools wheel twine
 
-    - name: Build and publish
+    - name: build and publish package
       env:
         TWINE_USERNAME: ${{ secrets.PYPI_USERNAME }}
         TWINE_PASSWORD: ${{ secrets.PYPI_PASSWORD }}
@@ -75,4 +69,5 @@ jobs:
         fields: repo,message,commit,author,action,eventName,ref,workflow,job,took,pullRequest
       env:
         SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
+        MATRIX_CONTEXT: ${{ toJson(matrix) }}
       if: always()
