@@ -416,7 +416,7 @@ This is used to facilitate account transactions. Transactions initiated via this
 ### ```.charge(payload)```
 This is called to start an account transaction. The payload should be a dictionary containing payment information. It should have the parameters:
 
-* ```amount``` (The min amount for NGN account payments is N200), 
+* ```amount``` (The min amount for NGN account payments is N200. For GBP and EUR payments, the min amount is 1), 
 * ```currency``` (This payment option supports NGN, GBP and EUR),  
 * ```email```, 
 * ```firstname```, 
