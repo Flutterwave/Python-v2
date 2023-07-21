@@ -1,6 +1,6 @@
 # Changelog
 
-## 1.3.0 | 2023-07-21
+## 1.4.0 | 2023-07-21
 Updated payment methods.
 ### Version changes.
 - [FIXED] Update "Pay with Bank (NG)" endpoint.
