@@ -91,18 +91,12 @@ class Payment(RaveBase):
 
         return {"json": responseJson, "flwRef": flwRef, "txRef": txRef}
 
-    def _handleChargeResponse(
-            self,
-            response,
-            txRef,
-            request=None,
-            isMpesa=False):
+    def _handleChargeResponse(self,response,txRef,request=None,isMpesa=False):
         """ This handles transaction charge responses """
 
         # If we cannot parse the json, it means there is a server error
         res = self._preliminaryResponseChecks(
             response, TransactionChargeError, txRef=txRef)
-
         responseJson = res["json"]
 
         if isMpesa:
@@ -130,7 +124,6 @@ class Payment(RaveBase):
                         "ts": responseJson["data"]["ts"],
                         "link": responseJson["data"]["link"]
                     }
-
                 return {
                     "error": False,
                     "status": responseJson["status"],
@@ -323,7 +316,7 @@ class Payment(RaveBase):
                     "publicKey": self._getPublicKey(),
                     "language": "Python v2",
                     "version": "1.2.13",
-                    "title": feature_name + "-error",
+                    "title": feature_name + " error",
                     "message": responseTime}
                 tracking_response = requests.post(
                     tracking_endpoint, data=json.dumps(tracking_payload))
