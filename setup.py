@@ -5,7 +5,7 @@ with open("README.md", "r") as fh:
 
 setuptools.setup(
     name="rave_python",
-    version="1.2.16",
+    version="1.3.0",
     author="Flutterwave",
     author_email="developers@flutterwavego.com",
     description="Python library for Flutterwave for Business (F4B) v2 APIs.",

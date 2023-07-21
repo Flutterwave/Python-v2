@@ -7,13 +7,7 @@ import requests
 class GhMobile(Payment):
 
     def __init__(self, publicKey, secretKey, production, usingEnv):
-        super(
-            GhMobile,
-            self).__init__(
-            publicKey,
-            secretKey,
-            production,
-            usingEnv)
+        super(GhMobile, self).__init__(publicKey, secretKey, production, usingEnv)
 
     # Charge mobile money function
 
@@ -25,13 +19,15 @@ class GhMobile(Payment):
         """
 
         endpoint = self._baseUrl + self._endpointMap["account"]["charge"]
-        feature_name = "Ghana-MoMo-charge"
+        feature_name = "GHS Mobile Money Payments"
 
         # It is faster to add boilerplate than to check if each one is present
-        accountDetails.update({"payment_type": "mobilemoneygh",
-                               "country": "GH",
-                               "is_mobile_money_gh": "1",
-                               "currency": "GHS"})
+        accountDetails.update({
+            "payment_type": "mobilemoneygh",
+            "country": "GH",
+            "is_mobile_money_gh": "1",
+            "currency": "GHS"
+            })
 
         # If transaction reference is not set
         if not ("txRef" in accountDetails):
@@ -42,27 +38,16 @@ class GhMobile(Payment):
             accountDetails.update({"orderRef": generateTransactionReference()})
 
         # Checking for required account components
-        requiredParameters = [
-            "amount",
-            "email",
-            "phonenumber",
-            "network",
-            "IP",
-            "redirect_url"]
-        return super(
-            GhMobile,
-            self).charge(
-            feature_name,
-            accountDetails,
-            requiredParameters,
-            endpoint)
+        requiredParameters = ["amount", "email", "phonenumber", "network"]
+        
+        return super(GhMobile, self).charge(feature_name, accountDetails, requiredParameters, endpoint)
 
     def refund(self, flwRef, amount):
-        feature_name = "Ghana-MoMo-refund"
+        feature_name = "GHS Payments Refund"
         endpoint = self._baseUrl + self._endpointMap["refund"]
         return super(GhMobile, self).refund(feature_name, flwRef, amount)
 
     def verify(self, txRef):
-        feature_name = "Ghana-MoMo-verify"
+        feature_name = "Verify GHS Payment"
         endpoint = self._baseUrl + self._endpointMap["verify"]
         return super(GhMobile, self).verify(feature_name, txRef)

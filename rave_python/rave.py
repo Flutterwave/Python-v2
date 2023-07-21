@@ -20,6 +20,9 @@ from rave_python.rave_verify import Verify
 from rave_python.rave_virtualaccount import VirtualAccount
 from rave_python.rave_virtualcard import VirtualCard
 from rave_python.rave_zbmobile import ZBMobile
+from rave_python.rave_banktransfer import BankTransfer
+from rave_python.rave_enaira import Enaira
+from rave_python.rave_tzmobile import TZSMobile
 
 
 class Rave:
@@ -27,8 +30,10 @@ class Rave:
     def __init__(self, publicKey, secretKey, production=False, usingEnv=True):
         """ This is main organizing object. It contains the following:\n
             rave.Account -- For bank account transactions\n
+            rave.BankTransfer -- For pay with bank transfer transaction\n
             rave.Bills -- For Bills payments\n
             rave.Card -- For card transactions\n
+            rave.Enaira -- For enaira wallet payments\n
             rave.Francophone -- For West African Francophone mobile money transactions\n
             rave.GhMobile -- For Ghana mobile money transactions\n
             rave.Mpesa -- For mpesa transactions\n
@@ -37,6 +42,7 @@ class Rave:
             rave.RWMobile -- For Rwanda mobile money transactions\n
             rave.Settlement -- For settled transactions\n
             rave.SubAccount -- For creation of subaccounts for split payment operations\n
+            rave.TZSMobile -- For Tanzania mobile money transactions\n
             rave.Transfer -- For Payouts and transfers\n
             rave.UGMobile -- For Uganda mobile money transactions\n
             rave.Ussd -- For ussd transactions\n
@@ -48,9 +54,11 @@ class Rave:
 
         classes = (
             Account,
+            BankTransfer,
             Bills,
             Card,
             Ebills,
+            Enaira,
             Francophone,
             GhMobile,
             Mpesa,
@@ -62,6 +70,7 @@ class Rave:
             SubAccount,
             Subscriptions,
             Transfer,
+            TZSMobile,
             UGMobile,
             Ussd,
             Verify,

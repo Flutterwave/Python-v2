@@ -4,12 +4,77 @@ SecretKey = "FLWSECK-2c9a2a781e56760b5d9c29c67ec22347-X"
 
 rave = Rave(PublicKey, SecretKey, production=True, usingEnv=False)
 
-accountDetails = {
-    "email": "cornelius.ashley@outlook.com",
-    "seckey": SecretKey,
-    "is_permanent": True,
-    "narration": "Yaovi Test",
-    "bvn": "22169541783",
-    "txRef": "sample1234"
+payload = {
+    "amount": 30,
+    "PBFPubKey": PublicKey,
+    "currency": "NGN",
+    "email": "user@example.com",
+    "meta": [{"metaname": "test", "metavalue": "12383"}],
+    "ip": "123.0.1.3",
+    "firstname": "Flutterwave",
+    "lastname": "Tester",
+    "is_token": False
 }
-print(rave.VirtualAccount.create(accountDetails))
+
+payload_2 = {
+    "currency": "TZS",
+    "country": "TZ",
+    "amount": 1000,
+    "email": "user@example.com",
+    "firstname": "John",
+    "lastname": "Doe",
+    "phonenumber": "255123456789",
+}
+
+payload_3 = {
+  "cardno": "4187451811620618",
+  "cvv": "306",
+  "expirymonth": "05",
+  "expiryyear": "25",
+  "amount": "100",
+  "email": "korneliosyaovi@gmail.com",
+  "phonenumber": "08109328188",
+  "firstname": "Cornelius",
+  "lastname": "Ashley",
+  "IP": "355426087298442",
+  "pin": "7991",
+  "currency": "NGN"
+}
+
+payload_4 = {
+  "token": "flw-t1nf-45a7a6bfbe2fb30a70c1d974d84e31c5-k3n",
+  "amount": "100",
+  "email": "korneliosyaovi@gmail.com",
+  "phonenumber": "08109328188",
+  "firstname": "Cornelius",
+  "lastname": "Ashley",
+  "IP": "355426087298442",
+  "currency": "NGN",
+  "country": "NG"
+}
+
+payload_5 = {
+   "amount": 30,
+    "PBFPubKey": PublicKey,
+    "currency": "NGN",
+    "email": "user@example.com",
+    "meta": [{"metaname": "test", "metavalue": "12383"}],
+    "ip": "123.0.1.3",
+    "firstname": "Flutterwave",
+    "lastname": "Tester",
+}
+
+payload_6 = {
+    "amount": 2,
+    "PBFPubKey": PublicKey,
+    "currency": "GBP",
+    "email": "user@example.com",
+    "meta": [{"metaname": "test", "metavalue": "12383"}],
+    "ip": "123.0.1.3",
+    "firstname": "Flutterwave",
+    "lastname": "Tester"
+}
+
+
+# print(rave.Enaira.charge(payload))
+print(rave.Enaira.charge(payload))

@@ -1,12 +1,12 @@
+from rave_python.rave_payment import Payment
 from rave_python.rave_exceptions import AccountChargeError
 from rave_python.rave_misc import generateTransactionReference
-from rave_python.rave_payment import Payment
 
-class Account(Payment):
-    """ This is the rave object for account transactions. It contains the following public functions:\n
-        .charge -- This is for making an account charge\n
-        .validate -- This is called if further action is required i.e. OTP validation\n
+class Enaira(Payment):
+    """ This is the rave object for eNaira wallet transactions. It contains the following public functions:\n
+        .charge -- This is for charging the eNaira wallet\n
         .verify -- This checks the status of your transaction\n
+        .refunds -- This initiates the refund for the transaction\n
     """
 
     def _handleChargeResponse(self, response, txRef, request=None):
@@ -20,21 +20,27 @@ class Account(Payment):
         response_data = response_json['data']
         flw_ref = response_data['flwRef']
 
-        # If all preliminary checks are passed
         data = {
             'error': False,
             'validationRequired': True,
             'txRef': txRef,
-            'flwRef': flw_ref,
-            'authUrl': None,
+            'flwref': flw_ref
         }
-        if response_data.get("chargeResponseCode") != "00":
-            # If contains authurl
-            data['authUrl'] = response_data.get("authurl")  # None by default
+        
+        if 'qr_image' in response_data:
+            data.update({
+                'validateInstructions': "Please scan the qr image in your eNaira app.",
+                'image': response_data['qr_image']
+                })
         else:
-            data['validateInstructions'] = response_data['validateInstructions']
-        return data
+            data.update({
+                'validateInstructions': response_data['validate_instructions'],
+                'image': None
+                })
 
+        # If all preliminary checks are passed
+        return data
+    
     # Charge account function
     def charge(self, accountDetails, hasFailed=False):
         """ This is the direct account charge call.\n
@@ -45,35 +51,41 @@ class Account(Payment):
 
         # setting the endpoint
         endpoint = self._baseUrl + self._endpointMap['account']['charge']
-        feature_name = "Pay with Bank"
+        feature_name = "eNaira Payments"
 
         # It is faster to just update rather than check if it is already
         # present
-        if accountDetails.get("currency") == "NGN":
-            accountDetails.update({'payment_type': 'account', 'is_mono': '1', 'country': 'NG'})
+
+        if accountDetails.get("is_token") == True:
+            accountDetails.update({'payment_type': 'enaira', 'is_token': True, 'country': 'NG'})
         else:
-            accountDetails.update({'payment_type': 'token_io', 'is_token_io': '1', 'country': 'NG'})
+            accountDetails.update({'payment_type': 'enaira', 'is_qr': True, 'country': 'NG'})
 
         # Generate transaction reference if txRef doesn't exist
         accountDetails.setdefault('txRef', generateTransactionReference())
 
         # Checking for required account components
         requiredParameters = [
-            'currency',
             'amount',
             'email',
             'firstname',
             'lastname'
             ]
 
-        return super(Account, self).charge(feature_name, accountDetails, requiredParameters, endpoint)
+        return super(Enaira, self).charge(feature_name, accountDetails, requiredParameters, endpoint)
 
+    def validate(self, flwRef, otp):
+        endpoint = self._baseUrl + self._endpointMap['account']['validate']
+        feature_name = "Account-charge-validate"
+        return super().validate(feature_name, flwRef, endpoint)
+    
     def verify(self, txRef):
         endpoint = self._baseUrl + self._endpointMap['account']['verify']
-        feature_name = "Verify PWB"
-        return super(Account, self).verify(feature_name, txRef, endpoint)
+        feature_name = "Verify eNaira"
+        return super(Enaira, self).verify(feature_name, txRef, endpoint)
 
     def refund(self, flwRef, amount):
-        feature_name = "Refund PWB"
+        feature_name = "Refund eNaira"
         endpoint = self._baseUrl + self._endpointMap["account"]["refund"]
-        return super(Account, self).refund(feature_name, flwRef, amount)
+        return super(Enaira, self).refund(feature_name, flwRef, amount)
+ 
