@@ -28,7 +28,7 @@ jobs:
     - name: run unit tests and coverage scan
       env:
         PUBLIC_KEY: ${{ secrets.PUBLIC_KEY }}
-        RAVE_SECRET_KEY: ${{ secrets.SECRET_KEY }}
+        SECRET_KEY: ${{ secrets.SECRET_KEY }}
       run: |
         pip install coverage
         coverage run test.py
