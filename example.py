@@ -1,80 +1,204 @@
-from rave_python import Rave, RaveExceptions, Misc
-PublicKey = "FLWPUBK-45587fdb1c84335354ab0fa388b803d5-X"
-SecretKey = "FLWSECK-2c9a2a781e56760b5d9c29c67ec22347-X"
-
-rave = Rave(PublicKey, SecretKey, production=True, usingEnv=False)
-
-payload = {
-    "amount": 30,
-    "PBFPubKey": PublicKey,
-    "currency": "NGN",
-    "email": "user@example.com",
-    "meta": [{"metaname": "test", "metavalue": "12383"}],
-    "ip": "123.0.1.3",
-    "firstname": "Flutterwave",
-    "lastname": "Tester",
-    "is_token": False
+# Raw responses
+apple_pay_refined_response = {
+   "validationRequired":True,
+   "flwref":"IDPC61011692106639837523",
+   "authurl":"https://applepay-pilot.aq2-flutterwave.com?reference=IDPC61011692106639837523",
+   "error":False,
+   "message":"Kindly redirect your user to the authurl. This url is only supported by Safari browsers and Apple Pay enabled devices.",
+   "txRef":"MC-1692104391859"
 }
 
-payload_2 = {
-    "currency": "TZS",
-    "country": "TZ",
-    "amount": 1000,
-    "email": "user@example.com",
-    "firstname": "John",
-    "lastname": "Doe",
-    "phonenumber": "255123456789",
+apple_pay_response = {
+   "status":"success",
+   "message":"V-COMP",
+   "data":{
+      "authModelUsed":"APPLEPAY",
+      "chargeResponseCode":"02",
+      "updatedAt":"2023-08-15T13:37:20.000Z",
+      "currency":"USD",
+      "chargeResponseMessage":"Pending validation",
+      "acctvalrespmsg":"None",
+      "narration":"Flutterwave Developers",
+      "id":4530898,
+      "createdAt":"2023-08-15T13:37:19.000Z",
+      "charge_type":"normal",
+      "device_fingerprint":"N/A",
+      "modalauditid":"3ca612e043c3788fe8b20a4d402d6647",
+      "paymentPlan":"None",
+      "charged_amount":10,
+      "authurl":"https://applepay-pilot.aq2-flutterwave.com?reference=IDPC61011692106639837523",
+      "merchantfee":0,
+      "redirectUrl":"N/A",
+      "deletedAt":"None",
+      "txRef":"MC-1692106637194",
+      "AccountId":20937,
+      "status":"success-pending-validation",
+      "raveRef":"None",
+      "vbvrespmessage":"N/A",
+      "IP":"123.0.1.3",
+      "settlement_token":"None",
+      "orderRef":"URF_1692106639015_36019",
+      "vbvrespcode":"N/A",
+      "appfee":0.38,
+      "merchantbearsfee":1,
+      "cycle":"one-time",
+      "customer":{
+         "email":"user@example.com",
+         "phone":"None",
+         "customertoken":"None",
+         "updatedAt":"2023-08-15T13:37:19.000Z",
+         "deletedAt":"None",
+         "fullName":"Flutterwave Tester",
+         "id":2177862,
+         "createdAt":"2023-08-15T13:37:19.000Z",
+         "AccountId":20937
+      },
+      "retry_attempt":"None",
+      "paymentType":"applepay",
+      "acctvalrespcode":"None",
+      "fraud_status":"ok",
+      "paymentPage":"None",
+      "is_live":0,
+      "flwRef":"IDPC61011692106639837523",
+      "amount":10,
+      "getpaidBatchId":"None",
+      "paymentId":"20937",
+      "customerId":2177862
+   }
 }
 
-payload_3 = {
-  "cardno": "4187451811620618",
-  "cvv": "306",
-  "expirymonth": "05",
-  "expiryyear": "25",
-  "amount": "100",
-  "email": "korneliosyaovi@gmail.com",
-  "phonenumber": "08109328188",
-  "firstname": "Cornelius",
-  "lastname": "Ashley",
-  "IP": "355426087298442",
-  "pin": "7991",
-  "currency": "NGN"
+fawry_pay_refined_response = {
+   "validationRequired":True,
+   "message":"Please make payment with the flwRef returned in the response which should be the same as the reference sent via SMS",
+   "flwRef":"9265503142",
+   "txRef":"MC-1692143784970",
+   "error":False
 }
 
-payload_4 = {
-  "token": "flw-t1nf-45a7a6bfbe2fb30a70c1d974d84e31c5-k3n",
-  "amount": "100",
-  "email": "korneliosyaovi@gmail.com",
-  "phonenumber": "08109328188",
-  "firstname": "Cornelius",
-  "lastname": "Ashley",
-  "IP": "355426087298442",
-  "currency": "NGN",
-  "country": "NG"
+fawry_pay_response = {
+   "status":"success",
+   "message":"V-COMP",
+   "data":{
+      "authModelUsed":"CASH",
+      "chargeResponseCode":"02",
+      "updatedAt":"2023-08-15T23:39:57.000Z",
+      "currency":"EGP",
+      "chargeResponseMessage":"Request is pending",
+      "acctvalrespmsg":"None",
+      "narration":"Flutterwave Developers",
+      "id":4531988,
+      "createdAt":"2023-08-15T23:39:56.000Z",
+      "charge_type":"normal",
+      "device_fingerprint":"N/A",
+      "modalauditid":"7584b58047cc2aec3ef904df01781021",
+      "paymentPlan":"None",
+      "charged_amount":10,
+      "authurl":"N/A",
+      "merchantfee":0,
+      "redirectUrl":"N/A",
+      "deletedAt":"None",
+      "txRef":"MC-1692142795684",
+      "AccountId":20937,
+      "status":"success-pending-validation",
+      "raveRef":"None",
+      "vbvrespmessage":"N/A",
+      "IP":"123.0.1.3",
+      "settlement_token":"None",
+      "orderRef":"URF_FAWRY_1692142796484_104335",
+      "vbvrespcode":"N/A",
+      "appfee":0.23,
+      "merchantbearsfee":1,
+      "cycle":"one-time",
+      "customer":{
+         "email":"user@example.com",
+         "phone":"2348109328188",
+         "customertoken":"None",
+         "updatedAt":"2023-08-15T23:38:12.000Z",
+         "deletedAt":"None",
+         "fullName":"Flutterwave Tester",
+         "id":2178310,
+         "createdAt":"2023-08-15T23:38:12.000Z",
+         "AccountId":20937
+      },
+      "retry_attempt":"None",
+      "paymentType":"fawry_pay",
+      "acctvalrespcode":"None",
+      "fraud_status":"ok",
+      "paymentPage":"None",
+      "is_live":0,
+      "flwRef":"9265567410",
+      "amount":10,
+      "getpaidBatchId":"None",
+      "paymentId":"N/A",
+      "customerId":2178310
+   }
 }
 
-payload_5 = {
-   "amount": 30,
-    "PBFPubKey": PublicKey,
-    "currency": "NGN",
-    "email": "user@example.com",
-    "meta": [{"metaname": "test", "metavalue": "12383"}],
-    "ip": "123.0.1.3",
-    "firstname": "Flutterwave",
-    "lastname": "Tester",
+google_pay_refined_response = {
+   "validationRequired":True,
+   "flwRef":"TGET926516921407133111897",
+   "authurl":"https://ravesandboxapi.flutterwave.com/flwv3-pug/getpaid/api/short-url/GHpqKbFft",
+   "error":False,
+   "message":"Kindly redirect your user to the authurl to complete the payment using their Google Pay Wallets.",
+   "txRef":"MC-1692140395068"
 }
 
-payload_6 = {
-    "amount": 2,
-    "PBFPubKey": PublicKey,
-    "currency": "GBP",
-    "email": "user@example.com",
-    "meta": [{"metaname": "test", "metavalue": "12383"}],
-    "ip": "123.0.1.3",
-    "firstname": "Flutterwave",
-    "lastname": "Tester"
+google_pay_response = {
+   "status":"success",
+   "message":"V-COMP",
+   "data":{
+      "authModelUsed":"GOOGLEPAY_NOAUTH",
+      "chargeResponseCode":"02",
+      "updatedAt":"2023-08-15T23:05:14.000Z",
+      "currency":"USD",
+      "chargeResponseMessage":"Payment token retrieval has been initiated",
+      "acctvalrespmsg":"None",
+      "narration":"GooglePay Transaction FOR Flutterwave Developers",
+      "id":4531868,
+      "createdAt":"2023-08-15T23:05:12.000Z",
+      "charge_type":"normal",
+      "device_fingerprint":"N/A",
+      "modalauditid":"219d04a157cecb0b8eca4ef61cbd5c37",
+      "paymentPlan":"None",
+      "charged_amount":10,
+      "authurl":"https://ravesandboxapi.flutterwave.com/flwv3-pug/getpaid/api/short-url/GHpqKbFft",
+      "merchantfee":0,
+      "redirectUrl":"N/A",
+      "deletedAt":"None",
+      "txRef":"MC-1692140711651",
+      "AccountId":20937,
+      "status":"success-pending-validation",
+      "raveRef":"None",
+      "vbvrespmessage":"N/A",
+      "IP":"123.0.1.3",
+      "settlement_token":"None",
+      "orderRef":"URF_1692140712483_39839",
+      "vbvrespcode":"N/A",
+      "appfee":0.38,
+      "merchantbearsfee":1,
+      "cycle":"one-time",
+      "customer":{
+         "email":"user@example.com",
+         "phone":"None",
+         "customertoken":"None",
+         "updatedAt":"2023-08-15T23:05:12.000Z",
+         "deletedAt":"None",
+         "fullName":"Flutterwave Tester",
+         "id":2178288,
+         "createdAt":"2023-08-15T23:05:12.000Z",
+         "AccountId":20937
+      },
+      "retry_attempt":"None",
+      "paymentType":"googlepay",
+      "acctvalrespcode":"None",
+      "fraud_status":"ok",
+      "paymentPage":"None",
+      "is_live":0,
+      "flwRef":"TGET926516921407133111897",
+      "amount":10,
+      "getpaidBatchId":"None",
+      "paymentId":"N/A",
+      "customerId":2178288
+   }
 }
 
-
-# print(rave.Enaira.charge(payload))
-print(rave.Enaira.charge(payload))

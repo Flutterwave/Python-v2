@@ -6,7 +6,7 @@ class Enaira(Payment):
     """ This is the rave object for eNaira wallet transactions. It contains the following public functions:\n
         .charge -- This is for charging the eNaira wallet\n
         .verify -- This checks the status of your transaction\n
-        .refunds -- This initiates the refund for the transaction\n
+        .refund -- This initiates the refund for the transaction\n
     """
 
     def _handleChargeResponse(self, response, txRef, request=None):

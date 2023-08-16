@@ -47,12 +47,7 @@ class Payment(RaveBase):
             del response_dict[key]
         return response_dict
 
-    def _preliminaryResponseChecks(
-            self,
-            response,
-            TypeOfErrorToRaise,
-            txRef=None,
-            flwRef=None):
+    def _preliminaryResponseChecks(self, response, TypeOfErrorToRaise, txRef=None, flwRef=None):
         preliminary_error_response = copy.deepcopy(response_object)
         preliminary_error_response = Payment.deleteUnnecessaryKeys(
             preliminary_error_response,
@@ -61,14 +56,21 @@ class Payment(RaveBase):
             "vbvmessage",
             "vbvcode",
             "acctmessage",
-            "currency")
+            "currency"
+        )
 
         # Check if we can obtain a json
         try:
             responseJson = response.json()
         except BaseException:
-            raise ServerError({"error": True, "txRef": txRef,
-                              "flwRef": flwRef, "errMsg": response})
+            raise ServerError(
+                {
+                    "error": True,
+                    "txRef": txRef,
+                    "flwRef": flwRef,
+                    "errMsg": response
+                }
+            )
 
         # Check if the response contains data parameter
         if responseJson.get("data", None):
@@ -76,22 +78,36 @@ class Payment(RaveBase):
                 flwRef = responseJson["data"].get("flwRef", None)
             if flwRef:
                 txRef = responseJson["data"].get("txRef", None)
+        
         else:
-            raise TypeOfErrorToRaise({"error": True,
-                                      "txRef": txRef,
-                                      "flwRef": flwRef,
-                                      "errMsg": responseJson.get("message",
-                                                                 "Server is down")})
+            raise TypeOfErrorToRaise(
+                {
+                    "error": True,
+                    "txRef": txRef,
+                    "flwRef": flwRef,
+                    "errMsg": responseJson.get("message","Server is down")
+                }
+            )
 
         # Check if it is returning a 200
         if not response.ok:
             errMsg = responseJson["data"].get("message", None)
             raise TypeOfErrorToRaise(
-                {"error": True, "txRef": txRef, "flwRef": flwRef, "errMsg": errMsg})
+                {
+                    "error": True,
+                    "txRef": txRef,
+                    "flwRef": flwRef,
+                    "errMsg": errMsg
+                }
+            )
 
-        return {"json": responseJson, "flwRef": flwRef, "txRef": txRef}
+        return {
+            "json": responseJson,
+            "flwRef": flwRef,
+            "txRef": txRef
+        }
 
-    def _handleChargeResponse(self,response,txRef,request=None,isMpesa=False):
+    def _handleChargeResponse(self, response, txRef, request=None, isMpesa=False):
         """ This handles transaction charge responses """
 
         # If we cannot parse the json, it means there is a server error
@@ -298,28 +314,28 @@ class Payment(RaveBase):
                 endpoint, headers=headers, data=json.dumps(payload))
 
             # feature logging
-            if response.ok:
-                tracking_endpoint = self._trackingMap
-                responseTime = response.elapsed.total_seconds()
-                tracking_payload = {
-                    "publicKey": self._getPublicKey(),
-                    "language": "Python v2",
-                    "version": "1.2.13",
-                    "title": feature_name,
-                    "message": responseTime}
-                tracking_response = requests.post(
-                    tracking_endpoint, data=json.dumps(tracking_payload))
-            else:
-                tracking_endpoint = self._trackingMap
-                responseTime = response.elapsed.total_seconds()
-                tracking_payload = {
-                    "publicKey": self._getPublicKey(),
-                    "language": "Python v2",
-                    "version": "1.2.13",
-                    "title": feature_name + " error",
-                    "message": responseTime}
-                tracking_response = requests.post(
-                    tracking_endpoint, data=json.dumps(tracking_payload))
+            # if response.ok:
+            #     tracking_endpoint = self._trackingMap
+            #     responseTime = response.elapsed.total_seconds()
+            #     tracking_payload = {
+            #         "publicKey": self._getPublicKey(),
+            #         "language": "Python v2",
+            #         "version": "1.2.13",
+            #         "title": feature_name,
+            #         "message": responseTime}
+            #     tracking_response = requests.post(
+            #         tracking_endpoint, data=json.dumps(tracking_payload))
+            # else:
+            #     tracking_endpoint = self._trackingMap
+            #     responseTime = response.elapsed.total_seconds()
+            #     tracking_payload = {
+            #         "publicKey": self._getPublicKey(),
+            #         "language": "Python v2",
+            #         "version": "1.2.13",
+            #         "title": feature_name + " error",
+            #         "message": responseTime}
+            #     tracking_response = requests.post(
+            #         tracking_endpoint, data=json.dumps(tracking_payload))
 
         if shouldReturnRequest:
             if isMpesa:
