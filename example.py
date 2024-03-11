@@ -1,6 +1,6 @@
 from rave_python import Rave, RaveExceptions, Misc
-PublicKey = "FLWPUBK-45587fdb1c84335354ab0fa388b803d5-X"
-SecretKey = "FLWSECK-2c9a2a781e56760b5d9c29c67ec22347-X"
+PublicKey = "YOUR_PUBLIC_KEY"
+SecretKey = "YOUR_SECRET_KEY"
 
 rave = Rave(PublicKey, SecretKey, production=True, usingEnv=False)
 
