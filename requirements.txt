@@ -1,6 +1,6 @@
 certifi==2023.7.22
 charset-normalizer==2.0.12
-idna==3.3
+idna==3.7
 pycryptodome==3.14.1
 requests==2.32.0
 tomli==2.0.1
