@@ -1,4 +1,9 @@
 # Changelog
+## 1.4.1 | 2024-08-15
+Update Virtual Account.
+## Version changes.
+- [FIXED] Update virtual account creation call.
+- [FIXED] Code clean-up
 
 ## 1.4.0 | 2023-07-21
 Updated payment methods.
