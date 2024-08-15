@@ -416,7 +416,7 @@ This is used to facilitate account transactions. Transactions initiated via this
 ### ```.charge(payload)```
 This is called to start an account transaction. The payload should be a dictionary containing payment information. It should have the parameters:
 
-* ```amount``` (The min amount for NGN account payments is N200), 
+* ```amount``` (The min amount for NGN account payments is N200. For GBP and EUR payments, the min amount is 1), 
 * ```currency``` (This payment option supports NGN, GBP and EUR),  
 * ```email```, 
 * ```firstname```, 
@@ -2693,15 +2693,16 @@ This is used to create virtual account for transfers.
 
 ### ```.create(accountDetails)```
 
-This allows a customer to create a virtual card. It requires a dict ```vcardDetails``` containing ```email```, ```seckey```, ```is_permanant```, ```frequency```, ```duration``` and  ```narration```.
+This allows a customer to create a virtual account. It requires a dict ```vaccountDetails``` containing ```email```, ```seckey```, ```is_permanant```, ```frequency```, ```bvn```, ```duration``` and  ```narration```.
 
 A sample Create call is:
 
 ```py
  res = rave.VirtualAccount.create({
 	"email": "user@example.com",
-	"seckey": "FLWSECK-****************************-X",
-	"is_permanent": true
+	"bvn": "12345678901",
+	"is_permanent": true,
+    "narration": "Cornelius A-O"
 })
 print(res)
 ```
