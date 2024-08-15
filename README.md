@@ -3,7 +3,6 @@
 </p>
 
 # Flutterwave Python Library.
-![Upload Python Package](https://github.com/Flutterwave/rave-python/workflows/Upload%20Python%20Package/badge.svg)
 ![PyPI](https://img.shields.io/pypi/v/rave_python)
 ![PyPI - Downloads](https://img.shields.io/pypi/dm/rave_python)
 ![PyPI - License](https://img.shields.io/pypi/l/rave_python)
@@ -2695,7 +2694,7 @@ This is used to create virtual account for transfers.
 
 This allows a customer to create a virtual account. It requires a dict ```vaccountDetails``` containing ```email```, ```seckey```, ```is_permanant```, ```frequency```, ```bvn```, ```duration``` and  ```narration```.
 
-A sample Create call is:
+Here is an example call:
 
 ```py
  res = rave.VirtualAccount.create({
