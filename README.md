@@ -2693,15 +2693,16 @@ This is used to create virtual account for transfers.
 
 ### ```.create(accountDetails)```
 
-This allows a customer to create a virtual card. It requires a dict ```vcardDetails``` containing ```email```, ```seckey```, ```is_permanant```, ```frequency```, ```duration``` and  ```narration```.
+This allows a customer to create a virtual account. It requires a dict ```vaccountDetails``` containing ```email```, ```seckey```, ```is_permanant```, ```frequency```, ```bvn```, ```duration``` and  ```narration```.
 
 A sample Create call is:
 
 ```py
  res = rave.VirtualAccount.create({
 	"email": "user@example.com",
-	"seckey": "FLWSECK-****************************-X",
-	"is_permanent": true
+	"bvn": "12345678901",
+	"is_permanent": true,
+    "narration": "Cornelius A-O"
 })
 print(res)
 ```

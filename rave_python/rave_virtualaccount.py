@@ -46,45 +46,26 @@ class VirtualAccount(RaveBase):
             response, AccountCreationError, accountDetails["email"])
 
         if responseJson["status"] == "success":
-            return {
+            tempResponse = {
                 "error": False,
                 "id": responseJson["data"].get(
                     "id",
                     None),
                 "data": responseJson["data"]}
+            
+            formattedResponse = json.dumps(tempResponse, ensure_ascii=False)
+            return formattedResponse
 
-        else:
-            raise AccountCreationError(
-                {"error": True, "data": responseJson["data"]})
-
-    # def _handleCardStatusRequests(self, type, endpoint, isPostRequest=False, data=None):
-    #     #check if response is a post response
-    #     if isPostRequest:
-    #         response = requests.post(endpoint, headers=self.headers, data=json.dumps(data))
-    #     else:
-    #         response = requests.get(endpoint, headers=self.headers)
-
-    #     #check if it can be parsed to JSON
-    #     try:
-    #         responseJson = response.json()
-    #     except:
-    #         raise ServerError({"error": True, "errMsg": response.text})
-
-    #     if response.ok:
-    #         return {"error": False, "returnedData": responseJson}
-    #     else:
-    #         raise AccountStatusError(type, {"error": True, "returnedData": responseJson })
-
-    # function to create a virtual card
-    # Params: cardDetails - a dict containing email, is_permanent, frequency,
-    # duration, narration
+    # function to create a virtual account
+    # Params: accountDetails - a dict containing email, is_permanent, frequency,
+    # duration, narration and BVN.
 
     def create(self, accountDetails):
 
         # feature logic
         accountDetails = copy.copy(accountDetails)
         accountDetails.update({"seckey": self._getSecretKey()})
-        requiredParameters = ["email", "narration"]
+        requiredParameters = ["email", "bvn"]
         checkIfParametersAreComplete(requiredParameters, accountDetails)
         endpoint = self._baseUrl + \
             self._endpointMap["virtual_account"]["create"]
@@ -92,6 +73,7 @@ class VirtualAccount(RaveBase):
             endpoint,
             headers=self.headers,
             data=json.dumps(accountDetails))
+        json_response = json.dumps(response.json(), ensure_ascii=False)
 
         # feature logging
         if not response.ok:

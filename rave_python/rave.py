@@ -1,9 +1,12 @@
 from rave_python.rave_account import Account
+from rave_python.rave_applepay import ApplePay
 from rave_python.rave_bills import Bills
 from rave_python.rave_card import Card
 from rave_python.rave_ebills import Ebills
+from rave_python.rave_fawrypay import FawryPay
 from rave_python.rave_francophone import Francophone
 from rave_python.rave_ghmobile import GhMobile
+from rave_python.rave_googlepay import GooglePay
 from rave_python.rave_mpesa import Mpesa
 from rave_python.rave_paymentplan import PaymentPlan
 from rave_python.rave_preauth import Preauth
@@ -30,12 +33,15 @@ class Rave:
     def __init__(self, publicKey, secretKey, production=False, usingEnv=True):
         """ This is main organizing object. It contains the following:\n
             rave.Account -- For bank account transactions\n
+            rave.ApplePay -- For Apple Pay wallet transactions\n
             rave.BankTransfer -- For pay with bank transfer transaction\n
             rave.Bills -- For Bills payments\n
             rave.Card -- For card transactions\n
             rave.Enaira -- For enaira wallet payments\n
+            rave.FawryPay -- For Egyptian collections via Fawry Pay\n
             rave.Francophone -- For West African Francophone mobile money transactions\n
             rave.GhMobile -- For Ghana mobile money transactions\n
+            rave.GooglePay -- For Google Pay wallet transactions\n
             rave.Mpesa -- For mpesa transactions\n
             rave.PaymentPlan -- For payment plan creation and operation\n
             rave.Preauth -- For preauthorized transactions\n
@@ -54,13 +60,16 @@ class Rave:
 
         classes = (
             Account,
+            ApplePay,
             BankTransfer,
             Bills,
             Card,
             Ebills,
             Enaira,
+            FawryPay,
             Francophone,
             GhMobile,
+            GooglePay,
             Mpesa,
             PaymentPlan,
             Preauth,

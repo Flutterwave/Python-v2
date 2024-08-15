@@ -143,8 +143,8 @@ class IncompletePaymentDetailsError(RaveError):
     """ Raised when card details are incomplete """
 
     def __init__(self, value, requiredParameters):
-        msg = "\n\"" + value + "\" was not defined in your dictionary. Please ensure you have supplied the following in the payload: \n " + \
-            '  \n '.join(requiredParameters)
+        msg = "\"" + value + "\" was not defined in your dictionary. Please ensure you have supplied the following in the payload: " + \
+            ', '.join(requiredParameters)
         super(IncompletePaymentDetailsError, self).__init__(msg)
 
 
