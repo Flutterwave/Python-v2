@@ -2,4 +2,4 @@ blank_issues_enabled: false
 contact_links:
   - name: Integration Support
     url: https://flutterwave.com/ng/support/submit-request
-    about: If you need any help using this package, contact our support team.
+    about: For help with this package, contact our support team and select "Integrations" in the support form.
