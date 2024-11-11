@@ -128,9 +128,9 @@ class Payment(RaveBase):
             # if all preliminary tests pass
             if not (
                 responseJson["data"].get(
-                    "chargeResponseCode",
+                    "response_code",
                     None) == "00"):
-                if responseJson.get("message", 'None') == 'Momo initiated':
+                if responseJson.get("response_message", 'None') == 'Momo initiated':
                     return {
                         "error": False,
                         "status": responseJson["status"],
@@ -145,14 +145,14 @@ class Payment(RaveBase):
                     "status": responseJson["status"],
                     "validationRequired": True,
                     "txRef": txRef,
-                    "flwRef": responseJson["data"]["flwRef"],
-                    "chargeResponseMessage": responseJson["data"]["chargeResponseMessage"]}
+                    "flwRef": responseJson["data"]["data"]["flw_reference"],
+                    "chargeResponseMessage": responseJson["data"]["response_message"]}
             else:
                 return {
                     "error": True,
                     "validationRequired": False,
                     "txRef": txRef,
-                    "flwRef": responseJson["data"]["flwRef"]}
+                    "flwRef": responseJson["data"]["data"]["flw_reference"]}
 
     def _handleCaptureResponse(self, response, request=None):
         """ This handles transaction charge responses """

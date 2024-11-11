@@ -26,3 +26,4 @@ zero
 .coverage
 example.py
 randomTester.py
+venv/
