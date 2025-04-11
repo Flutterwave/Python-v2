@@ -10,7 +10,6 @@ from nose.tools import *
 # Local imports
 from rave_python import Rave, RaveExceptions, Misc
 from rave_python.rave_exceptions import *
-from example import *
 
 load_dotenv()
 
