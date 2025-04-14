@@ -2,7 +2,7 @@ name: Security scan on all changes (Commits/PRs)
 
 on:
   push:
-    branches: ['main', 'master', 'pilots', 'dev']
+    branches: ['main', 'master', 'pilot', 'dev']
   pull_request:
     types:
       - opened
