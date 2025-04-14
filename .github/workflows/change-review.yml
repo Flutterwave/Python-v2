@@ -16,7 +16,7 @@ jobs:
     steps:
     - name: checkout code
       uses: actions/checkout@v2
-      
+
     - name: setup python environment
       uses: actions/setup-python@v2
       with:
