@@ -286,12 +286,12 @@ class Transfer(RaveBase):
             "?seckey=" + self._getSecretKey() + '&reference=' + str(reference)
         return self._handleTransferStatusRequests(label, endpoint)
 
-    def all(self):
+    def all(self, page=None):
 
         # feature logic
         label = "List-all-Transfers"
         endpoint = self._baseUrl + \
-            self._endpointMap["transfer"]["fetch"] + "?seckey=" + self._getSecretKey()
+            self._endpointMap["transfer"]["fetch"] + "?seckey=" + self._getSecretKey() + "&page=" + str(page)
         return self._handleTransferStatusRequests(label, endpoint)
 
     def getFee(self, currency=None):
