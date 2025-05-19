@@ -41,8 +41,7 @@ class Francophone(Payment):
             accountDetails.update({"orderRef": generateTransactionReference()})
 
         # Checking for required account components
-        # requiredParameters = ["amount", "email", "phonenumber", "IP", "redirect_url"]
-        requiredParameters = ["amount"]
+        requiredParameters = ["amount", "email", "phonenumber"]
         return super(
             Francophone,
             self).charge(
