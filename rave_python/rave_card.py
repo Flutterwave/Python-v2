@@ -100,6 +100,10 @@ class Card(Payment):
         chargemessage = responseJson["data"]["chargemessage"]
         chargecode = responseJson["data"]["chargecode"]
         currency = responseJson["data"]["currency"]
+        paymenttype = responseJson["data"]["paymenttype"]
+        custname = responseJson["data"]["custname"]
+        custemail = responseJson["data"]["custemail"]
+        custphone = responseJson["data"]["custphone"]
         meta = responseJson["data"]["meta"]
 
         # Check if the call returned something other than a 200
@@ -123,6 +127,10 @@ class Card(Payment):
                 "chargemessage": chargemessage,
                 "chargecode": chargecode,
                 "currency": currency,
+                "paymenttype": paymenttype,
+                "custname": custname,
+                "custemail": custemail,
+                "custphone": custphone,
                 "meta": meta}
 
         else:
@@ -138,6 +146,10 @@ class Card(Payment):
                 "chargemessage": chargemessage,
                 "chargecode": chargecode,
                 "currency": currency,
+                "paymenttype": paymenttype,
+                "custname": custname,
+                "custemail": custemail,
+                "custphone": custphone,
                 "meta": meta}
 
     # Charge card function

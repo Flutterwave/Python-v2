@@ -196,8 +196,8 @@ class Payment(RaveBase):
         responseJson = res["json"]
         # retrieve necessary properties from response
         verify_response["status"] = responseJson['status']
-        verify_response['flwRef'], verify_response["txRef"], verify_response["vbvcode"], verify_response["vbvmessage"], verify_response["acctmessage"], verify_response["currency"], verify_response["chargecode"], verify_response["amount"], verify_response[
-            "chargedamount"], verify_response["chargemessage"], verify_response["meta"] = Payment.retrieve(responseJson['data'], "flwref", "txref", "vbvcode", "vbvmessage", "acctmessage", "currency", "chargecode", "amount", "chargedamount", "chargemessage", "meta")
+        verify_response['flwRef'], verify_response["txRef"], verify_response["vbvcode"], verify_response["vbvmessage"], verify_response["acctmessage"], verify_response["currency"], verify_response["paymenttype"], verify_response["chargecode"], verify_response["amount"], verify_response[
+            "chargedamount"], verify_response["chargemessage"], verify_response["custname"], verify_response["custemail"], verify_response["custphone"], verify_response["meta"] = Payment.retrieve(responseJson['data'], "flwref", "txref", "vbvcode", "vbvmessage", "acctmessage", "currency", "paymenttype", "chargecode", "amount", "chargedamount", "chargemessage", "custname", "custemail", "custphone", "meta")
 
         # Check if the chargecode is 00
         if verify_response['chargecode'] == "00":
