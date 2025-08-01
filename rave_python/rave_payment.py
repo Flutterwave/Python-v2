@@ -145,8 +145,13 @@ class Payment(RaveBase):
                     "status": responseJson["status"],
                     "validationRequired": True,
                     "txRef": txRef,
-                    "flwRef": responseJson["data"]["flwRef"],
-                    "chargeResponseMessage": responseJson["data"]["chargeResponseMessage"]}
+                    "flwRef": responseJson["data"]["data"]["flw_reference"],
+                    "chargeResponseMessage": responseJson["data"]["response_message"],
+                    "redirect": responseJson["data"]["data"]["redirect"],
+                    "type": responseJson["data"]["data"]["type"],
+                    "provider": responseJson["data"]["data"]["provider"]
+                }
+
             else:
                 return {
                     "error": True,
@@ -313,30 +318,6 @@ class Payment(RaveBase):
             response = requests.post(
                 endpoint, headers=headers, data=json.dumps(payload))
 
-            # feature logging
-            # if response.ok:
-            #     tracking_endpoint = self._trackingMap
-            #     responseTime = response.elapsed.total_seconds()
-            #     tracking_payload = {
-            #         "publicKey": self._getPublicKey(),
-            #         "language": "Python v2",
-            #         "version": "1.2.13",
-            #         "title": feature_name,
-            #         "message": responseTime}
-            #     tracking_response = requests.post(
-            #         tracking_endpoint, data=json.dumps(tracking_payload))
-            # else:
-            #     tracking_endpoint = self._trackingMap
-            #     responseTime = response.elapsed.total_seconds()
-            #     tracking_payload = {
-            #         "publicKey": self._getPublicKey(),
-            #         "language": "Python v2",
-            #         "version": "1.2.13",
-            #         "title": feature_name + " error",
-            #         "message": responseTime}
-            #     tracking_response = requests.post(
-            #         tracking_endpoint, data=json.dumps(tracking_payload))
-
         if shouldReturnRequest:
             if isMpesa:
                 return self._handleChargeResponse(
@@ -349,6 +330,9 @@ class Payment(RaveBase):
                     response, paymentDetails["txRef"], paymentDetails, True)
             return self._handleChargeResponse(
                 response, paymentDetails["txRef"])
+
+        # print (paymentDetails, endpoint, headers, json.dumps(payload))
+        # return response.json()
 
     def validate(self, feature_name, flwRef, otp, endpoint=None):
         """ This is the base validate call.\n

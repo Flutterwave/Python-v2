@@ -4,7 +4,6 @@ from rave_python.rave_misc import generateTransactionReference
 import json
 import webbrowser
 
-
 class Francophone(Payment):
 
     def __init__(self, publicKey, secretKey, production, usingEnv):
@@ -30,7 +29,7 @@ class Francophone(Payment):
 
         # It is faster to add boilerplate than to check if each one is present
         accountDetails.update(
-            {"payment_type": "mobilemoneyfrancophone", "is_mobile_money_franco": "1"})
+            {"payment_type": "mobilemoneyfranco", "is_mobile_money_franco": "1"})
 
         # If transaction reference is not set
         if not ("txRef" in accountDetails):
