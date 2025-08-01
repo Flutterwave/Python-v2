@@ -12,10 +12,10 @@ jobs:
     runs-on: ubuntu-latest
     env:
       OS: ubuntu-latest
-      PYTHON: '3.7.3'
+      PYTHON: '3.8'
     steps:
     - name: checkout code
-      uses: actions/checkout@v2
+      uses: actions/checkout@v4
     
 
     - name: Checkmarx One ClI Action

@@ -12,15 +12,15 @@ jobs:
     runs-on: ubuntu-latest
     env:
       OS: ubuntu-latest
-      PYTHON: '3.7.3'
+      PYTHON: '3.8'
     steps:
     - name: checkout code
-      uses: actions/checkout@v2
+      uses: actions/checkout@v4
 
     - name: setup python environment
-      uses: actions/setup-python@v2
+      uses: actions/setup-python@v4
       with:
-        python-version: '3.7.3'
+        python-version: '3.8'
         
     - name: install python dependencies
       run: |
