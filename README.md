@@ -709,7 +709,7 @@ rave = Rave("ENTER_YOUR_PUBLIC_KEY", "ENTER_YOUR_SECRET_KEY", usingEnv = False)
 # mobile payload
 payload = {
   "amount": "50",
-  "email": "",
+  "email": "cornelius@example.com",
   "phonenumber": "054709929220",
   "network": "MTN",
   "redirect_url": "https://rave-webhook.herokuapp.com/receivepayment",
@@ -980,8 +980,8 @@ rave = Rave("ENTER_YOUR_PUBLIC_KEY", "ENTER_YOUR_SECRET_KEY", usingEnv = False)
 # mobile payload
 payload = {
   "amount": "50",
-  "email": "",
-  "phonenumber": "xxxxxxxx",
+  "email": "cornelius@example.com",
+  "phonenumber": "123456789",
   "redirect_url": "https://rave-webhook.herokuapp.com/receivepayment",
   "IP":""
 }
@@ -1232,7 +1232,7 @@ rave = Rave("ENTER_YOUR_PUBLIC_KEY", "ENTER_YOUR_SECRET_KEY", usingEnv = False)
 # mobile payload
 payload = {
   "amount": "50",
-  "email": "",
+  "email": "cornelius@example.com",
   "phonenumber": "054709929220",
   "redirect_url": "https://rave-webhook.herokuapp.com/receivepayment",
   "IP":""
