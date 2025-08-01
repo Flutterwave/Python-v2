@@ -1,4 +1,10 @@
 # Changelog
+## 1.4.2 | 2025-08-01
+Bugfixes and optimizations to Payment classes.
+## Version changes.
+- [FIXED] Response structure for Francophone Mobile Money Payments.
+- [FIXED] Code clean-up
+
 ## 1.4.1 | 2024-08-15
 Update Virtual Account.
 ## Version changes.
