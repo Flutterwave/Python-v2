@@ -9,7 +9,7 @@ jobs:
     runs-on: ubuntu-latest 
     env:
       OS: ubuntu-latest
-      PYTHON: '3.7'
+      PYTHON: '3.7.3'
     steps:
       - name: checkout code
         uses: actions/checkout@v2
@@ -39,7 +39,7 @@ jobs:
     runs-on: ubuntu-latest
     env:
       OS: ubuntu-latest
-      PYTHON: '3.7'
+      PYTHON: '3.7.3'
     steps:
     - name: checkout code
       uses: actions/checkout@v2
@@ -47,7 +47,7 @@ jobs:
     - name: Setup python environment
       uses: actions/setup-python@v2
       with:
-        python-version: '3.7'
+        python-version: '3.7.3'
 
     - name: install python dependencies
       run: |
