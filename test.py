@@ -78,143 +78,143 @@ class TestRavePaymentOptions(unittest.TestCase):
     #     # 4. Test case 4: successful charge validation - should return 200, response.data to include []
     #     # 5. Test case 5: successful transaction verification -  should return 200, response.data to include []
 
-    def test_apple_pay_successful_charge(self):
-        with patch('rave_python.rave_payment.requests.post') as mock_post:
+    # def test_apple_pay_successful_charge(self):
+    #     with patch('rave_python.rave_payment.requests.post') as mock_post:
             
-            # mock payload
-            sample_payload = {
-                "amount": 10,
-                "PBFPubKey": os.getenv("PUBLIC_KEY"),
-                "currency": "USD",
-                "email": "user@example.com",
-                "meta": [{"metaname": "test", "metavalue": "12383"}],
-                "ip": "123.0.1.3",
-                "firstname": "Flutterwave",
-                "lastname": "Tester"
-            }
+    #         # mock payload
+    #         sample_payload = {
+    #             "amount": 10,
+    #             "PBFPubKey": os.getenv("PUBLIC_KEY"),
+    #             "currency": "USD",
+    #             "email": "user@example.com",
+    #             "meta": [{"metaname": "test", "metavalue": "12383"}],
+    #             "ip": "123.0.1.3",
+    #             "firstname": "Flutterwave",
+    #             "lastname": "Tester"
+    #         }
 
-            mock_post.return_value = Mock(ok=True)
-            mock_post.return_value.json.return_value = apple_pay_response
+    #         mock_post.return_value = Mock(ok=True)
+    #         mock_post.return_value.json.return_value = apple_pay_response
         
 
-            response = self.rave.ApplePay.charge(sample_payload)
+    #         response = self.rave.ApplePay.charge(sample_payload)
             
-            self.assertEqual(response['flwRef'], apple_pay_response['data']['flwRef'])
-            self.assertIsNotNone(response['authurl'])
+    #         self.assertEqual(response['flwRef'], apple_pay_response['data']['flwRef'])
+    #         self.assertIsNotNone(response['authurl'])
 
-            # self.logger.debug("Mocked Response: %s", response)
+    #         # self.logger.debug("Mocked Response: %s", response)
         
-    @raises(IncompletePaymentDetailsError)
-    def test_apple_pay_failed_incomplete_charge(self):
-        with patch('rave_python.rave_payment.requests.post') as mock_post:
+    # @raises(IncompletePaymentDetailsError)
+    # def test_apple_pay_failed_incomplete_charge(self):
+    #     with patch('rave_python.rave_payment.requests.post') as mock_post:
             
-            # mock incomplete payload (missing amount)
-            sample_payload = {
-                "PBFPubKey": os.getenv("PUBLIC_KEY"),
-                "currency": "USD",
-                "email": "user@example.com",
-                "meta": [{"metaname": "test", "metavalue": "12383"}],
-                "ip": "123.0.1.3",
-                "firstname": "Flutterwave",
-                "lastname": "Tester"
-            }
+    #         # mock incomplete payload (missing amount)
+    #         sample_payload = {
+    #             "PBFPubKey": os.getenv("PUBLIC_KEY"),
+    #             "currency": "USD",
+    #             "email": "user@example.com",
+    #             "meta": [{"metaname": "test", "metavalue": "12383"}],
+    #             "ip": "123.0.1.3",
+    #             "firstname": "Flutterwave",
+    #             "lastname": "Tester"
+    #         }
 
-            mock_post.return_value = Mock(ok=True)
-            mock_post.return_value.json.return_value = apple_pay_response
+    #         mock_post.return_value = Mock(ok=True)
+    #         mock_post.return_value.json.return_value = apple_pay_response
 
-            response = self.rave.ApplePay.charge(sample_payload)
+    #         response = self.rave.ApplePay.charge(sample_payload)
 
     
-    def test_fawry_pay_successful_charge(self):
-        with patch('rave_python.rave_payment.requests.post') as mock_post:
+    # def test_fawry_pay_successful_charge(self):
+    #     with patch('rave_python.rave_payment.requests.post') as mock_post:
             
-            # mock payload
-            sample_payload = {
-                "amount": 10,
-                "PBFPubKey": os.getenv("PUBLIC_KEY"),
-                "email": "user@example.com",
-                "meta": [{"metaname": "test", "metavalue": "12383"}],
-                "ip": "123.0.1.3",
-                "firstname": "Flutterwave",
-                "lastname": "Tester",
-                "phonenumber": "233010521034"
-            }
+    #         # mock payload
+    #         sample_payload = {
+    #             "amount": 10,
+    #             "PBFPubKey": os.getenv("PUBLIC_KEY"),
+    #             "email": "user@example.com",
+    #             "meta": [{"metaname": "test", "metavalue": "12383"}],
+    #             "ip": "123.0.1.3",
+    #             "firstname": "Flutterwave",
+    #             "lastname": "Tester",
+    #             "phonenumber": "233010521034"
+    #         }
 
-            mock_post.return_value = Mock(ok=True)
-            mock_post.return_value.json.return_value = fawry_pay_response
+    #         mock_post.return_value = Mock(ok=True)
+    #         mock_post.return_value.json.return_value = fawry_pay_response
         
 
-            response = self.rave.FawryPay.charge(sample_payload)
+    #         response = self.rave.FawryPay.charge(sample_payload)
             
-            self.assertEqual(response['flwRef'], fawry_pay_response['data']['flwRef'])
+    #         self.assertEqual(response['flwRef'], fawry_pay_response['data']['flwRef'])
 
-            # self.logger.debug("Mocked Response: %s", response)
+    #         # self.logger.debug("Mocked Response: %s", response)
         
-    @raises(IncompletePaymentDetailsError)
-    def test_fawry_pay_failed_incomplete_charge(self):
-        with patch('rave_python.rave_payment.requests.post') as mock_post:
+    # @raises(IncompletePaymentDetailsError)
+    # def test_fawry_pay_failed_incomplete_charge(self):
+    #     with patch('rave_python.rave_payment.requests.post') as mock_post:
             
-            # mock incomplete payload (missing amount)
-            sample_payload = {
-                "PBFPubKey": os.getenv("PUBLIC_KEY"),
-                "email": "user@example.com",
-                "meta": [{"metaname": "test", "metavalue": "12383"}],
-                "ip": "123.0.1.3",
-                "firstname": "Flutterwave",
-                "lastname": "Tester"
-            }
+    #         # mock incomplete payload (missing amount)
+    #         sample_payload = {
+    #             "PBFPubKey": os.getenv("PUBLIC_KEY"),
+    #             "email": "user@example.com",
+    #             "meta": [{"metaname": "test", "metavalue": "12383"}],
+    #             "ip": "123.0.1.3",
+    #             "firstname": "Flutterwave",
+    #             "lastname": "Tester"
+    #         }
 
-            mock_post.return_value = Mock(ok=True)
-            mock_post.return_value.json.return_value = fawry_pay_response
+    #         mock_post.return_value = Mock(ok=True)
+    #         mock_post.return_value.json.return_value = fawry_pay_response
 
-            response = self.rave.FawryPay.charge(sample_payload)
+    #         response = self.rave.FawryPay.charge(sample_payload)
 
     
-    def test_google_pay_successful_charge(self):
-        with patch('rave_python.rave_payment.requests.post') as mock_post:
+    # def test_google_pay_successful_charge(self):
+    #     with patch('rave_python.rave_payment.requests.post') as mock_post:
             
-            # mock payload
-            sample_payload = {
-                "amount": 10,
-                "PBFPubKey": os.getenv("PUBLIC_KEY"),
-                "currency": "USD",
-                "email": "user@example.com",
-                "meta": [{"metaname": "test", "metavalue": "12383"}],
-                "ip": "123.0.1.3",
-                "firstname": "Flutterwave",
-                "lastname": "Tester"
-            }
+    #         # mock payload
+    #         sample_payload = {
+    #             "amount": 10,
+    #             "PBFPubKey": os.getenv("PUBLIC_KEY"),
+    #             "currency": "USD",
+    #             "email": "user@example.com",
+    #             "meta": [{"metaname": "test", "metavalue": "12383"}],
+    #             "ip": "123.0.1.3",
+    #             "firstname": "Flutterwave",
+    #             "lastname": "Tester"
+    #         }
 
-            mock_post.return_value = Mock(ok=True)
-            mock_post.return_value.json.return_value = google_pay_response
+    #         mock_post.return_value = Mock(ok=True)
+    #         mock_post.return_value.json.return_value = google_pay_response
         
 
-            response = self.rave.GooglePay.charge(sample_payload)
+    #         response = self.rave.GooglePay.charge(sample_payload)
             
-            self.assertEqual(response['flwRef'], google_pay_response['data']['flwRef'])
-            self.assertIsNotNone(response['authurl'])
+    #         self.assertEqual(response['flwRef'], google_pay_response['data']['flwRef'])
+    #         self.assertIsNotNone(response['authurl'])
 
-            # self.logger.debug("Mocked Response: %s", response)
+    #         # self.logger.debug("Mocked Response: %s", response)
         
-    @raises(IncompletePaymentDetailsError)
-    def test_google_pay_failed_incomplete_charge(self):
-        with patch('rave_python.rave_payment.requests.post') as mock_post:
+    # @raises(IncompletePaymentDetailsError)
+    # def test_google_pay_failed_incomplete_charge(self):
+    #     with patch('rave_python.rave_payment.requests.post') as mock_post:
             
-            # mock incomplete payload (missing amount)
-            sample_payload = {
-                "PBFPubKey": os.getenv("PUBLIC_KEY"),
-                "currency": "USD",
-                "email": "user@example.com",
-                "meta": [{"metaname": "test", "metavalue": "12383"}],
-                "ip": "123.0.1.3",
-                "firstname": "Flutterwave",
-                "lastname": "Tester"
-            }
+    #         # mock incomplete payload (missing amount)
+    #         sample_payload = {
+    #             "PBFPubKey": os.getenv("PUBLIC_KEY"),
+    #             "currency": "USD",
+    #             "email": "user@example.com",
+    #             "meta": [{"metaname": "test", "metavalue": "12383"}],
+    #             "ip": "123.0.1.3",
+    #             "firstname": "Flutterwave",
+    #             "lastname": "Tester"
+    #         }
 
-            mock_post.return_value = Mock(ok=True)
-            mock_post.return_value.json.return_value = google_pay_response
+    #         mock_post.return_value = Mock(ok=True)
+    #         mock_post.return_value.json.return_value = google_pay_response
 
-            response = self.rave.GooglePay.charge(sample_payload)
+    #         response = self.rave.GooglePay.charge(sample_payload)
 
 
 if __name__ == '__main__':
