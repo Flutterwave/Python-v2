@@ -10,7 +10,7 @@
 
 
 ## Introduction
-The Python library provides easy access to Flutterwave for Business (F4B) v2 APIs from Django, Flask, and other Python applicationa. It abstracts the complexity involved in direct integration and allows you to make quick calls to the APIs.
+The Python library provides easy access to Flutterwave for Business (F4B) v2 APIs from Django, Flask, and other Python applications. It abstracts the complexity involved in direct integration, enabling you to make quick calls to the APIs.
 
 Available features include:
 
@@ -22,7 +22,7 @@ Available features include:
 - Transactions dispute management: Refunds.
 - Transaction reporting: Collections, Payouts, Settlements, and Refunds.
 - Bill payments: Airtime, Data bundle, Cable, Power, Toll, E-bills, and Remitta.
-- Identity verification: Resolve bank account, and Resolve BVN information.
+- Identity verification: Resolve bank account, and resolve BVN information.
 
 ## Table of Contents
 1. [Requirements](#requirements)
@@ -37,7 +37,7 @@ Available features include:
 10. [Changelog](#)
 
 ## Requirements
-1. Your Flutterwave[API Keys](https://developer.flutterwave.com/docs/integration-guides/authentication).
+1. Your Flutterwave [API Keys](https://developer.flutterwave.com/docs/integration-guides/authentication).
 2. Supported Python versions: >=2.7, !=3.0.\*, !=3.1.\*, !=3.2.\*, !=3.3.\*, !=3.4.\*.
 
 
@@ -56,38 +56,38 @@ Note: This library is currently under active development.
 ### Import Package
 The base class for this package is 'Rave'. To use this class, add the following import statement:
 
-```py
+``` py
 from rave_python import Rave
 ```
 
 #### To instantiate in sandbox:
-To use Rave, instantiate the Rave class with your public key. It is recommended to store your secret key in an environment variable named, ```RAVE_SECRET_KEY```. Instantiating your Rave object is simple:
+To use Rave, instantiate the Rave class with your public key. It is recommended to store your secret key in an environment variable named `RAVE_SECRET_KEY`. Instantiating your Rave object is simple:
 
-```py
+``` py
 rave = Rave("YOUR_PUBLIC_KEY")
 ```
 
 ####  To instantiate without environment variables (Sandbox):
-If you prefer not to store your secret key in an environment variable, you can set the ```usingEnv``` flag to ```False```. However, please be aware that it is highly discouraged to use this package without environment variables in a production environment:
+If you prefer not to store your secret key in an environment variable, you can set the `usingEnv` flag to `False`. However, please be aware that it is highly discouraged to use this package without environment variables in a production environment:
 
-```py
+``` py
 rave = Rave("YOUR_PUBLIC_KEY", "YOUR_SECRET_KEY", usingEnv = False)
 ```
 
 
 #### To instantiate in production:
-To initialize in production, simply set the ```production``` flag to ```True```. While it is strongly discouraged to avoid using environment variables, you can do so as shown below:
+To initialize in production, set the `production` flag to `True`. While it is strongly discouraged to avoid using environment variables, you can do so as shown below:
 
-```py
+``` py
 rave = Rave("YOUR_PUBLIC_KEY", production=True)
 ```
 
 
 
 # Usage
-This sections contains documentation for all components of the rave_python library.
+This section contains documentation for all components of the rave_python library.
 
-## ```rave.Card```
+## ``` rave.Card```
 This class is used to facilitate card transactions.
 
 **Functions included:**
@@ -131,14 +131,14 @@ This function is used to initiate a card transaction. The payload should be a di
 
 * ```lastname```, 
 
-* ```IP```
+* ```IP```.
 
 Optionally, you can add a custom transaction reference using the ```txRef``` parameter. Note that if you do not provide one, it will be automatically generated. A function for generating transaction references is available in the [Misc library](https://github.com/Flutterwave/rave-python/blob/master/rave_python/rave_misc.py).
 
 
 Here is a sample call:
 
-```py
+``` py
 res = rave.Card.charge(payload)
 ```
 
@@ -146,7 +146,7 @@ res = rave.Card.charge(payload)
 
 This call returns a dictionary. A sample response is shown below:
 
-```py
+``` py
  {
  'validationRequired': True, 
  'suggestedAuth': u'PIN', 
@@ -159,7 +159,7 @@ This call returns a dictionary. A sample response is shown below:
 
 This call raises a ```CardChargeError``` if there is a problem processing your transaction. The ```CardChargeError``` contains information about your transaction. You can handle this error as follows:
 
-```py
+``` py
 try: 
     #Your charge call
 except RaveExceptions.CardChargeError as e:
@@ -169,7 +169,7 @@ except RaveExceptions.CardChargeError as e:
 
 A sample ``` e.err ```response contains:
 
-```py
+``` py
 {
     'error': True, 
     'txRef': 'MC-1530897824739', 
@@ -199,7 +199,7 @@ A typical address dictionary includes the following parameters:
  
 ```billingstate```,
  
-```billingcountry```
+```billingcountry```.
 
 **Note:**
 ```suggestedAuth``` refers to the suggested authentication returned from the initial charge call, while ```payload``` refers to the original payload, and ```res```denotes the response of the charge call.
@@ -210,11 +210,11 @@ A typical address dictionary includes the following parameters:
 
 After a successful charge, you may be required to verify the transaction using OTP. To check if this step is necessary, look for the ```validationRequired``` key in the ```res``` of the charge call.
 
-To validate, you need to pass the ```flwRef``` from the ```res``` of the charge call along with the OTP.
+To validate, you need to pass the ```flwRef``` from the ```res``` of the charge call, along with the OTP.
 
 Here is an example of a validate call: 
 
-```py
+``` py
 res2 = rave.Card.validate(res["flwRef"], "12345")
 ```
 
@@ -226,7 +226,7 @@ If the OTP is incorrect or there’s a problem processing your request, this cal
 
 To handle this exception, write:
 
-```py
+``` py
 try:
     # Your charge call
 except RaveExceptions.TransactionValidationError as e:
@@ -236,7 +236,7 @@ except RaveExceptions.TransactionValidationError as e:
 
 A sample ``` e.err ``` response contains:
 
-```py
+``` py
 {
     'error': True, 
     'txRef': None, 
@@ -253,7 +253,7 @@ You can call this function to check if your transaction has been completed succe
 
 Here is an example of a sample verify call:
 
-```py
+``` py
 res = rave.Card.verify(data["txRef"])
 ```
 
@@ -261,8 +261,8 @@ res = rave.Card.verify(data["txRef"])
 
 This call returns a dictionary object that contains the ```txRef```, ```flwRef```, and ```transactionComplete```, which indicates whether the transaction was completed successfully. 
 
-Here is a sample respone:
-```py
+Here is a sample response:
+``` py
 {
      'flwRef': None,
      'cardToken': u'flw-t1nf-5b0f12d565cd961f73c51370b1340f1f-m03k', 
@@ -299,14 +299,14 @@ This function is called to initiate a card transaction with a saved card. The pa
 
 * ```txRef```, 
 
-* ```currency```
+* ```currency```.
 
 #### NB: The email must be the same as the one used before the card was saved.
-Optionally, you can add a custom transaction reference using the ```txRef``` parameter. If this paramter is not specified, one would be automatically generated. We provide a function for generating transaction references in the [Misc library](https://github.com/Flutterwave/rave-python/blob/master/rave_python/rave_misc.py).
+Optionally, you can add a custom transaction reference using the ```txRef``` parameter. If this parameter is not specified, one would be automatically generated. We provide a function for generating transaction references in the [Misc library](https://github.com/Flutterwave/rave-python/blob/master/rave_python/rave_misc.py).
 
 A sample call is as follows:
 
-```py
+``` py
 res = rave.Card.charge(payload_for_saved_card, chargeWithToken=True)
 ```
 
@@ -314,7 +314,7 @@ res = rave.Card.charge(payload_for_saved_card, chargeWithToken=True)
 
 This call returns a dictionary. A sample response looks like this:
 
- ```py
+ ``` py
  {
     'status': u'success',
     'validationRequired': False, 
@@ -328,7 +328,7 @@ This call returns a dictionary. A sample response looks like this:
 
  This call raises a ```CardChargeError``` if an incorrect token or email is passed or if there is an issue processing your transaction. The ```CardChargeError``` will contain information about the transaction. You can handle this error as follows:
 
-```py
+``` py
 try: 
     #Your charge call
 except RaveExceptions.CardChargeError as e:
@@ -338,16 +338,16 @@ except RaveExceptions.CardChargeError as e:
 
 Additionally, this call raises an ```IncompletePaymentDetailsError``` if any required parameters are missing. The ```IncompletePaymentDetailsError``` will contain information about which parameter was not included in the payload. You can handle this error as follows:
 
-```py
+``` py
 try:
     #Your charge call
 except RaveExceptions.IncompletePaymentDetailsError as e:
     print(e.err["errMsg"])
 ```
 
-Once this is done, call ```rave.Card.verify``` by passing in the ```txRef``` returned in the response to verify the transaction. A sample response looks like this:
+Once this is done, call `rave.Card.verify` by passing in the `txRef` returned in the response to verify the transaction. A sample response looks like this:
 
-```py
+``` py
 {
     'flwRef': None, 
     'cardToken': u'flw-t1nf-5b0f12d565cd961f73c51370b1340f1f-m03k', 
@@ -359,9 +359,9 @@ Once this is done, call ```rave.Card.verify``` by passing in the ```txRef``` ret
 }
 ```
 
-The ```rave.Card.verify``` function raises a ```TransactionVerificationError``` if an invalid ```txRef``` is provided. You can handle this error as follows:
+The`rave.Card.verify` function raises a `TransactionVerificationError` if an invalid `txRef` is provided. You can handle this error as follows:
 
-```py
+``` py
 try: 
     #Your charge call
 except RaveExceptions.CardChargeError as e:
@@ -373,11 +373,11 @@ except RaveExceptions.CardChargeError as e:
 
 ### ```.refund(flwRef, amount)```
 
-You can call this fuction to refund either the full or partial amount of a transaction that was completed successfully. You must provide the `flwRef` generated when verifying the transaction. This `flwRef` can be found in the `res` parameter returned by either the `charge` or `validate` calls.
+You can call this function to refund either the full or partial amount of a transaction that was completed successfully. You must provide the `flwRef` generated when verifying the transaction. This `flwRef` can be found in the `res` parameter returned by either the `charge` or `validate` calls.
 
 A sample verify call is as follows:
 
-```py
+``` py
 res = rave.Card.refund(data["flwRef"], amount)
 ```
 
@@ -386,7 +386,7 @@ res = rave.Card.refund(data["flwRef"], amount)
 This call returns a dictionary with ```status```, ```AmountRefunded```, ```disburse_ref```, and ```disburse_status``` , which indicates whether the transaction was completed successfully. 
 
 A sample response:
-```py
+``` py
 (
     True, 
     {
@@ -401,8 +401,8 @@ A sample response:
         'destination': 'payment_source',
         'meta': 
             '{
-             "source":"ledgerbalance",
-             "uniquereference":"62472228710"
+             "source": "ledgerbalance",
+             "uniquereference": "62472228710"
              }', 
         'updatedAt': '2021-01-23T01:27:11.969Z',
         'createdAt': '2021-01-23T01:27:08.672Z'
@@ -413,7 +413,7 @@ A sample response:
 
 ### Complete card charge flow
 
-```py
+``` py
 from rave_python import Rave, RaveExceptions, Misc
 rave = Rave("YOUR_PUBLIC_KEY", "YOUR_SECRET_KEY", usingEnv = False)
 
@@ -464,7 +464,7 @@ except RaveExceptions.TransactionVerificationError as e:
 ```
 
 <br><br>
-## ```rave.Account```
+## ``` rave.Account ```
 This class is used to facilitate account transactions. Transactions initiated via this method are authorized by the customer on their banking platform.
 
 **Functions included:**
@@ -475,9 +475,9 @@ This class is used to facilitate account transactions. Transactions initiated vi
 <br>
 
 ### ```.charge(payload)```
-This fuction is called to initiate an account transaction. The payload should be a dictionary containing payment information with the following parameters:
+This function is called to initiate an account transaction. The payload should be a dictionary containing payment information with the following parameters:
 
-* ```amount``` : The minimum amount for NGN account payments is N200; For GBP and EUR payments, the minimum amount is 1. 
+* ```amount```: The minimum amount for NGN account payments is N200; For GBP and EUR payments, the minimum amount is 1. 
 * ```currency```: This payment option supports NGN, GBP, and EUR.
 * ```email```, 
 * ```firstname```, 
@@ -485,12 +485,12 @@ This fuction is called to initiate an account transaction. The payload should be
 * ```IP``` (optional),
 * ```redirectUrl``` (optional).
 
-Optionally, you can add a custom transaction reference using the ```txRef``` parameter. If this paramter is not specified, one would be automatically generated. We provide a function for generating transaction references in the [Misc library](https://github.com/Flutterwave/rave-python/blob/master/rave_python/rave_misc.py).
+Optionally, you can add a custom transaction reference using the ```txRef``` parameter. If this parameter is not specified, one will be automatically generated. We provide a function for generating transaction references in the [Misc library](https://github.com/Flutterwave/rave-python/blob/master/rave_python/rave_misc.py).
 
 
 A sample call looks like this:
 
-```py
+``` py
 res = rave.Account.charge(payload)
 ```
 
@@ -498,20 +498,20 @@ res = rave.Account.charge(payload)
 
 This call returns a dictionary. A sample response is shown below:
 
-```py
+``` py
 # sample response for NGN account payments
  {
-   "validationRequired":True,
-   "authUrl":"https://api.ravepay.co/flwv3-pug/getpaid/api/short-url/vHWOLuy89",
-   "flwRef":"XINH44931689941420152189",
-   "txRef":"MC-1689941418883",
-   "error":False
+   "validationRequired": True,
+   "authUrl": "https://api.ravepay.co/flwv3-pug/getpaid/api/short-url/vHWOLuy89",
+   "flwRef": "XINH44931689941420152189",
+   "txRef": "MC-1689941418883",
+   "error": False
 }
 ```
 
- This call raises an ```AccountChargeError``` if there is a problem processing your transaction. The ```AccountChargeError``` contains information about your transaction. You can handle this error as follows:
+ This call raises an `AccountChargeError` if there is a problem processing your transaction. The ```AccountChargeError``` contains information about your transaction. You can handle this error as follows:
 
-```py
+``` py
 try: 
     #Your charge call
 except RaveExceptions.AccountChargeError as e:
@@ -521,7 +521,7 @@ except RaveExceptions.AccountChargeError as e:
 
 A sample ``` e.err ``` contains:
 
-```py
+``` py
 {
     'error': True, 
     'txRef': 'MC-1530897824739', 
@@ -534,11 +534,11 @@ A sample ``` e.err ``` contains:
 
 ### ```.verify(txRef)```
 
-You can call this function to check if your transaction was completed successfully. Pass the transaction reference generated at the time of charging, which is the `txRef` found in the `res` parameter returned by the ```charge```call.
+You can call this function to check if your transaction was completed successfully. Pass the transaction reference generated at the time of charging, which is the `txRef` found in the `res` parameter returned by the `charge` call.
 
 A sample verify call is:
 
-```py
+``` py
 res = rave.Account.verify(data["txRef"])
 ```
 
@@ -548,16 +548,16 @@ This call returns a dictionary containing ```txRef```, ```flwRef```, and ```tran
 
 A sample response looks like this:
 
-```py
+``` py
 {
-   "status":"success",
-   "vbvcode":"57",
-   "chargemessage":"Pending validation",
+   "status": "success",
+   "vbvcode": "57",
+   "chargemessage": "Pending validation",
    "chargedamount":200,
-   "vbvmessage":"transaction was abandoned",
-   "error":True,
-   "flwRef":"XINH44931689941420152189",
-   "currency":"NGN",
+   "vbvmessage": "transaction was abandoned",
+   "error": True,
+   "flwRef" :"XINH44931689941420152189",
+   "currency": "NGN",
    "amount":200,
    "meta":[
       {
@@ -577,8 +577,8 @@ A sample response looks like this:
 }
 ```
 
-If your call was not completed successfully or an incorrect ```txRef``` is passed, a ```TransactionVerificationError``` is raised. You can handle this error as follows:
-```py
+If your call was not completed successfully or an incorrect `txRef` is passed, a `TransactionVerificationError` is raised. You can handle this error as follows:
+``` py
 try: 
     #Your charge call
 except RaveExceptions.TransactionVerificationError as e:
@@ -587,12 +587,12 @@ except RaveExceptions.TransactionVerificationError as e:
 ```
 
 ### ```.refund(flwRef, amount)```
-You can call this fuction to refund either the full or partial amount of a transaction that was completed successfully. You must provide the `flwRef` generated when verifying the transaction. This `flwRef` can be found in the `res` parameter returned by either the `charge` or `validate` calls.
+You can call this function to refund either the full or partial amount of a transaction that was completed successfully. You must provide the `flwRef` generated when verifying the transaction. This `flwRef` can be found in the `res` parameter returned by either the `charge` or `validate` calls.
 
 
 A sample verify call is:
 
-```py
+``` py
 res = rave.Account.refund(data["flwRef"], amount)
 ```
 
@@ -601,7 +601,7 @@ res = rave.Account.refund(data["flwRef"], amount)
 This call returns a dictionary containing ```status```, ```AmountRefunded```, ```disburse_ref``` and ```disburse_status```,  which indicates whether the transaction was completed successfully. 
 
 A sample response:
-```py
+``` py
 (
     True, 
     {
@@ -631,7 +631,7 @@ A sample response:
 
 ### Complete account flow
 
-```py
+``` py
 from rave_python import Rave, RaveExceptions, Misc
 rave = Rave("ENTER_YOUR_PUBLIC_KEY", "ENTER_YOUR_SECRET_KEY", usingEnv = False)
 # account payload
@@ -707,7 +707,7 @@ Optionally, you can add a custom transaction reference using the `txRef` paramet
 
 A sample call is:
 
-```py
+``` py
 res = rave.GhMobile.charge(payload)
 ```
 
@@ -715,7 +715,7 @@ res = rave.GhMobile.charge(payload)
 
 This call returns a dictionary. A sample response is shown below:
 
-```py
+``` py
 {
     "status": "success",
     "message": "Momo initiated",
@@ -733,7 +733,7 @@ In order to complete the charge process, kindly redirect your customers to the l
 
  This call raises a ```TransactionChargeError``` if there is a problem processing your transaction. The ```TransactionChargeError``` contains information about your transaction. You can handle this error as follows:
 
-```py
+``` py
 try: 
     #Your charge call
 except RaveExceptions.TransactionChargeError as e:
@@ -744,7 +744,7 @@ except RaveExceptions.TransactionChargeError as e:
 
 A sample ``` e.err ``` contains:
 
-```py
+``` py
 {
     'error': True, 
     'txRef': 'MC-1530911537060',
@@ -772,11 +772,11 @@ This call returns a dictionary containing ```txRef```, ```flwRef```, and  ```tra
 If your call was not completed successfully, a ```TransactionVerificationError``` is raised.
 
 ### ```.refund(flwRef, amount)```
-You can call this fuction to refund either the full or partial amount of a transaction that was completed successfully. You must provide the `flwRef` generated when verifying the transaction. This `flwRef` can be found in the `res` parameter returned by either the `charge` or `validate` calls.
+You can call this function to refund either the full or partial amount of a transaction that was completed successfully. You must provide the `flwRef` generated when verifying the transaction. This `flwRef` can be found in the `res` parameter returned by either the `charge` or `validate` calls.
 
 A sample refund call is:
 
-```py
+``` py
 res = rave.GhMobile.refund(data["flwRef"], amount)
 ```
 
@@ -785,7 +785,7 @@ res = rave.GhMobile.refund(data["flwRef"], amount)
 This call returns a dictionary containing ```status```, ```AmountRefunded```, ```disburse_ref``` and ```disburse_status```, which indicates whether the transaction was completed successfully. 
 
 A sample response:
-```py
+``` py
 (
     True, 
     {
@@ -814,7 +814,7 @@ A sample response:
 
 ### Complete GhMobile charge flow
 
-```py
+``` py
 from rave_python import Rave, RaveExceptions, Misc
 rave = Rave("ENTER_YOUR_PUBLIC_KEY", "ENTER_YOUR_SECRET_KEY", usingEnv = False)
 
@@ -845,7 +845,7 @@ except RaveExceptions.TransactionVerificationError as e:
 <br><br>
 
 ## ```rave.Mpesa```
-This class is used to facilitate Mpesa transactions.
+This class is used to facilitate M-Pesa transactions.
 
 **Functions included:**
 
@@ -857,7 +857,7 @@ This class is used to facilitate Mpesa transactions.
 <br>
 
 ### ```.charge(payload)```
-This is called to initiate an Mpesa transaction. The payload should be a dictionary containing payment information with the following parameters:
+This is called to initiate an M-Pesa transaction. The payload should be a dictionary containing payment information with the following parameters:
 
 * ```amount```, 
 
@@ -872,7 +872,7 @@ Optionally, you can add a custom transaction reference using the ```txRef``` par
 
 A sample call is:
 
-```py
+``` py
 res = rave.Mpesa.charge(payload)
 ```
 
@@ -880,7 +880,7 @@ res = rave.Mpesa.charge(payload)
 
 This call returns a dictionary. A sample response looks like this:
 
-```py
+``` py
 {
     'error': False, 
     'validationRequired': True, 
@@ -891,7 +891,7 @@ This call returns a dictionary. A sample response looks like this:
 
  This call raises a ```TransactionChargeError``` if there is a problem processing your transaction. The ```TransactionChargeError``` contains information about your transaction. You can handle this error as follows:
 
-```py
+``` py
 try: 
     #Your charge call
 except RaveExceptions.TransactionChargeError as e:
@@ -901,7 +901,7 @@ except RaveExceptions.TransactionChargeError as e:
 
 A sample ``` e.err ``` contains:
 
-```py
+``` py
 {
     'error': True, 
     'txRef': 'MC-1530910109929', 
@@ -915,11 +915,11 @@ A sample ``` e.err ``` contains:
 
 ### ```.verify(txRef)```
 
-You can call this fuction to check if your transaction was completed successfully. Pass the transaction reference generated at the time of charging, which is the ```txRef``` in the ```res``` parameter returned by either  the  ```charge``` or ```validate``` calls. 
+You can call this function to check if your transaction was completed successfully. Pass the transaction reference generated at the time of charging, which is the ```txRef``` in the ```res``` parameter returned by either  the  ```charge``` or ```validate``` calls. 
 
 A sample verify call is:
 
-```py
+``` py
 res = rave.Mpesa.verify(data["txRef"])
 ```
 
@@ -932,11 +932,11 @@ If your call was not completed successfully, a ```TransactionVerificationError``
 
 ### ```.refund(flwRef, amount)```
 
-You can call this fuction to refund either the full or partial amount of a transaction that was completed successfully. You must provide the `flwRef` generated when verifying the transaction. This `flwRef` can be found in the `res` parameter returned by either the `charge` or `validate` calls.
+You can call this function to refund either the full or partial amount of a transaction that was completed successfully. You must provide the `flwRef` generated when verifying the transaction. This `flwRef` can be found in the `res` parameter returned by either the `charge` or `validate` calls.
 
 A sample verify call is:
 
-```py
+``` py
 res = rave.Mpesa.refund(data["flwRef"], amount)
 ```
 
@@ -945,7 +945,7 @@ res = rave.Mpesa.refund(data["flwRef"], amount)
 This call returns a dictionary containing ```status```, ```AmountRefunded```, ```disburse_ref``` and ```disburse_status```, which indicates whether the transaction was completed successfully. 
 
 A sample response:
-```py
+``` py
 (
     True,
     {
@@ -974,7 +974,7 @@ A sample response:
 
 ### Complete Mpesa charge flow
 
-```py
+``` py
 from rave_python import Rave, RaveExceptions, Misc
 rave = Rave("ENTER_YOUR_PUBLIC_KEY", "ENTER_YOUR_SECRET_KEY", usingEnv = False)
 
@@ -1016,7 +1016,7 @@ This class is used to facilitate Uganda mobile money transactions.
 <br>
 
 ### ```.charge(payload)```
-This function is called to initiate an Ugandan mobile money transaction. The payload should be a dictionary containing payment information, with the following paramters:
+This function is called to initiate a Ugandan mobile money transaction. The payload should be a dictionary containing payment information, with the following parameters:
 
 * ```amount```,
 
@@ -1033,7 +1033,7 @@ Optionally, you can add a custom transaction reference using the ```txRef``` par
 
 A sample call is:
 
-```py
+``` py
 res = rave.UGMobile.charge(payload)
 ```
 
@@ -1041,7 +1041,7 @@ res = rave.UGMobile.charge(payload)
 
 This call returns a dictionary. A sample response is shown below:
 
-```py
+``` py
 {
     "status": "success",
     "message": "Momo initiated",
@@ -1059,7 +1059,7 @@ In order to complete the charge process, kindly redirect your customers to the l
 
  This call raises a ```TransactionChargeError``` if there is a problem processing your transaction. The ```TransactionChargeError``` contains information about your transaction. You can handle this error as follows:
 
-```py
+``` py
 try: 
     #Your charge call
 except RaveExceptions.TransactionChargeError as e:
@@ -1069,7 +1069,7 @@ except RaveExceptions.TransactionChargeError as e:
 
 A sample ``` e.err ``` contains:
 
-```py
+``` py
 {
     'error': True, 
     'txRef': 'MC-1530911537060', 
@@ -1088,7 +1088,7 @@ You can call this function to check if your transaction was completed successful
 
 A sample verify call is:
 
-```py
+``` py
 res = rave.UGMobile.verify(data["txRef"])
 ```
 
@@ -1101,12 +1101,12 @@ If your call was not completed successfully, a ```TransactionVerificationError``
 
 ### ```.refund(flwRef, amount)```
 
-You can call this fuction to refund either the full or partial amount of a transaction that was completed successfully. You must provide the `flwRef` generated when verifying the transaction. This `flwRef` can be found in the `res` parameter returned by either the `charge` or `validate` calls.
+You can call this function to refund either the full or partial amount of a transaction that was completed successfully. You must provide the `flwRef` generated when verifying the transaction. This `flwRef` can be found in the `res` parameter returned by either the `charge` or `validate` calls.
 
 
 A sample refund call is:
 
-```py
+``` py
 res = rave.UGMobile.refund(data["flwRef"], amount)
 ```
 
@@ -1115,7 +1115,7 @@ res = rave.UGMobile.refund(data["flwRef"], amount)
 This call returns a dictionary containing ```status```, ```AmountRefunded```, ```disburse_ref``` and ```disburse_status```, which indicates whether the transaction was completed successfully. 
 
 A sample response:
-```py
+``` py
 (
     True,
     {
@@ -1186,7 +1186,7 @@ This class is used to facilitate Zambian mobile money transactions.
 <br>
 
 ### ```.charge(payload)```
-This function is called to initiate a Zambian mobile money transaction. The payload should be a dictionary containing payment information with the following paramters:
+This function is called to initiate a Zambian mobile money transaction. The payload should be a dictionary containing payment information with the following parameters:
 
 * ```amount```,
 
@@ -1204,7 +1204,7 @@ Optionally, you can add a custom transaction reference using the `txRef` paramet
 
 A sample call is:
 
-```py
+``` py
 res = rave.ZBMobile.charge(payload)
 ```
 
@@ -1212,7 +1212,7 @@ res = rave.ZBMobile.charge(payload)
 
 This call returns a dictionary. A sample response looks like this:
 
-```py
+``` py
 {
     "status": "success",
     "message": "Momo initiated",
@@ -1229,7 +1229,7 @@ In order to complete the charge process, kindly redirect your customers to the l
 
  This call raises a ```TransactionChargeError``` if there is a problem processing your transaction. The ```TransactionChargeError``` contains information about your transaction. You can handle this error as follows:
 
-```py
+``` py
 try: 
     #Your charge call
 except RaveExceptions.TransactionChargeError as e:
@@ -1239,7 +1239,7 @@ except RaveExceptions.TransactionChargeError as e:
 
 A sample ``` e.err ``` contains:
 
-```py
+``` py
 {
     'error': True, 
     'txRef': 'MC-1530911537060', 
@@ -1257,7 +1257,7 @@ You can call this function to check if your transaction was completed successful
 
 A sample verify call is:
 
-```py
+``` py
 res = rave.ZBMobile.verify(data["txRef"])
 ```
 
@@ -1270,12 +1270,12 @@ If your call was not completed successfully, a ```TransactionVerificationError``
 
 ### ```.refund(flwRef, amount)```
 
-You can call this fuction to refund either the full or partial amount of a transaction that was completed successfully. You must provide the `flwRef` generated when verifying the transaction. This `flwRef` can be found in the `res` parameter returned by either the `charge` or `validate` calls.
+You can call this function to refund either the full or partial amount of a transaction that was completed successfully. You must provide the `flwRef` generated when verifying the transaction. This `flwRef` can be found in the `res` parameter returned by either the `charge` or `validate` calls.
 
 
 A sample refund call is:
 
-```py
+``` py
 res = rave.ZBMobile.refund(data["flwRef"], amount)
 ```
 
@@ -1284,7 +1284,8 @@ res = rave.ZBMobile.refund(data["flwRef"], amount)
 This call returns a dictionary with ```status```, ```AmountRefunded```, ```disburse_ref``` and ```disburse_status```, which indicates whether the transaction was completed successfully. 
 
 A sample response:
-```py
+
+``` py
     (
     True, 
     {
@@ -1309,7 +1310,7 @@ A sample response:
 
 ### Complete ZBMobile charge flow
 
-```py
+``` py
 from rave_python import Rave, RaveExceptions, Misc
 rave = Rave("ENTER_YOUR_PUBLIC_KEY", "ENTER_YOUR_SECRET_KEY", usingEnv = False)
 
@@ -1339,7 +1340,7 @@ except RaveExceptions.TransactionVerificationError as e:
 <br><br>
 
 ## ```rave.Francophone```
-This class is used to facilitate mobile money transactions in Ivory Coast, Senegal, and Mali.
+This class is used to facilitate mobile money transactions in the Ivory Coast, Senegal, and Mali.
 
 **Functions included:**
 
@@ -1793,7 +1794,7 @@ res = rave.BankTransfer.verify(data["txRef"])
 
 #### Returns
 
-This call returns a dictionary containing ```txRef```, ```flwRef``` and ```transactionComplete```, which indicates whether the transaction was completed successfully. 
+This call returns a dictionary containing ```txRef```, ```flwRef```, and ```transactionComplete```, which indicates whether the transaction was completed successfully. 
 
 If your call was not completed successfully, a ```TransactionVerificationError``` is raised.
 
@@ -1921,7 +1922,7 @@ except RaveExceptions.TransactionChargeError as e:
 
 This function is used to capture the funds held in the account. Similar to the validate call, it requires you to pass the ```flwRef``` of the transaction.
 
->Please **NOTE** that the ```flwRef``` must be gotten from the response of the initial charge (i.e after calling ```rave.Preauth.charge(payload)```).
+>Please **NOTE** that the ```flwRef``` must be gotten from the response of the initial charge (i.e, after calling ```rave.Preauth.charge(payload)```).
 
 
 A sample capture call is:
@@ -1961,7 +1962,7 @@ except RaveExceptions.PreauthCaptureError as e:
 
 This function is used to void a preauth transaction. Similar to the validate call, it requires you to pass the ```flwRef```. 
 
->Please **NOTE** that the ```flwRef``` must be gotten from the response of the initial charge (i.e after calling ```rave.Preauth.charge(payload)```).
+>Please **NOTE** that the ```flwRef``` must be gotten from the response of the initial charge (i.e, after calling ```rave.Preauth.charge(payload)```).
 
 
 
@@ -1977,7 +1978,7 @@ rave.Preauth.void(data["flwRef"])
 
 This function is used to refund a preauth transaction. Similar to the validate call, it requires you to pass the ```flwRef```. 
 
->Please **NOTE** that the ```flwRef``` must be gotten from the response of the initial charge (i.e after calling ```rave.Preauth.charge(payload)```).
+>Please **NOTE** that the ```flwRef``` must be gotten from the response of the initial charge (i.e, after calling ```rave.Preauth.charge(payload)```).
 
 
 
@@ -2093,7 +2094,7 @@ This function is used to create a subaccount. It requires a dictionary containin
 
 >business_email: The email address associated with the subaccount business
 
->business_contact: This name of the primary contact person for the subaccount e.g. Richard Hendrix.
+>business_contact: This name of the primary contact person for the subaccount, e.g., Richard Hendrix.
 
 >business_contact_mobile: The mobile number of the business contact.
 
@@ -2167,7 +2168,7 @@ except RaveExceptions..SubaccountCreationError as e:
 
 ### ```.all()```
 
-This function allows you retrieve all created subaccounts. 
+This function allows you to retrieve all created subaccounts. 
 
 A sample call is:
 
@@ -2252,7 +2253,7 @@ except RaveExceptions.PlanStatusError as e:
 
 ### ```.fetch(subaccount_id)```
 
-This function is used to fetch a subaccount. You may choose to pass in a ```subaccount_id```. If you do not pass in a ```subaccount_id```, all subacocunts will be returned.
+This function is used to fetch a subaccount. You may choose to pass in a ```subaccount_id```. If you do not pass in a ```subaccount_id```, all subaccounts will be returned.
 
 >subaccount_id: This is the subaccount ID. It can be obtained from the response returned after creating a subaccount or from the Flutterwave Dashboard.
 
@@ -2503,7 +2504,7 @@ except RaveExceptions.InitiateTransferError as e:
 
 ### ```.fetch(reference=None)```
 
-This function allows you retrieve a single transfer. You may choose not to pass a ```reference```. If you do not provide  a reference, all processed transfers will be returned.
+This function allows you to retrieve a single transfer. You may choose not to pass a ```reference```. If you do not provide  a reference, all processed transfers will be returned.
 
 A sample fetch call is:
 
@@ -2654,9 +2655,9 @@ except RaveExceptions.TransferFetchError as e:
 
 ### ```.getFee(currency)```
 
-This function allows you get transfer rates for all Flutterwave supported currencies. You may choose not to pass in a ```currency```. If you do not pass a ```currency```, the transfer rates for all supported currencies will be returned.
+This function allows you to get transfer rates for all Flutterwave-supported currencies. You may choose not to pass in a ```currency```. If you do not pass a ```currency```, the transfer rates for all supported currencies will be returned.
 
-A sample call to get fee is:
+A sample call to get the fee is:
 
 ```py
 res2 = rave.Transfer.getFee("EUR")
@@ -2870,7 +2871,7 @@ This class is used to initiate and manage subscriptions.
 
 ### ```.all()```
 
-This function allows you retrieve all subscriptions. 
+This function allows you to retrieve all subscriptions. 
 
 A sample call to fetch all subscriptions is:
 
@@ -2915,7 +2916,7 @@ except RaveExceptions.PlanStatusError as e:
 
 ### ```.fetch(subscription_id, subscription_email)```
 
-This function allows you fetch a subscription. You may choose not to pass in a ```subscription_id``` or ```subscription_email```. If neither is provided, all subscriptions will be returned.
+This function allows you to fetch a subscription. You may choose not to pass in a ```subscription_id``` or ```subscription_email```. If neither is provided, all subscriptions will be returned.
 
 >subscription_id: This is the subscription ID.
 
@@ -2991,7 +2992,7 @@ except RaveExceptions.PlanStatusError as e:
 
 This function allows you to activate a subscription.
 
->subscription_id: This is the subscription ID, which can be obtianed from the Flutterwave Dashboard.
+>subscription_id: This is the subscription ID, which can be obtained from the Flutterwave Dashboard.
 
 
 A sample call to activate a subscription is:
@@ -3078,7 +3079,7 @@ every x y (where x is a number and y is the period e.g. every 5 months)
 More information can be found [here](https://flutterwave.com/gb/support/my-account/creating-and-cancelling-payment-plans)
 
 
-**If duration is not passed, any subscribed customer will be charged indefinitely.**
+**If the duration is not passed, any subscribed customer will be charged indefinitely.**
 
 
 A sample call to create a payment plan is:
@@ -3128,7 +3129,7 @@ except RaveExceptions.IncompletePaymentDetailsError as e:
 
 ### ```.all()```
 
-This function allows you retrieve all payment plans. 
+This function allows you to retrieve all payment plans. 
 
 A sample call to retrieve all payment plans is:
 
@@ -3200,7 +3201,7 @@ This function allows you to fetch a specific payment plan. You may choose not to
 
 >plan_name: This is the payment plan name, which can be obtained from the response returned from creating a plan or from the Flutterwave Dashboard.
 
-A sample call to fetch payment plan is:
+A sample call to fetch the payment plan is:
 
 ```py
 res2 = rave.Transfer.fetch(900)
@@ -3252,7 +3253,7 @@ except RaveExceptions.PlanStatusError as e:
 
 ### ```.cancelPlan(plan_id)```
 
-This function allows you cancel a payment plan. You must provide the `plan_id` of the plan you wish to cancel.
+This function allows you to cancel a payment plan. You must provide the `plan_id` of the plan you wish to cancel.
 
 >plan_id: This is the payment plan ID, which can be obtained from the response returned from creating a plan or from the Flutterwave Dashboard.
 
@@ -3410,7 +3411,7 @@ except RaveExceptions.ServerError as e:
 
 ## ```rave.VirtualAccount```
 
-This class is used to create virtual account for transfers.
+This class is used to create a virtual account for transfers.
 
 
 **Functions included:**
@@ -3864,7 +3865,7 @@ This call returns a dictionary. A sample response looks like this:
 
 ### ```.fund()```
 
-This function allows you to to add funds to a card with a given ID. the `card_id`, `currency` and `amount` are passed into the `.fundCard()` method.
+This function allows you to add funds to a card with a given ID. The `card_id`, `currency`, and `amount` are passed into the `.fundCard()` method.
 
 A sample call to fund a card is:
 
@@ -3888,7 +3889,7 @@ This call returns a dictionary. A sample response is shown below:
 
 ### ```.withdraw()```
 
-This function allows you to withdraw funds from a card with a given id. the `card id` and `amount` are passed into the `.Withdraw()` method.
+This function allows you to withdraw funds from a card with a given ID. The `card id` and `amount` are passed into the `.Withdraw()` method.
 
 A sample call is:
 
@@ -3914,7 +3915,7 @@ This call returns a dictionary. A sample response looks like this:
 
 ## Testing
 
-All of the SDK's tests are written using Python's ```unittest``` module. The current test cover the following:
+All of the SDK's tests are written using Python's ```unittest``` module. The current test covers the following:
 
 ```rave.Account```,
 
@@ -3964,6 +3965,6 @@ By contributing to this library, you agree that your contributions will be licen
 Copyright (c) Flutterwave Inc.
 
 ## Test section
-Sample Description for teset file. 
+Sample Description for test file. 
 
 Final test 3 out of 10. Fingers crossed
