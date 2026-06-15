@@ -1,38 +1,35 @@
-import json
-import requests
 import copy
+import json
+
+import requests
+
+from rave_python.errors import HTTP_ERROR_MAP, ErrorCode
 from rave_python.rave_base import RaveBase
+from rave_python.rave_exceptions import AccountCreationError, ServerError
 from rave_python.rave_misc import checkIfParametersAreComplete
-from rave_python.rave_exceptions import ServerError, IncompleteAccountDetailsError, AccountCreationError, AccountStatusError
 
 
 class VirtualAccount(RaveBase):
     def __init__(self, publicKey, secretKey, production, usingEnv):
-        self.headers = {
-            'content-type': 'application/json'
-        }
-        super(
-            VirtualAccount,
-            self).__init__(
-            publicKey,
-            secretKey,
-            production,
-            usingEnv)
+        self.headers = {"content-type": "application/json"}
+        super(VirtualAccount, self).__init__(publicKey, secretKey, production, usingEnv)
 
     def _preliminaryResponseChecks(self, response, TypeOfErrorToRaise, name):
         # check if we can get json
         try:
             responseJson = response.json()
         except BaseException:
-            raise ServerError(
-                {"error": True, "name": name, "errMsg": response})
+            raise ServerError({"error": True, "name": name, "errMsg": response})
 
         # check for data parameter in response
         if not responseJson.get("data", None):
-            raise TypeOfErrorToRaise({"error": True,
-                                      "name": name,
-                                      "errMsg": responseJson.get("message",
-                                                                 "Server is down")})
+            raise TypeOfErrorToRaise(
+                {
+                    "error": True,
+                    "name": name,
+                    "errMsg": responseJson.get("message", "Server is down"),
+                }
+            )
 
         # check for 200 response
         if not response.ok:
@@ -43,16 +40,16 @@ class VirtualAccount(RaveBase):
 
     def _handleCreateResponse(self, response, accountDetails):
         responseJson = self._preliminaryResponseChecks(
-            response, AccountCreationError, accountDetails["email"])
+            response, AccountCreationError, accountDetails["email"]
+        )
 
         if responseJson["status"] == "success":
             tempResponse = {
                 "error": False,
-                "id": responseJson["data"].get(
-                    "id",
-                    None),
-                "data": responseJson["data"]}
-            
+                "id": responseJson["data"].get("id", None),
+                "data": responseJson["data"],
+            }
+
             formattedResponse = json.dumps(tempResponse, ensure_ascii=False)
             return formattedResponse
 
@@ -67,36 +64,21 @@ class VirtualAccount(RaveBase):
         accountDetails.update({"seckey": self._getSecretKey()})
         requiredParameters = ["email", "bvn"]
         checkIfParametersAreComplete(requiredParameters, accountDetails)
-        endpoint = self._baseUrl + \
-            self._endpointMap["virtual_account"]["create"]
-        response = requests.post(
-            endpoint,
-            headers=self.headers,
-            data=json.dumps(accountDetails))
-        json_response = json.dumps(response.json(), ensure_ascii=False)
+        endpoint = self._baseUrl + self._endpointMap["virtual_account"]["create"]
+        self._telemetry.request_sent(
+            endpoint, "POST", accountDetails.get("email", ""), "v2"
+        )
 
-        # feature logging
+        response = requests.post(
+            endpoint, headers=self.headers, data=json.dumps(accountDetails)
+        )
+
         if not response.ok:
-            tracking_endpoint = self._trackingMap
-            responseTime = response.elapsed.total_seconds()
-            tracking_payload = {
-                "publicKey": self._getPublicKey(),
-                "language": "Python v2",
-                "version": "1.2.13",
-                "title": "Create-virtual-account-error",
-                "message": responseTime}
-            tracking_response = requests.post(
-                tracking_endpoint, data=json.dumps(tracking_payload))
-        else:
-            tracking_endpoint = self._trackingMap
-            responseTime = response.elapsed.total_seconds()
-            tracking_payload = {
-                "publicKey": self._getPublicKey(),
-                "language": "Python v2",
-                "version": "1.2.13",
-                "title": "Create-virtual-account",
-                "message": responseTime}
-            tracking_response = requests.post(
-                tracking_endpoint, data=json.dumps(tracking_payload))
+            self._telemetry.error(
+                code=HTTP_ERROR_MAP.get(
+                    response.status_code, ErrorCode.API_SERVER_ERROR
+                ),
+                message=response.text[:100],
+            )
 
         return self._handleCreateResponse(response, accountDetails)

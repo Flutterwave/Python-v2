@@ -1,24 +1,36 @@
-from rave_python.rave_exceptions import RaveError, IncompletePaymentDetailsError, CardChargeError, TransactionVerificationError, ServerError
-from rave_python.rave_payment import Payment
+# ruff: noqa: ERA001, ARG002
+from decimal import Decimal
+from typing import Any
+
+import requests
+
+from rave_python.rave_exceptions import CardChargeError, TransactionVerificationError
 from rave_python.rave_misc import generateTransactionReference
+from rave_python.rave_payment import Payment
 
 
 class Card(Payment):
-    """ This is the rave object for card transactions. It contains the following public functions:\n
-        .charge -- This is for making a card charge\n
-        .validate -- This is called if further action is required i.e. OTP validation\n
-        .verify -- This checks the status of your transaction\n
+    """This is the rave object for card transactions. It contains the following public functions:\n
+    .charge -- This is for making a card charge\n
+    .validate -- This is called if further action is required i.e. OTP validation\n
+    .verify -- This checks the status of your transaction\n
     """
 
-    def __init__(self, publicKey, secretKey, production, usingEnv):
-        super(Card, self).__init__(publicKey, secretKey, production, usingEnv)
+    def __init__(
+        self, publicKey: str, secretKey: str, production: bool, usingEnv: bool
+    ):
+        super().__init__(publicKey, secretKey, production, usingEnv)
 
     # returns true if further action is required, false if it isn't
 
-    def _handleChargeResponse(self, response, txRef, request=None):
-        """ This handles charge responses """
-        res = self._preliminaryResponseChecks(
-            response, CardChargeError, txRef=txRef)
+    def _handleChargeResponse(
+        self,
+        response: requests.Response,
+        txRef: str,
+        request: requests.Request | None = None,
+    ) -> dict[str, Any]:
+        """This handles charge responses"""
+        res = self._preliminaryResponseChecks(response, CardChargeError, txRef=txRef)
 
         responseJson = res["json"]
         flwRef = res["flwRef"]
@@ -40,7 +52,8 @@ class Card(Payment):
                 "txRef": txRef,
                 "flwRef": flwRef,
                 "suggestedAuth": suggestedAuth,
-                "authUrl": authUrl}
+                "authUrl": authUrl,
+            }
         else:
             return {
                 "error": False,
@@ -49,119 +62,142 @@ class Card(Payment):
                 "txRef": txRef,
                 "flwRef": flwRef,
                 "suggestedAuth": None,
-                "authUrl": authUrl}
+                "authUrl": authUrl,
+            }
 
-    def _handleRefundorVoidResponse(self, response, txRef, request=None):
-        """ This handles charge responses """
-        res = self._preliminaryResponseChecks(
-            response, CardChargeError, txRef=txRef)
+    def _handleRefundorVoidResponse(
+        self,
+        response: requests.Response,
+        txRef: str,
+        request: requests.Request | None = None,
+    ) -> dict[str, Any]:
+        """This handles charge responses"""
+        res = self._preliminaryResponseChecks(response, CardChargeError, txRef=txRef)
 
         responseJson = res["json"]
         flwRef = responseJson["data"]["data"]["authorizeId"]
 
         # If all preliminary checks passed
-        if not (
-            responseJson["data"]["data"].get(
-                "responsecode",
-                None) == "RR"):
+        if not (responseJson["data"]["data"].get("responsecode", None) == "RR"):
             # Refund or Void could not be completed
             return {
                 "error": True,
                 "status": responseJson["status"],
                 "message": responseJson["message"],
-                "flwRef": flwRef}
+                "flwRef": flwRef,
+            }
         else:
             return {
                 "error": False,
                 "status": responseJson["status"],
                 "message": responseJson["message"],
-                "flwRef": flwRef}
+                "flwRef": flwRef,
+            }
 
     # This can be altered by implementing classes but this is the default behaviour
     # Returns True and the data if successful
 
-    def _handleVerifyResponse(self, response, txRef):
-        """ This handles all responses from the verify call.\n
-             Parameters include:\n
-            response (dict) -- This is the response Http object returned from the verify call
-         """
-
-        # Checking if there was a server error during the call (in this case
-        # html is returned instead of json)
+    def _handleVerifyResponse(
+        self,
+        response: requests.Response,
+        txRef: str,
+        request: requests.Request | None = None,
+    ) -> dict[str, Any]:
+        """Handle all responses from the card verify call."""
         res = self._preliminaryResponseChecks(
-            response, TransactionVerificationError, txRef=txRef)
+            response, TransactionVerificationError, txRef=txRef
+        )
         responseJson = res["json"]
+        data = responseJson["data"]
+        flw_meta = data.get("flwMeta", {})
 
-        flwRef = responseJson["data"]["flwref"]
-        amount = responseJson["data"]["amount"]
-        chargedamount = responseJson["data"]["chargedamount"]
-        cardToken = responseJson["data"]["card"]["card_tokens"][0]["embedtoken"]
-        vbvmessage = responseJson["data"]["vbvmessage"]
-        chargemessage = responseJson["data"]["chargemessage"]
-        chargecode = responseJson["data"]["chargecode"]
-        currency = responseJson["data"]["currency"]
-        paymenttype = responseJson["data"]["paymenttype"]
-        custname = responseJson["data"]["custname"]
-        custemail = responseJson["data"]["custemail"]
-        custphone = responseJson["data"]["custphone"]
-        meta = responseJson["data"]["meta"]
+        flwRef = data.get("flw_ref")
+        txRef = data.get("tx_ref", txRef)
+        amount = data.get("amount")
+        chargedamount = data.get("charged_amount")
+        currency = data.get("transaction_currency")
+        paymenttype = data.get("payment_entity")
+        appfee = data.get("appfee", 0)
+        meta = data.get("meta")
 
-        # Check if the call returned something other than a 200
+        chargecode = flw_meta.get("chargeResponse") or data.get("chargecode")
+        chargemessage = flw_meta.get("chargeResponseMessage") or data.get(
+            "chargemessage"
+        )
+        vbvcode = flw_meta.get("VBVRESPONSECODE") or data.get("vbvcode")
+        vbvmessage = flw_meta.get("VBVRESPONSEMESSAGE") or data.get("vbvmessage")
+
+        custname = data.get("customer.fullName")
+        custemail = data.get("customer.email")
+        custphone = data.get("customer.phone")
+
+        card = data.get("card", {})
+        card_tokens = card.get("card_tokens", [])
+        cardToken = card_tokens[0].get("embedtoken") if card_tokens else None
+
         if not response.ok:
-            errMsg = responseJson["data"].get(
-                "message", "Your call failed with no response")
+            errMsg = data.get("message", "Your call failed with no response")
             raise TransactionVerificationError(
-                {"error": True, "txRef": txRef, "flwRef": flwRef, "errMsg": errMsg})
+                {"error": True, "txRef": txRef, "flwRef": flwRef, "errMsg": errMsg}
+            )
 
-        # if the chargecode is not 00
-        elif not (responseJson["data"].get("chargecode", None) == "00"):
-            return {
-                "error": False,
-                "transactionComplete": False,
-                "txRef": txRef,
-                "flwRef": flwRef,
-                "amount": amount,
-                "chargedamount": chargedamount,
-                "cardToken": cardToken,
-                "vbvmessage": vbvmessage,
-                "chargemessage": chargemessage,
-                "chargecode": chargecode,
-                "currency": currency,
-                "paymenttype": paymenttype,
-                "custname": custname,
-                "custemail": custemail,
-                "custphone": custphone,
-                "meta": meta}
+        transaction_complete = (
+            responseJson.get("status") == "success"
+            and data.get("status") == "successful"
+            and chargecode == "00"
+        )
 
-        else:
-            return {
-                "error": False,
-                "transactionComplete": True,
-                "txRef": txRef,
-                "flwRef": flwRef,
-                "amount": amount,
-                "chargedamount": chargedamount,
-                "cardToken": cardToken,
-                "vbvmessage": vbvmessage,
-                "chargemessage": chargemessage,
-                "chargecode": chargecode,
-                "currency": currency,
-                "paymenttype": paymenttype,
-                "custname": custname,
-                "custemail": custemail,
-                "custphone": custphone,
-                "meta": meta}
+        if transaction_complete:
+            self._telemetry.transaction(
+                reference=txRef,
+                currency=currency or "",
+                amount=Decimal(str(amount or 0)),
+                fee=Decimal(str(appfee or 0)),
+                method=paymenttype or "card",
+            )
+
+        # logging.getLogger("rave_python.card").debug(
+        #     "[card verify] status=%s data.status=%s chargecode=%s",
+        #     responseJson.get("status"),
+        #     data.get("status"),
+        #     flw_meta.get("chargeResponse"),
+        # )
+
+        return {
+            "error": not transaction_complete,
+            "transactionComplete": transaction_complete,
+            "txRef": txRef,
+            "flwRef": flwRef,
+            "amount": amount,
+            "chargedamount": chargedamount,
+            "cardToken": cardToken,
+            "vbvcode": vbvcode,
+            "vbvmessage": vbvmessage,
+            "chargemessage": chargemessage,
+            "chargecode": chargecode,
+            "currency": currency,
+            "paymenttype": paymenttype,
+            "appfee": appfee,
+            "custname": custname,
+            "custemail": custemail,
+            "custphone": custphone,
+            "meta": meta,
+        }
 
     # Charge card function
 
-    def charge(self, cardDetails, hasFailed=False, chargeWithToken=False):
-        """ This is called to initiate the charge process.\n
-             Parameters include:\n
-            cardDetails (dict) -- This is a dictionary comprising payload parameters.\n
-            hasFailed (bool) -- This indicates whether the request had previously failed for timeout handling
+    def charge(
+        self,
+        cardDetails: dict[str, Any],
+        hasFailed: bool = False,
+        chargeWithToken: bool = False,
+    ) -> dict[str, Any]:
+        """This is called to initiate the charge process.\n
+         Parameters include:\n
+        cardDetails (dict) -- This is a dictionary comprising payload parameters.\n
+        hasFailed (bool) -- This indicates whether the request had previously failed for timeout handling
         """
         # setting the endpoint
-        feature_name = "Initiate-Card-charge"
         if not chargeWithToken:
             endpoint = self._baseUrl + self._endpointMap["card"]["charge"]
             requiredParameters = [
@@ -170,15 +206,14 @@ class Card(Payment):
                 "expirymonth",
                 "expiryyear",
                 "amount",
-                "email"]
+                "email",
+            ]
             # optionalParameters = ["phonenumber", "firstname", "lastname"]
         else:
-            if "charge_type" in cardDetails and cardDetails["charge_type"] == 'preauth':
-                endpoint = self._baseUrl + \
-                    self._endpointMap["preauth"]["charge"]
+            if "charge_type" in cardDetails and cardDetails["charge_type"] == "preauth":
+                endpoint = self._baseUrl + self._endpointMap["preauth"]["charge"]
             else:
-                endpoint = self._baseUrl + \
-                    self._endpointMap["card"]["chargeSavedCard"]
+                endpoint = self._baseUrl + self._endpointMap["card"]["chargeSavedCard"]
 
             requiredParameters = [
                 "currency",
@@ -186,34 +221,27 @@ class Card(Payment):
                 "country",
                 "amount",
                 "email",
-                "txRef"]
+                "txRef",
+            ]
             # optionalParameters = ["firstname", "lastname"]
             # add token to requiredParameters
             # requiredParameters.append("token")
 
-        if not ("txRef" in cardDetails):
+        if "txRef" not in cardDetails:
             cardDetails.update({"txRef": generateTransactionReference()})
 
-        return super(
-            Card,
-            self).charge(
-            feature_name,
-            cardDetails,
-            requiredParameters,
-            endpoint)
+        return super().charge(cardDetails, requiredParameters, endpoint)
 
-    def validate(self, flwRef, otp):
-        feature_name = "Validate-Card-charge"
+    def validate(self, flwRef: str, otp: str) -> dict[str, Any]:
         endpoint = self._baseUrl + self._endpointMap["card"]["validate"]
-        return super(Card, self).validate(feature_name, flwRef, otp, endpoint)
+        return super().validate(flwRef, otp, endpoint)
 
-    def verify(self, txRef):
-        feature_name = "Verify-Card-charge"
+    def verify(self, txRef: str, endpoint: str | None = None) -> dict[str, Any]:
         endpoint = self._baseUrl + self._endpointMap["card"]["verify"]
-        return super(Card, self).verify(feature_name, txRef, endpoint)
+        return super().verify(txRef, endpoint)
 
-    def refund(self, flwRef, amount):
-        feature_name = "Card-refund"
+    def refund(
+        self, flwRef: str, amount: Decimal
+    ) -> tuple[bool, dict[str, Any]] | None:
         endpoint = self._baseUrl + self._endpointMap["card"]["refund"]
-        return super(Card, self).refund(feature_name, flwRef, amount)
-
+        return super().refund(flwRef, amount, endpoint)

@@ -1,98 +1,115 @@
-import requests
-import json
 import copy
+import json
+
+import requests
+
+from rave_python.errors import HTTP_ERROR_MAP, ErrorCode
 from rave_python.rave_base import RaveBase
-from rave_python.rave_misc import checkIfParametersAreComplete, generateTransactionReference, checkTransferParameters
-from rave_python.rave_exceptions import InitiateTransferError, ServerError, TransferFetchError, IncompletePaymentDetailsError
+from rave_python.rave_exceptions import (
+    IncompletePaymentDetailsError,
+    InitiateTransferError,
+    ServerError,
+    TransferFetchError,
+)
+from rave_python.rave_misc import (
+    checkIfParametersAreComplete,
+    checkTransferParameters,
+    generateTransactionReference,
+)
 
 
 class Transfer(RaveBase):
     def __init__(self, publicKey, secretKey, production, usingEnv):
-        super(
-            Transfer,
-            self).__init__(
-            publicKey,
-            secretKey,
-            production,
-            usingEnv)
+        super(Transfer, self).__init__(publicKey, secretKey, production, usingEnv)
 
-    def _preliminaryResponseChecks(
-            self,
-            response,
-            TypeOfErrorToRaise,
-            reference):
+    def _preliminaryResponseChecks(self, response, TypeOfErrorToRaise, reference):
         # Check if we can obtain a json
         try:
             responseJson = response.json()
         except BaseException:
+            self._telemetry.error(
+                code=ErrorCode.SDK_JSON_PARSE_ERROR,
+                message="Invalid JSON response from transfer endpoint",
+            )
             raise ServerError(
-                {"error": True, "reference": reference, "errMsg": response})
+                {"error": True, "reference": reference, "errMsg": response}
+            )
 
         # Check if the response contains data parameter
         if not responseJson.get("data", None):
-            raise TypeOfErrorToRaise({"error": True,
-                                      "reference": reference,
-                                      "errMsg": responseJson.get("message",
-                                                                 "Server is down")})
+            self._telemetry.error(
+                code=ErrorCode.API_SERVER_ERROR,
+                message=responseJson.get("message", "Server is down"),
+            )
+            raise TypeOfErrorToRaise(
+                {
+                    "error": True,
+                    "reference": reference,
+                    "errMsg": responseJson.get("message", "Server is down"),
+                }
+            )
 
         # Check if it is returning a 200
         if not response.ok:
             errMsg = responseJson["data"].get("message", None)
+            self._telemetry.error(
+                code=HTTP_ERROR_MAP.get(
+                    response.status_code, ErrorCode.API_SERVER_ERROR
+                ),
+                message=str(errMsg),
+            )
             raise TypeOfErrorToRaise({"error": True, "errMsg": errMsg})
 
         return responseJson
 
     def _handleInitiateResponse(self, response, transferDetails):
         responseJson = self._preliminaryResponseChecks(
-            response, InitiateTransferError, transferDetails["reference"])
+            response, InitiateTransferError, transferDetails["reference"]
+        )
 
         if responseJson["status"] == "success":
             return {
                 "error": False,
-                "id": responseJson["data"].get(
-                    "id",
-                    None),
-                "data": responseJson["data"]}
+                "id": responseJson["data"].get("id", None),
+                "data": responseJson["data"],
+            }
 
         else:
-            raise InitiateTransferError(
-                {"error": True, "data": responseJson["data"]})
+            raise InitiateTransferError({"error": True, "data": responseJson["data"]})
 
     def _handleBulkResponse(self, response, bulkDetails):
         responseJson = self._preliminaryResponseChecks(
-            response, InitiateTransferError, None)
+            response, InitiateTransferError, None
+        )
 
         if responseJson["status"] == "success":
             return {
                 "error": False,
                 "status": responseJson["status"],
                 "message": responseJson["message"],
-                "id": responseJson["data"].get(
-                    "id",
-                    None),
-                "data": responseJson["data"]}
+                "id": responseJson["data"].get("id", None),
+                "data": responseJson["data"],
+            }
         else:
-            raise InitiateTransferError(
-                {"error": True, "data": responseJson["data"]})
+            raise InitiateTransferError({"error": True, "data": responseJson["data"]})
 
     # This makes and handles all requests pertaining to the status of your
     # transfer or account
     def _handleTransferStatusRequests(
-            self,
-            feature_name,
-            endpoint,
-            isPostRequest=False,
-            data=None):
+        self, endpoint: str, isPostRequest: bool = False, data=None
+    ):
 
         # Request headers
         headers = {
-            'content-type': 'application/json',
+            "content-type": "application/json",
         }
+
+        http_method = "POST" if isPostRequest else "GET"
+        self._telemetry.request_sent(endpoint, http_method, "", "v2")
 
         # Checks if it is a post request
         if isPostRequest:
-            response = requests.post(
-                endpoint, headers=headers, data=json.dumps(data))
+            response = requests.post(endpoint, headers=headers, data=json.dumps(data))
         else:
             response = requests.get(endpoint, headers=headers)
 
@@ -100,49 +117,37 @@ class Transfer(RaveBase):
         try:
             responseJson = response.json()
         except BaseException:
+            self._telemetry.error(
+                code=ErrorCode.SDK_JSON_PARSE_ERROR,
+                message="Invalid JSON response",
+            )
             raise ServerError({"error": True, "errMsg": response.text})
 
         # Checks if it returns a 2xx code
         if response.ok:
-            tracking_endpoint = self._trackingMap
-            responseTime = response.elapsed.total_seconds()
-            tracking_payload = {
-                "publicKey": self._getPublicKey(),
-                "language": "Python v2",
-                "version": "1.2.13",
-                "title": feature_name,
-                "message": responseTime}
-            tracking_response = requests.post(
-                tracking_endpoint, data=json.dumps(tracking_payload))
             return {"error": False, "returnedData": responseJson}
         else:
-            tracking_endpoint = self._trackingMap
-            responseTime = response.elapsed.total_seconds()
-            tracking_payload = {
-                "publicKey": self._getPublicKey(),
-                "language": "Python v2",
-                "version": "1.2.13",
-                "title": feature_name + "-error",
-                "message": responseTime}
-            raise TransferFetchError(
-                {"error": True, "returnedData": responseJson})
+            self._telemetry.error(
+                code=HTTP_ERROR_MAP.get(
+                    response.status_code, ErrorCode.API_SERVER_ERROR
+                ),
+                message=responseJson.get("message", "Transfer status request failed"),
+            )
+            raise TransferFetchError({"error": True, "returnedData": responseJson})
 
-    def _handleTransferRetriesRequests(
-            self,
-            feature_name,
-            endpoint,
-            isPostRequest=False,
-            data=None):
+    def _handleTransferRetriesRequests(self, endpoint, isPostRequest=False, data=None):
 
         # Request headers
         headers = {
-            'content-type': 'application/json',
+            "content-type": "application/json",
         }
+
+        http_method = "POST" if isPostRequest else "GET"
+        self._telemetry.request_sent(endpoint, http_method, "", "v2")
 
         # Checks if it is a post request
         if isPostRequest:
-            response = requests.post(
-                endpoint, headers=headers, data=json.dumps(data))
+            response = requests.post(endpoint, headers=headers, data=json.dumps(data))
         else:
             response = requests.get(endpoint, headers=headers)
 
@@ -151,30 +156,22 @@ class Transfer(RaveBase):
             responseJson = response.json()
             errorMessage = responseJson["message"]
         except BaseException:
+            self._telemetry.error(
+                code=ErrorCode.SDK_JSON_PARSE_ERROR,
+                message="Invalid JSON response",
+            )
             raise ServerError({"error": True, "errMsg": response.text})
 
         # Checks if it returns a 2xx code
         if response.ok:
-            tracking_endpoint = self._trackingMap
-            responseTime = response.elapsed.total_seconds()
-            tracking_payload = {
-                "publicKey": self._getPublicKey(),
-                "language": "Python v2",
-                "version": "1.2.13",
-                "title": feature_name,
-                "message": responseTime}
-            tracking_response = requests.post(
-                tracking_endpoint, data=json.dumps(tracking_payload))
             return {"error": False, "returnedData": responseJson}
         else:
-            tracking_endpoint = self._trackingMap
-            responseTime = response.elapsed.total_seconds()
-            tracking_payload = {
-                "publicKey": self._getPublicKey(),
-                "language": "Python v2",
-                "version": "1.2.13",
-                "title": feature_name + "-error",
-                "message": responseTime}
+            self._telemetry.error(
+                code=HTTP_ERROR_MAP.get(
+                    response.status_code, ErrorCode.API_SERVER_ERROR
+                ),
+                message=responseJson.get("message", "Transfer status request failed"),
+            )
             return {"error": True, "returnedData": errorMessage}
 
     def initiate(self, transferDetails):
@@ -185,9 +182,8 @@ class Transfer(RaveBase):
         transferDetails = copy.copy(transferDetails)
 
         # adding reference if not already included
-        if not ("reference" in transferDetails):
-            transferDetails.update(
-                {"reference": generateTransactionReference()})
+        if "reference" not in transferDetails:
+            transferDetails.update({"reference": generateTransactionReference()})
         transferDetails.update({"seckey": self._getSecretKey()})
 
         # These are the parameters required to initiate a transfer
@@ -197,38 +193,17 @@ class Transfer(RaveBase):
 
         # Collating request headers
         headers = {
-            'content-type': 'application/json',
+            "content-type": "application/json",
         }
 
         endpoint = self._baseUrl + self._endpointMap["transfer"]["initiate"]
+        self._telemetry.request_sent(
+            endpoint, "POST", transferDetails.get("reference", ""), "v2"
+        )
         response = requests.post(
-            endpoint,
-            headers=headers,
-            data=json.dumps(transferDetails))
+            endpoint, headers=headers, data=json.dumps(transferDetails)
+        )
 
-        if not response.ok:
-            # feature logging
-            tracking_endpoint = self._trackingMap
-            responseTime = response.elapsed.total_seconds()
-            tracking_payload = {
-                "publicKey": self._getPublicKey(),
-                "language": "Python v2",
-                "version": "1.2.13",
-                "title": "Initiate-Transfer-error",
-                "message": responseTime}
-            tracking_response = requests.post(
-                tracking_endpoint, data=json.dumps(tracking_payload))
-        else:
-            tracking_endpoint = self._trackingMap
-            responseTime = response.elapsed.total_seconds()
-            tracking_payload = {
-                "publicKey": self._getPublicKey(),
-                "language": "Python v2",
-                "version": "1.2.13",
-                "title": "Initiate-Transfer",
-                "message": responseTime}
-            tracking_response = requests.post(
-                tracking_endpoint, data=json.dumps(tracking_payload))
         return self._handleInitiateResponse(response, transferDetails)
 
     def bulk(self, bulkDetails):
@@ -244,36 +219,12 @@ class Transfer(RaveBase):
 
         # Collating request headers
         headers = {
-            'content-type': 'application/json',
+            "content-type": "application/json",
         }
+        self._telemetry.request_sent(endpoint, "POST", "", "v2")
         response = requests.post(
-            endpoint,
-            headers=headers,
-            data=json.dumps(bulkDetails))
-
-        if not response.ok:
-            # feature logging
-            tracking_endpoint = self._trackingMap
-            responseTime = response.elapsed.total_seconds()
-            tracking_payload = {
-                "publicKey": self._getPublicKey(),
-                "language": "Python v2",
-                "version": "1.2.13",
-                "title": "Initiate-Bulk-error",
-                "message": responseTime}
-            tracking_response = requests.post(
-                tracking_endpoint, data=json.dumps(tracking_payload))
-        else:
-            tracking_endpoint = self._trackingMap
-            responseTime = response.elapsed.total_seconds()
-            tracking_payload = {
-                "publicKey": self._getPublicKey(),
-                "language": "Python v2",
-                "version": "1.2.13",
-                "title": "Initiate-Bulk",
-                "message": responseTime}
-            tracking_response = requests.post(
-                tracking_endpoint, data=json.dumps(tracking_payload))
+            endpoint, headers=headers, data=json.dumps(bulkDetails)
+        )
 
         return self._handleBulkResponse(response, bulkDetails)
 
@@ -281,59 +232,73 @@ class Transfer(RaveBase):
     def fetch(self, reference=None):
 
         # feature logic
-        label = "Fetch-Transfer"
-        endpoint = self._baseUrl + self._endpointMap["transfer"]["fetch"] + \
-            "?seckey=" + self._getSecretKey() + '&reference=' + str(reference)
-        return self._handleTransferStatusRequests(label, endpoint)
+        endpoint = (
+            self._baseUrl
+            + self._endpointMap["transfer"]["fetch"]
+            + "?seckey="
+            + self._getSecretKey()
+            + "&reference="
+            + str(reference)
+        )
+        return self._handleTransferStatusRequests(endpoint)
 
     def all(self, page=None):
 
         # feature logic
-        label = "List-all-Transfers"
-        endpoint = self._baseUrl + \
-            self._endpointMap["transfer"]["fetch"] + "?seckey=" + self._getSecretKey() + "&page=" + str(page)
-        return self._handleTransferStatusRequests(label, endpoint)
+        endpoint = (
+            self._baseUrl
+            + self._endpointMap["transfer"]["fetch"]
+            + "?seckey="
+            + self._getSecretKey()
+            + "&page="
+            + str(page)
+        )
+        return self._handleTransferStatusRequests(endpoint)
 
     def getFee(self, currency=None):
 
         # feature logic
-        label = "Get-Transfer-fee-by-Currency"
-        endpoint = self._baseUrl + self._endpointMap["transfer"]["fee"] + \
-            "?seckey=" + self._getSecretKey() + "&currency=" + str(currency)
-        return self._handleTransferStatusRequests(label, endpoint)
+        endpoint = (
+            self._baseUrl
+            + self._endpointMap["transfer"]["fee"]
+            + "?seckey="
+            + self._getSecretKey()
+            + "&currency="
+            + str(currency)
+        )
+        return self._handleTransferStatusRequests(endpoint)
 
     def getBalance(self, currency):
 
         # feature logic
-        label = "Get-Balance-fee-by-Currency"
         if not currency:  # i made currency compulsory because if it is not assed in, an error message is returned from the server
             raise IncompletePaymentDetailsError("currency", ["currency"])
         endpoint = self._baseUrl + self._endpointMap["transfer"]["balance"]
-        data = {
-            "seckey": self._getSecretKey(),
-            "currency": currency
-        }
+        data = {"seckey": self._getSecretKey(), "currency": currency}
 
         return self._handleTransferStatusRequests(
-            label, endpoint, data=data, isPostRequest=True)
+            endpoint, data=data, isPostRequest=True
+        )
 
     def retryTransfer(self, transfer_id):
 
         # feature logic
-        label = "retry_failed_transfer"
         endpoint = self._baseUrl + self._endpointMap["transfer"]["retry"]
-        data = {
-            "seckey": self._getSecretKey(),
-            "id": transfer_id
-        }
+        data = {"seckey": self._getSecretKey(), "id": transfer_id}
         return self._handleTransferRetriesRequests(
-            label, endpoint, data=data, isPostRequest=True)
+            endpoint, data=data, isPostRequest=True
+        )
 
     def fetchRetries(self, transfer_id):
-        label = "fetch_transfer_retries"
-        endpoint = self._baseUrl + self._endpointMap["transfer"]["fetch"] + "/" + str(
-            transfer_id) + "/retries?seckey=" + self._getSecretKey()
-        return self._handleTransferRetriesRequests(label, endpoint)
+        endpoint = (
+            self._baseUrl
+            + self._endpointMap["transfer"]["fetch"]
+            + "/"
+            + str(transfer_id)
+            + "/retries?seckey="
+            + self._getSecretKey()
+        )
+        return self._handleTransferRetriesRequests(endpoint)
 
     # def walletTransfer(self, transferDetails):
     #     data = {
