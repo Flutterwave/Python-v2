@@ -1,16 +1,30 @@
-import requests
-import json
 import copy
+import json
+from collections.abc import Sequence
+from decimal import Decimal
+from typing import Any, cast
+
+import requests
+
+from rave_python.errors import HTTP_ERROR_MAP, ErrorCode
 from rave_python.rave_base import RaveBase
-from rave_python.rave_exceptions import RaveError, IncompletePaymentDetailsError, AuthMethodNotSupportedError, TransactionChargeError, TransactionVerificationError, TransactionValidationError, ServerError, RefundError, PreauthCaptureError
+from rave_python.rave_exceptions import (
+    PreauthCaptureError,
+    RaveDictError,
+    RefundError,
+    ServerError,
+    TransactionChargeError,
+    TransactionValidationError,
+    TransactionVerificationError,
+)
 from rave_python.rave_misc import checkIfParametersAreComplete
 
-response_object = {
+response_object: dict[str, Any] = {
     "error": False,
     "transactionComplete": False,
     "flwRef": "",
     "txRef": "",
-    "chargecode": '00',
+    "chargecode": "00",
     "status": "",
     "vbvcode": "",
     "vbvmessage": "",
@@ -18,101 +32,121 @@ response_object = {
     "currency": "",
     "chargedamount": 00,
     "chargemessage": "",
-    "meta": ""
+    "meta": "",
 }
 
+
+def getDefaultResponse() -> dict[str, Any]:
+    return {
+        "error": False,
+        "transactionComplete": False,
+        "flwRef": "",
+        "txRef": "",
+        "chargecode": "00",
+        "status": "",
+        "vbvcode": "",
+        "vbvmessage": "",
+        "acctmessage": "",
+        "currency": "",
+        "chargedamount": 00,
+        "chargemessage": "",
+        "meta": "",
+    }
+
+
 # All payment subclasses are encrypted classes
-
-
 class Payment(RaveBase):
-    """ This is the base class for all the payments """
+    """This is the base class for all the payments"""
 
-    def __init__(self, publicKey, secretKey, production, usingEnv):
+    def __init__(
+        self, publicKey: str, secretKey: str, production: bool, usingEnv: bool
+    ) -> None:
         # Instantiating the base class
-        super(
-            Payment,
-            self).__init__(
-            publicKey,
-            secretKey,
-            production,
-            usingEnv)
+        super().__init__(publicKey, secretKey, production, usingEnv)
 
     @classmethod
-    def retrieve(cls, mapping, *keys):
-        return (mapping[key] for key in keys)
+    def retrieve(cls, mapping: dict[Any, Any], *keys: str) -> tuple[Any, ...]:
+        return tuple(mapping.get(key) for key in keys)
 
     @classmethod
-    def deleteUnnecessaryKeys(cls, response_dict, *keys):
+    def deleteUnnecessaryKeys(
+        cls, response_dict: dict[str, Any], keys: Sequence[str]
+    ) -> dict[str, Any]:
         for key in keys:
-            del response_dict[key]
+            response_dict.pop(key, None)
         return response_dict
 
-    def _preliminaryResponseChecks(self, response, TypeOfErrorToRaise, txRef=None, flwRef=None):
-        preliminary_error_response = copy.deepcopy(response_object)
-        preliminary_error_response = Payment.deleteUnnecessaryKeys(
-            preliminary_error_response,
-            "transactionComplete",
-            "chargecode",
-            "vbvmessage",
-            "vbvcode",
-            "acctmessage",
-            "currency"
-        )
+    def _preliminaryResponseChecks(
+        self,
+        response: requests.Response,
+        TypeOfErrorToRaise: type[RaveDictError],
+        txRef: str | None = None,
+        flwRef: str | None = None,
+    ) -> dict[str, Any]:
 
         # Check if we can obtain a json
         try:
-            responseJson = response.json()
-        except BaseException:
+            responseJson = cast("dict[str, Any]", response.json())
+        except (ValueError, json.JSONDecodeError):
+            self._telemetry.error(
+                code=ErrorCode.SDK_JSON_PARSE_ERROR,
+                message=f"Invalid JSON response: {response.text[:100]}",
+            )
             raise ServerError(
                 {
                     "error": True,
                     "txRef": txRef,
                     "flwRef": flwRef,
-                    "errMsg": response
+                    "errMsg": f"Invalid JSON response: {response.text[:100]}",
                 }
             )
 
-        # Check if the response contains data parameter
-        if responseJson.get("data", None):
-            if txRef:
-                flwRef = responseJson["data"].get("flwRef", None)
-            if flwRef:
-                txRef = responseJson["data"].get("txRef", None)
-        
-        else:
-            raise TypeOfErrorToRaise(
-                {
-                    "error": True,
-                    "txRef": txRef,
-                    "flwRef": flwRef,
-                    "errMsg": responseJson.get("message","Server is down")
-                }
-            )
+        data = cast("dict[str, Any]", responseJson.get("data", {}))
 
-        # Check if it is returning a 200
+        flwRef = data.get("flwRef", flwRef)
+        txRef = data.get("txRef", txRef)
+
+        error_code = HTTP_ERROR_MAP.get(
+            response.status_code, ErrorCode.API_SERVER_ERROR
+        )
+
         if not response.ok:
-            errMsg = responseJson["data"].get("message", None)
+            self._telemetry.error(
+                code=error_code,
+                message=responseJson.get("message", "Server Error"),
+            )
             raise TypeOfErrorToRaise(
                 {
                     "error": True,
                     "txRef": txRef,
                     "flwRef": flwRef,
-                    "errMsg": errMsg
+                    "errMsg": responseJson.get("message", "Server Error"),
                 }
             )
 
-        return {
-            "json": responseJson,
-            "flwRef": flwRef,
-            "txRef": txRef
-        }
+        if not response.ok:
+            # Handle non-200 responses with data present
+            self._telemetry.error(
+                code=error_code,
+                message=responseJson.get("message", "Server Error"),
+            )
+            errMsg = data.get("message") if data else responseJson.get("message")
 
-    def _handleChargeResponse(self, response, txRef, request=None, isMpesa=False):
-        """ This handles transaction charge responses """
+            raise TypeOfErrorToRaise(
+                {"error": True, "txRef": txRef, "flwRef": flwRef, "errMsg": errMsg}
+            )
+
+        return {"json": responseJson, "flwRef": flwRef, "txRef": txRef}
+
+    def _handleChargeResponse(
+        self, response: requests.Response, txRef: str, isMpesa: bool = False
+    ) -> dict[str, Any]:
+        """This handles transaction charge responses"""
 
         # If we cannot parse the json, it means there is a server error
         res = self._preliminaryResponseChecks(
-            response, TransactionChargeError, txRef=txRef)
+            response, TransactionChargeError, txRef=txRef
+        )
         responseJson = res["json"]
 
         if isMpesa:
@@ -126,11 +160,8 @@ class Payment(RaveBase):
             }
         else:
             # if all preliminary tests pass
-            if not (
-                responseJson["data"].get(
-                    "chargeResponseCode",
-                    None) == "00"):
-                if responseJson.get("message", 'None') == 'Momo initiated':
+            if not (responseJson["data"].get("chargeResponseCode", None) == "00"):
+                if responseJson.get("message", "None") == "Momo initiated":
                     return {
                         "error": False,
                         "status": responseJson["status"],
@@ -138,7 +169,7 @@ class Payment(RaveBase):
                         "code": responseJson["data"]["code"],
                         "transaction status": responseJson["data"]["status"],
                         "ts": responseJson["data"]["ts"],
-                        "link": responseJson["data"]["link"]
+                        "link": responseJson["data"]["link"],
                     }
                 return {
                     "error": False,
@@ -149,7 +180,7 @@ class Payment(RaveBase):
                     "chargeResponseMessage": responseJson["data"]["response_message"],
                     "redirect": responseJson["data"]["data"]["redirect"],
                     "type": responseJson["data"]["data"]["type"],
-                    "provider": responseJson["data"]["data"]["provider"]
+                    "provider": responseJson["data"]["data"]["provider"],
                 }
 
             else:
@@ -157,14 +188,14 @@ class Payment(RaveBase):
                     "error": True,
                     "validationRequired": False,
                     "txRef": txRef,
-                    "flwRef": responseJson["data"]["flwRef"]}
+                    "flwRef": responseJson["data"]["flwRef"],
+                }
 
-    def _handleCaptureResponse(self, response, request=None):
-        """ This handles transaction charge responses """
+    def _handleCaptureResponse(self, response: requests.Response) -> dict[str, Any]:
+        """This handles transaction charge responses"""
 
         # If we cannot parse the json, it means there is a server error
-        res = self._preliminaryResponseChecks(
-            response, PreauthCaptureError, txRef='')
+        res = self._preliminaryResponseChecks(response, PreauthCaptureError, txRef="")
 
         responseJson = res["json"]
         flwRef = responseJson["data"]["flwRef"]
@@ -176,7 +207,8 @@ class Payment(RaveBase):
                 "error": False,
                 "validationRequired": True,
                 "txRef": txRef,
-                "flwRef": flwRef}
+                "flwRef": flwRef,
+            }
         else:
             return {
                 "error": False,
@@ -184,55 +216,102 @@ class Payment(RaveBase):
                 "message": responseJson["message"],
                 "validationRequired": False,
                 "txRef": txRef,
-                "flwRef": flwRef}
+                "flwRef": flwRef,
+            }
 
     # This can be altered by implementing classes but this is the default behaviour
     # Returns True and the data if successful
 
-    def _handleVerifyResponse(self, response, txRef):
-        """ This handles all responses from the verify call.\n
-             Parameters include:\n
-            response (dict) -- This is the response Http object returned from the verify call
-         """
-        verify_response = copy.deepcopy(response_object)
+    def _handleVerifyResponse(
+        self, response: requests.Response, txRef: str
+    ) -> dict[str, Any]:
+        """This handles all responses from the verify call.\n
+         Parameters include:\n
+        response (dict) -- This is the response Http object returned from the verify call
+        """
         res = self._preliminaryResponseChecks(
-            response, TransactionVerificationError, txRef=txRef)
+            response, TransactionVerificationError, txRef=txRef
+        )
 
         responseJson = res["json"]
-        # retrieve necessary properties from response
-        verify_response["status"] = responseJson['status']
-        verify_response['flwRef'], verify_response["txRef"], verify_response["vbvcode"], verify_response["vbvmessage"], verify_response["acctmessage"], verify_response["currency"], verify_response["paymenttype"], verify_response["chargecode"], verify_response["amount"], verify_response[
-            "chargedamount"], verify_response["chargemessage"], verify_response["custname"], verify_response["custemail"], verify_response["custphone"], verify_response["meta"] = Payment.retrieve(responseJson['data'], "flwref", "txref", "vbvcode", "vbvmessage", "acctmessage", "currency", "paymenttype", "chargecode", "amount", "chargedamount", "chargemessage", "custname", "custemail", "custphone", "meta")
+        data = responseJson["data"]
+        flw_meta = data.get("flwMeta", {})
 
-        # Check if the chargecode is 00
-        if verify_response['chargecode'] == "00":
-            verify_response["error"] = False
-            verify_response["transactionComplete"] = True
-            return verify_response
+        flwRef = data.get("flw_ref")
+        txRef = data.get("tx_ref", txRef)
+        amount = data.get("amount")
+        chargedamount = data.get("charged_amount")
+        currency = data.get("transaction_currency")
+        paymenttype = data.get("payment_entity")
+        appfee = data.get("appfee", 0)
+        meta = data.get("meta")
+        acctmessage = data.get("acctmessage")
 
+        chargecode = flw_meta.get("chargeResponse") or data.get("chargecode")
+        chargemessage = flw_meta.get("chargeResponseMessage") or data.get(
+            "chargemessage"
+        )
+        vbvcode = flw_meta.get("VBVRESPONSECODE") or data.get("vbvcode")
+        vbvmessage = flw_meta.get("VBVRESPONSEMESSAGE") or data.get("vbvmessage")
+
+        custname = data.get("customer.fullName")
+        custemail = data.get("customer.email")
+        custphone = data.get("customer.phone")
+
+        transaction_complete = (
+            responseJson.get("status") == "success"
+            and data.get("status") == "successful"
+            and chargecode == "00"
+        )
+
+        if transaction_complete:
+            self._telemetry.transaction(
+                reference=txRef,
+                currency=currency or "",
+                amount=Decimal(str(amount or 0)),
+                fee=Decimal(str(appfee or 0)),
+                method=paymenttype or "unknown",
+            )
         else:
-            verify_response["error"] = True  # changed to True on 15/10/2018
-            verify_response["transactionComplete"] = False
-            return verify_response
+            self._telemetry.error(
+                code=ErrorCode.VERIFY_FAILED,
+                message=chargemessage or "Verification failed",
+            )
 
-        # # Check if the chargecode is 00
-        # if not (responseJson["data"].get("chargecode", None) == "00"):
-        # return {"error": False, "transactionComplete": False, "txRef": txRef,
-        # "flwRef":flwRef}
-
-        # else:
-        # return {"error": False, "transactionComplete": True, "txRef": txRef,
-        # "flwRef":flwRef}
+        return {
+            "error": not transaction_complete,
+            "transactionComplete": transaction_complete,
+            "status": responseJson.get("status"),
+            "txRef": txRef,
+            "flwRef": flwRef,
+            "amount": amount,
+            "chargedamount": chargedamount,
+            "currency": currency,
+            "paymenttype": paymenttype,
+            "appfee": appfee,
+            "chargecode": chargecode,
+            "chargemessage": chargemessage,
+            "vbvcode": vbvcode,
+            "vbvmessage": vbvmessage,
+            "acctmessage": acctmessage,
+            "custname": custname,
+            "custemail": custemail,
+            "custphone": custphone,
+            "meta": meta,
+        }
 
     # returns true if further action is required, false if it isn't
 
-    def _handleValidateResponse(self, response, flwRef, request=None):
-        """ This handles validation responses """
+    def _handleValidateResponse(
+        self, response: requests.Response, flwRef: str
+    ) -> dict[str, Any]:
+        """This handles validation responses"""
 
         # If json is not parseable, it means there is a problem in server
 
         res = self._preliminaryResponseChecks(
-            response, TransactionValidationError, flwRef=flwRef)
+            response, TransactionValidationError, flwRef=flwRef
+        )
 
         responseJson = res["json"]
         if responseJson["data"].get("tx") is None:
@@ -242,16 +321,25 @@ class Payment(RaveBase):
 
         # Of all preliminary checks passed
         if not (
-            responseJson["data"].get(
-                "tx",
-                responseJson["data"]).get(
-                "chargeResponseCode",
-                None) == "00"):
-            errMsg = responseJson["data"].get(
-                "tx", responseJson["data"]).get(
-                "chargeResponseMessage", None)
+            responseJson["data"]
+            .get("tx", responseJson["data"])
+            .get("chargeResponseCode", None)
+            == "00"
+        ):
+            errMsg = (
+                responseJson["data"]
+                .get("tx", responseJson["data"])
+                .get("chargeResponseMessage", None)
+            )
+
+            self._telemetry.error(
+                code=ErrorCode.VALIDATION_INVALID_OTP,
+                message=errMsg,
+            )
+
             raise TransactionValidationError(
-                {"error": True, "txRef": txRef, "flwRef": flwRef, "errMsg": errMsg})
+                {"error": True, "txRef": txRef, "flwRef": flwRef, "errMsg": errMsg}
+            )
 
         else:
             return {
@@ -259,26 +347,23 @@ class Payment(RaveBase):
                 "message": responseJson["message"],
                 "error": False,
                 "txRef": txRef,
-                "flwRef": flwRef}
-
-    # Charge function (hasFailed is a flag that indicates there is a timeout),
-    # shouldReturnRequest indicates whether to send the request back to the
-    # _handleResponses function
+                "flwRef": flwRef,
+            }
 
     def charge(
-            self,
-            feature_name,
-            paymentDetails,
-            requiredParameters,
-            endpoint,
-            shouldReturnRequest=False,
-            isMpesa=False):
-        """ This is the base charge call. It is usually overridden by implementing classes.\n
-             Parameters include:\n
-            paymentDetails (dict) -- These are the parameters passed to the function for processing\n
-            requiredParameters (list) -- These are the parameters required for the specific call\n
-            hasFailed (boolean) -- This is a flag to determine if the attempt had previously failed due to a timeout\n
-            shouldReturnRequest -- This determines whether a request is passed to _handleResponses\n
+        self,
+        paymentDetails: dict[str, Any],
+        requiredParameters: Sequence[str],
+        endpoint: str,
+        shouldReturnRequest: bool = False,
+        isMpesa: bool = False,
+    ) -> dict[str, Any]:
+        """This is the base charge call. It is usually overridden by implementing classes.\n
+         Parameters include:\n
+        paymentDetails (dict) -- These are the parameters passed to the function for processing\n
+        requiredParameters (list) -- These are the parameters required for the specific call\n
+        hasFailed (boolean) -- This is a flag to determine if the attempt had previously failed due to a timeout\n
+        shouldReturnRequest -- This determines whether a request is passed to _handleResponses\n
         """
         # Checking for required components
         try:
@@ -295,50 +380,53 @@ class Payment(RaveBase):
 
         # Collating request headers
         headers = {
-            'content-type': 'application/json',
+            "content-type": "application/json",
         }
         if "token" in paymentDetails:
             paymentDetails.update({"SECKEY": self._getSecretKey()})
-            # print(json.dumps(paymentDetails))
+            self._telemetry.request_sent(
+                endpoint, "POST", paymentDetails.get("txRef", ""), "v2"
+            )
             response = requests.post(
-                endpoint,
-                headers=headers,
-                data=json.dumps(paymentDetails))
+                endpoint, headers=headers, data=json.dumps(paymentDetails)
+            )
+
         else:
             # Encrypting payment details (_encrypt is inherited from
             # RaveEncryption)
             encryptedPaymentDetails = self._encrypt(json.dumps(paymentDetails))
 
             # Collating the payload for the request
-            payload = {
+            payload: dict[str, Any] = {
                 "PBFPubKey": paymentDetails["PBFPubKey"],
                 "client": encryptedPaymentDetails,
-                "alg": "3DES-24"
+                "alg": "3DES-24",
             }
+            self._telemetry.request_sent(
+                endpoint, "POST", paymentDetails.get("txRef", ""), "v2"
+            )
             response = requests.post(
-                endpoint, headers=headers, data=json.dumps(payload))
+                endpoint, headers=headers, data=json.dumps(payload)
+            )
 
         if shouldReturnRequest:
             if isMpesa:
                 return self._handleChargeResponse(
-                    response, paymentDetails["txRef"], paymentDetails, True)
-            return self._handleChargeResponse(
-                response, paymentDetails["txRef"], paymentDetails)
+                    response, paymentDetails["txRef"], True
+                )
+            return self._handleChargeResponse(response, paymentDetails["txRef"])
         else:
             if isMpesa:
                 return self._handleChargeResponse(
-                    response, paymentDetails["txRef"], paymentDetails, True)
-            return self._handleChargeResponse(
-                response, paymentDetails["txRef"])
+                    response, paymentDetails["txRef"], True
+                )
+            return self._handleChargeResponse(response, paymentDetails["txRef"])
 
-        # print (paymentDetails, endpoint, headers, json.dumps(payload))
-        # return response.json()
-
-    def validate(self, feature_name, flwRef, otp, endpoint=None):
-        """ This is the base validate call.\n
-             Parameters include:\n
-            flwRef (string) -- This is the flutterwave reference returned from a successful charge call. You can access this from action["flwRef"] returned from the charge call\n
-            otp (string) -- This is the otp sent to the user \n
+    def validate(self, flwRef: str, otp: str, endpoint: str | None) -> dict[str, Any]:
+        """This is the base validate call.\n
+         Parameters include:\n
+        flwRef (string) -- This is the flutterwave reference returned from a successful charge call. You can access this from action["flwRef"] returned from the charge call\n
+        otp (string) -- This is the otp sent to the user \n
         """
 
         if not endpoint:
@@ -346,151 +434,80 @@ class Payment(RaveBase):
 
         # Collating request headers
         headers = {
-            'content-type': 'application/json',
+            "content-type": "application/json",
         }
 
-        payload = {
+        payload: dict[str, Any] = {
             "PBFPubKey": self._getPublicKey(),
             "transactionreference": flwRef,
             "transaction_reference": flwRef,
-            "otp": otp
+            "otp": otp,
         }
-
-        response = requests.post(
-            endpoint,
-            headers=headers,
-            data=json.dumps(payload))
-
-        # feature logging
-        if response.ok:
-            tracking_endpoint = self._trackingMap
-            responseTime = response.elapsed.total_seconds()
-            tracking_payload = {
-                "publicKey": self._getPublicKey(),
-                "language": "Python v2",
-                "version": "1.2.13",
-                "title": feature_name,
-                "message": responseTime}
-            tracking_response = requests.post(
-                tracking_endpoint, data=json.dumps(tracking_payload))
-        else:
-            tracking_endpoint = self._trackingMap
-            responseTime = response.elapsed.total_seconds()
-            tracking_payload = {
-                "publicKey": self._getPublicKey(),
-                "language": "Python v2",
-                "version": "1.2.13",
-                "title": feature_name + "-error",
-                "message": responseTime}
-            tracking_response = requests.post(
-                tracking_endpoint, data=json.dumps(tracking_payload))
+        self._telemetry.request_sent(endpoint, "POST", flwRef, "v2")  # type: ignore
+        response = requests.post(endpoint, headers=headers, data=json.dumps(payload))  # type: ignore
 
         return self._handleValidateResponse(response, flwRef)
 
     # Verify charge
-    def verify(self, feature_name, txRef, endpoint=None):
-        """ This is used to check the status of a transaction.\n
-             Parameters include:\n
-            txRef (string) -- This is the transaction reference that you passed to your charge call. If you didn't define a reference, you can access the auto-generated one from payload["txRef"] or action["txRef"] from the charge call\n
+    def verify(self, txRef: str, endpoint: str | None = None) -> dict[str, Any]:
+        """This is used to check the status of a transaction.\n
+         Parameters include:\n
+        txRef (string) -- This is the transaction reference that you passed to your charge call. If you didn't define a reference, you can access the auto-generated one from payload["txRef"] or action["txRef"] from the charge call\n
         """
-        if not endpoint:
-            endpoint = self._baseUrl + self._endpointMap["verify"]
+
+        endpoint = self._baseUrl + self._endpointMap["verify"]
 
         # Collating request headers
         headers = {
-            'content-type': 'application/json',
+            "content-type": "application/json",
         }
 
         # Payload for the request headers
-        payload = {
-            "txref": txRef,
-            "SECKEY": self._getSecretKey()
-        }
-        response = requests.post(
-            endpoint,
-            headers=headers,
-            data=json.dumps(payload))
-
-        # feature logging
-        if response.ok:
-            tracking_endpoint = self._trackingMap
-            responseTime = response.elapsed.total_seconds()
-            tracking_payload = {
-                "publicKey": self._getPublicKey(),
-                "language": "Python v2",
-                "version": "1.2.13",
-                "title": feature_name,
-                "message": responseTime}
-            tracking_response = requests.post(
-                tracking_endpoint, data=json.dumps(tracking_payload))
-        else:
-            tracking_endpoint = self._trackingMap
-            responseTime = response.elapsed.total_seconds()
-            tracking_payload = {
-                "publicKey": self._getPublicKey(),
-                "language": "Python v2",
-                "version": "1.2.13",
-                "title": feature_name + "-error",
-                "message": responseTime}
-            tracking_response = requests.post(
-                tracking_endpoint, data=json.dumps(tracking_payload))
+        payload: dict[str, Any] = {"txref": txRef, "SECKEY": self._getSecretKey()}
+        self._telemetry.request_sent(endpoint, "POST", txRef, "v2")  # type: ignore
+        response = requests.post(endpoint, headers=headers, data=json.dumps(payload))  # type: ignore
 
         return self._handleVerifyResponse(response, txRef)
 
     # Refund call
-    def refund(self, feature_name, flwRef, amount, ):
-        """ This is used to refund a transaction from any of Rave's component objects.\n
-             Parameters include:\n
-            flwRef (string) -- This is the flutterwave reference returned from a successful call from any component. You can access this from action["flwRef"] returned from the charge call
+    def refund(
+        self, flwRef: str, amount: Decimal, endpoint: str | None = None
+    ) -> tuple[bool, dict[str, Any]] | None:
+        """This is used to refund a transaction from any of Rave's component objects.\n
+         Parameters include:\n
+        flwRef (string) -- This is the flutterwave reference returned from a successful call from any component. You can access this from action["flwRef"] returned from the charge call
         """
-        payload = {
+
+        payload: dict[str, Any] = {
             "ref": flwRef,
             "seckey": self._getSecretKey(),
             "amount": amount,
         }
-        headers = {
-            "Content-Type": "application/json"
-        }
-        endpoint = self._baseUrl + self._endpointMap["refund"]
-
-        response = requests.post(
-            endpoint,
-            headers=headers,
-            data=json.dumps(payload))
-
-        # feature logging
-        if response.ok:
-            tracking_endpoint = self._trackingMap
-            responseTime = response.elapsed.total_seconds()
-            tracking_payload = {
-                "publicKey": self._getPublicKey(),
-                "language": "Python v2",
-                "version": "1.2.13",
-                "title": feature_name,
-                "message": responseTime}
-            tracking_response = requests.post(
-                tracking_endpoint, data=json.dumps(tracking_payload))
-        else:
-            tracking_endpoint = self._trackingMap
-            responseTime = response.elapsed.total_seconds()
-            tracking_payload = {
-                "publicKey": self._getPublicKey(),
-                "language": "Python v2",
-                "version": "1.2.13",
-                "title": feature_name + "-error",
-                "message": responseTime}
-            tracking_response = requests.post(
-                tracking_endpoint, data=json.dumps(tracking_payload))
+        headers = {"Content-Type": "application/json"}
+        endpoint: str = self._baseUrl + self._endpointMap["refund"]
+        self._telemetry.request_sent(endpoint, "POST", flwRef, "v2")
+        response = requests.post(endpoint, headers=headers, data=json.dumps(payload))
 
         try:
             responseJson = response.json()
         except ValueError:
-            raise ServerError(response)
+            self._telemetry.error(
+                code=ErrorCode.SDK_JSON_PARSE_ERROR,
+                message=f"Invalid JSON response: {response.text[:100]}",
+            )
+            raise ServerError(
+                {
+                    "error": True,
+                    "errMsg": f"Invalid JSON response: {response.text[:100]}",
+                }
+            )
 
         if responseJson.get("status", None) == "error":
+            self._telemetry.error(
+                code=ErrorCode.API_BAD_REQUEST,
+                message=responseJson.get("message", None),
+            )
+
             raise RefundError(responseJson.get("message", None))
         elif responseJson.get("status", None) == "success":
             return True, responseJson.get("data", None)
-
-        # responseJson =response.json()
-        # return responseJson.get("data", None)

@@ -26,18 +26,22 @@ Available features include:
 ## Table of Contents
 1. [Requirements](#requirements)
 2. [Installation](#installation)
-3. [Initialization](#initialization)
-4. [Usage](#usage)
-5. [Testing](#testing)
-6. [Debugging Errors](#debugging-errors)
-7. [Support](#support)
-8. [Contribution guidelines](#)
-9. [License](#)
-10. [Changelog](#)
+3. [Environment Variables](#environment-variables)
+4. [Initialization](#initialization)
+5. [Telemetry](#telemetry)
+6. [Usage](#usage)
+7. [Testing](#testing)
+8. [Debugging Errors](#debugging-errors)
+9. [Support](#support)
+10. [Contribution guidelines](#)
+11. [License](/LICENSE)
+12. [Changelog](/CHANGELOG.MD)
 
 ## Requirements
 1. Flutterwave for business [API Keys](https://developer.flutterwave.com/docs/integration-guides/authentication)
-2. Supported Python versions: >=2.7, !=3.0.\*, !=3.1.\*, !=3.2.\*, !=3.3.\*, !=3.4.\*
+2. **Python >= 3.10** (Python 2.x and Python <3.10 are no longer supported as of v1.5.0)
+
+> **Upgrading from an earlier version?** See the [Changelog](/CHANGELOG.md) and [Upgrade Guide](/Upgrade.md) for a full list of breaking changes and migration steps.
 
 
 ## Installation
@@ -50,6 +54,21 @@ pip install rave_python
 Note: This is currently under active development
 
 
+## Environment Variables
+
+| Variable | Required | Default | Description |
+|---|---|---|---|
+| `SECRET_KEY` | Yes, if `usingEnv=True` (default) | — | Your Flutterwave secret key |
+| `FLW_SDK_STATE_PATH` | No | `/tmp/flw_sdk.json` | Local cache file used to store the resolved telemetry `app_id` |
+
+Example `.env` file:
+
+```sh
+SECRET_KEY=FLWSECK_TEST-xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx-X
+SIGNOZ_API_KEY=your_signoz_api_key
+```
+
+
 ## Initialization
 
 ### Import Package
@@ -60,7 +79,7 @@ from rave_python import Rave
 ```
 
 #### To instantiate in sandbox:
-To use Rave, instantiate the Rave class with your public key. We recommend that you store your secret key in an environment variable named, ```RAVE_SECRET_KEY```. Instantiating your rave object is therefore as simple as:
+To use Rave, instantiate the Rave class with your public key. We recommend that you store your secret key in an environment variable named ```SECRET_KEY``` (see [Environment Variables](#environment-variables)). Instantiating your rave object is therefore as simple as:
 
 ```py
 rave = Rave("YOUR_PUBLIC_KEY")
@@ -81,6 +100,23 @@ To initialize in production, simply set the ```production``` flag to ```True```.
 rave = Rave("YOUR_PUBLIC_KEY", production=True)
 ```
 
+
+## Telemetry
+
+As of v1.5.0, the SDK sends anonymised usage telemetry to Flutterwave's internal monitoring
+service.
+
+**What is sent, and when:**
+
+| Event | When it fires |
+|---|---|
+| `app.created` | Once per process, when the SDK is first initialised |
+| `request.sent` | Before every API call — includes HTTP method, path, environment, and library version |
+| `app.error` | On API errors, JSON parse failures, and failed transaction verifications |
+| `app.transaction` | On successful payment verification — **production environment only**, deduplicated by `tx_ref` |
+
+Telemetry is fire-and-forget: all calls happen on background daemon threads and never raise
+exceptions or block your application, even if the telemetry service is unreachable.
 
 
 # Usage
@@ -241,11 +277,31 @@ res = rave.Card.verify(data["txRef"])
 
 #### Returns
 
-This call returns a dict with ```txRef```, ```flwRef``` and ```transactionComplete``` which indicates whether the transaction was completed successfully. 
+This call returns a dict with ```txRef```, ```flwRef``` and ```transactionComplete``` which indicates whether the transaction was completed successfully.
 
 Sample
 ```py
-{'flwRef': None, 'cardToken': u'flw-t1nf-5b0f12d565cd961f73c51370b1340f1f-m03k', 'chargedAmount': 100, 'amount': 100, 'transactionComplete': True, 'error': False, 'txRef': u'MC-1538095718251'}
+{
+    'error': False,
+    'transactionComplete': True,
+    'status': 'success',
+    'txRef': 'MC-1538095718251',
+    'flwRef': 'FLW-MOCK-a7911408bd7f55f89f0211819d6fd370',
+    'amount': 100,
+    'chargedamount': 102,
+    'cardToken': 'flw-t1nf-5b0f12d565cd961f73c51370b1340f1f-m03k',
+    'vbvcode': '00',
+    'vbvmessage': 'Approved by Financial Institution',
+    'chargemessage': 'Approved by Financial Institution',
+    'chargecode': '00',
+    'currency': 'NGN',
+    'paymenttype': 'card',
+    'appfee': 2,
+    'custname': 'Flutterwave Developers',
+    'custemail': 'developers@flutterwavego.com',
+    'custphone': '08000000000',
+    'meta': []
+}
 ```
 
 > Please note that after charging a card successfully on rave, if you wish to save the card for further charges, in your verify payment response you will find an object: `"cardtoken": "flw-t0-f6f915f53a094671d98560272572993e-m03k"`.  This is the token you will use for card tokenization. Details are provided below.
@@ -311,11 +367,7 @@ except RaveExceptions.IncompletePaymentDetailsError as e:
     print(e.err["errMsg"])
 ```
 
-Once this is done, call ```rave.Card.verify``` passing in the ```txRef``` returned in the response to verify the payment. Sample response:
-
-```py
-{'flwRef': None, 'cardToken': u'flw-t1nf-5b0f12d565cd961f73c51370b1340f1f-m03k', 'chargedAmount': 1000, 'amount': 1000, 'transactionComplete': True, 'error': False, 'txRef': 'MC-7666-YU'}
-```
+Once this is done, call ```rave.Card.verify``` passing in the ```txRef``` returned in the response to verify the payment. This returns the same response shape documented under [`.verify(txRef)`](#verifytxref) above — check ```res["transactionComplete"]``` to confirm the saved-card charge completed successfully.
 
 ```rave.Card.verify``` raises a ```TransactionVerificationError``` if an invalid ```txRef``` is supplied. You can handle this as such:
 
@@ -352,7 +404,9 @@ Sample
 ### Complete card charge flow
 
 ```py
+import os
 from rave_python import Rave, RaveExceptions, Misc
+
 rave = Rave("YOUR_PUBLIC_KEY", "YOUR_SECRET_KEY", usingEnv = False)
 
 # Payload with pin
@@ -367,6 +421,11 @@ payload = {
   "firstname": "temi",
   "lastname": "desola",
   "IP": "355426087298442",
+  "currency": "NGN",
+  "country": "NG",
+  # Optional — if omitted, a reference is generated automatically.
+  # See the Misc library for `generateTransactionReference`.
+  "txRef": f"test-{os.urandom(4).hex()}",
 }
 
 try:
@@ -383,7 +442,8 @@ try:
         res = rave.Card.charge(payload)
 
     if res["validationRequired"]:
-        rave.Card.validate(res["flwRef"], "")
+        # Replace "12345" with the OTP received by the customer
+        rave.Card.validate(res["flwRef"], "12345")
 
     res = rave.Card.verify(res["txRef"])
     print(res["transactionComplete"])
@@ -3129,7 +3189,7 @@ This call returns a dictionary. A sample response is:
 
 ## Testing
 
-All of the SDK's tests are written with Python's ```unittest``` module. The tests currently test:
+The SDK's tests are written using ```pytest```. The tests currently cover:
 ```rave.Account```
 ```rave.Card```
 ```rave.Transfer```
@@ -3137,16 +3197,30 @@ All of the SDK's tests are written with Python's ```unittest``` module. The test
 ```rave.Subaccount```
 ```rave.Subscriptions```
 ```rave.Paymentplan```
+```rave_python.telemetry```
+```rave_python.telemetryClient```
+```rave_python.identity```
+```rave_python.errors``` / ```rave_python.events```
 
-They can be run like so:
+Install test dependencies and run the suite:
 
 ```sh
-python test.py
+pip install -r requirements-dev.txt  # or: pip install pytest
+pytest tests/
+```
+
+To generate a verbose report with a JUnit XML output (useful for CI):
+
+```sh
+mkdir -p reports
+pytest tests/ --tb=short -v --junit-xml=reports/results.xml
 ```
 
 >**NOTE:** If the test fails for creating a subaccount, just change the ```account_number``` ```account_bank```  and ```businesss_email``` to something different
 
 >**NOTE:** The test may fail for account validation - ``` Pending OTP validation``` depending on whether the service is down or not
+
+>**NOTE:** Running the test suite requires ```SECRET_KEY``` and ```SIGNOZ_API_KEY``` to be set in your environment (see [Environment Variables](#environment-variables)).
 <br>
 
 
@@ -3171,8 +3245,3 @@ Read more about our community contribution guidelines [here](/CONTRIBUTING.md)
 
 By contributing to this library, you agree that your contributions will be licensed under its [MIT license](/LICENSE).
 Copyright (c) Flutterwave Inc.
-
-## Test section
-Sample Description for teset file. 
-
-Final test 3 out of 10. Fingers crossed

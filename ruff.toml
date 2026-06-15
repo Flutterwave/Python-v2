@@ -1,0 +1,14 @@
+line-length = 88
+
+[lint]
+select = ["ALL"]
+
+[lint.per-file-ignores]
+# Legacy payment files - suppress style/naming rules that predate this project's type adoption
+"rave_python/rave_payment.py" = [
+    "ANN", "N", "D", "COM812", "S113", "B904",
+    "RET503", "RET505", "RET506", "FBT", "SIM201",
+    "PLR5501", "TRY203", "E501", "RUF100",
+]
+"rave_python/rave_*.py" = ["ANN", "N", "D", "COM", "S113", "B", "RET", "FBT", "SIM", "PLR", "TRY", "E501"]
+"rave_python/rave_base.py" = ["ANN", "N", "D", "COM", "S", "B", "RET", "FBT", "SIM", "PLR", "TRY", "E501"]

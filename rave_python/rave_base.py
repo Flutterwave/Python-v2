@@ -1,29 +1,36 @@
-import os
-import hashlib
-import warnings
-import requests
-import json
-from rave_python.rave_exceptions import ServerError, RefundError
 import base64
+import hashlib
+import os
+import warnings
+from typing import Any, Optional
+
 from Crypto.Cipher import DES3
+
+from rave_python.events import Env
+from rave_python.identity import AppIdentityClient
+from rave_python.telemetryClient import TelemetryClient
 
 
 class RaveBase(object):
-    """ This is the core of the implementation. It contains the encryption and initialization functions. It also contains all direct rave functions that require publicKey or secretKey (refund) """
+    """This is the core of the implementation. It contains the encryption and initialization functions. It also contains all direct rave functions that require publicKey or secretKey (refund)"""
 
     def __init__(
-            self,
-            publicKey=None,
-            secretKey=None,
-            production=False,
-            usingEnv=True):
+        self,
+        publicKey: Optional[str] = None,
+        secretKey: Optional[str] = None,
+        production: bool = False,
+        usingEnv: bool = True,
+    ):
 
         # config variables (protected)
         self._baseUrlMap = [
             "https://ravesandboxapi.flutterwave.com/",
-            "https://api.ravepay.co/"]
-        self._trackingMap = "https://kgelfdz7mf.execute-api.us-east-1.amazonaws.com/staging/sendevent"
-        self._endpointMap = {
+            "https://api.flutterwave.com/",
+        ]
+        self._trackingMap = (
+            "https://kgelfdz7mf.execute-api.us-east-1.amazonaws.com/staging/sendevent"
+        )
+        self._endpointMap: dict[str, Any] = {
             "bills": {
                 "create": "v2/services/confluence",
             },
@@ -35,7 +42,7 @@ class RaveBase(object):
                 "validate": "flwv3-pug/getpaidx/api/validatecharge",
                 "verify": "flwv3-pug/getpaidx/api/v2/verify",
                 "chargeSavedCard": "flwv3-pug/getpaidx/api/tokenized/charge",
-                "refund": "gpx/merchant/transactions/refund"
+                "refund": "gpx/merchant/transactions/refund",
             },
             "ebills": {
                 "create": "flwv3-pug/getpaidx/api/ebills/generateorder/",
@@ -44,26 +51,26 @@ class RaveBase(object):
             "preauth": {
                 "charge": "flwv3-pug/getpaidx/api/tokenized/preauth_charge",
                 "capture": "flwv3-pug/getpaidx/api/capture",
-                "refundorvoid": "flwv3-pug/getpaidx/api/refundorvoid"
+                "refundorvoid": "flwv3-pug/getpaidx/api/refundorvoid",
             },
             "account": {
                 "charge": "flwv3-pug/getpaidx/api/charge",
                 "validate": "flwv3-pug/getpaidx/api/validate",
                 "verify": "flwv3-pug/getpaidx/api/v2/verify",
-                "refund": "gpx/merchant/transactions/refund"
+                "refund": "gpx/merchant/transactions/refund",
             },
             "payment_plan": {
                 "create": "v2/gpx/paymentplans/create",
                 "fetch": "v2/gpx/paymentplans/query",
                 "list": "v2/gpx/paymentplans/query",
                 "cancel": "v2/gpx/paymentplans/",
-                "edit": "v2/gpx/paymentplans/"
+                "edit": "v2/gpx/paymentplans/",
             },
             "subscriptions": {
                 "fetch": "v2/gpx/subscriptions/query",
                 "list": "v2/gpx/subscriptions/query",
                 "cancel": "v2/gpx/subscriptions/",
-                "activate": "v2/gpx/subscriptions/"
+                "activate": "v2/gpx/subscriptions/",
             },
             "settlements": {
                 "list": "v2/merchant/settlements",
@@ -84,7 +91,7 @@ class RaveBase(object):
                 "balance": "v2/gpx/balance",
                 "accountVerification": "flwv3-pug/getpaidx/api/resolve_account",
                 "retry": "v2/gpx/transfers/retry",
-                "inter_wallet": "v2/gpx/transfers/wallet"
+                "inter_wallet": "v2/gpx/transfers/wallet",
             },
             "recipient": {
                 "create": "v2/gpx/transfers/beneficiaries/create",
@@ -107,24 +114,26 @@ class RaveBase(object):
                 "create": "v2/banktransfers/accountnumbers",
             },
             "verify": "flwv3-pug/getpaidx/api/v2/verify",
-            "refund": "gpx/merchant/transactions/refund"
-
+            "refund": "gpx/merchant/transactions/refund",
         }
 
         # Setting up public and private keys (private)
         # If we are using environment variables to store secretKey
-        if (usingEnv):
+        if usingEnv:
             self.__publicKey = publicKey
             self.__secretKey = os.getenv("SECRET_KEY", None)
 
             if (not self.__publicKey) or (not self.__secretKey):
                 raise ValueError(
-                    "Please set your SECRET_KEY environment variable. Otherwise, pass publicKey and secretKey as arguments and set usingEnv to false")
+                    "Please set your SECRET_KEY environment variable. Otherwise, pass publicKey and secretKey as arguments and set usingEnv to false"
+                )
 
         # If we are not using environment variables
         else:
             if (not publicKey) or (not secretKey):
-                raise ValueError("\n Please provide as arguments your publicKey and secretKey. \n It is advised however that you provide secret key as an environment variables. \n To do this, remove the usingEnv flag and save your keys as environment variables, RAVE_PUBLIC_KEY and RAVE_SECRET_KEY")
+                raise ValueError(
+                    "\n Please provide as arguments your publicKey and secretKey. \n It is advised however that you provide secret key as an environment variables. \n To do this, remove the usingEnv flag and save your keys as environment variables, RAVE_PUBLIC_KEY and RAVE_SECRET_KEY"
+                )
 
             else:
                 self.__publicKey = publicKey
@@ -133,7 +142,8 @@ class RaveBase(object):
                 # Raise warning about not using environment variables
                 warnings.warn(
                     "Though you can use the usingEnv flag to pass secretKey as an argument, it is advised to store it in an environment variable, especially in production.",
-                    SyntaxWarning)
+                    SyntaxWarning,
+                )
 
         # Setting instance variables
         #
@@ -144,18 +154,29 @@ class RaveBase(object):
         # encryption key (protected)
         self._encryptionKey = self.__getEncryptionKey()
 
+        self._environment = Env.PRODUCTION if production else Env.SANDBOX
+
+        identity_client = AppIdentityClient(str(self._getPublicKey()))
+        self._app_id: str = identity_client.get_app_id()
+
+        self._telemetry = TelemetryClient(
+            app_id=self._app_id,
+            environment=self._environment,
+        )
+
+        self._telemetry.register_app(str(self._getPublicKey()))
+
     # This generates the encryption key (private)
 
     def __getEncryptionKey(self):
-        """ This generates the encryption key """
-        if (self.__secretKey):
-            hashedseckey = hashlib.md5(
-                self.__secretKey.encode("utf-8")).hexdigest()
+        """This generates the encryption key"""
+        if self.__secretKey:
+            hashedseckey = hashlib.md5(self.__secretKey.encode("utf-8")).hexdigest()
             hashedseckeylast12 = hashedseckey[-12:]
-            seckeyadjusted = self.__secretKey.replace('FLWSECK-', '')
+            seckeyadjusted = self.__secretKey.replace("FLWSECK-", "")
             seckeyadjustedfirst12 = seckeyadjusted[:12]
             key = seckeyadjustedfirst12 + hashedseckeylast12
-            return key
+            return key.encode("utf-8")
 
         raise ValueError("Please initialize RavePay")
 
@@ -168,19 +189,19 @@ class RaveBase(object):
         return self.__secretKey
 
     # This encrypts text
-    def _encrypt(self, plainText):
-        """ This is the encryption function.\n
-             Parameters include:\n
-            plainText (string) -- This is the text you wish to encrypt
+    def _encrypt(self, plainText: Any):
+        """This is the encryption function.\n
+         Parameters include:\n
+        plainText (string) -- This is the text you wish to encrypt
         """
         blockSize = 8
         padDiff = blockSize - (len(plainText) % blockSize)
         key = self.__getEncryptionKey()
-        cipher = DES3.new(key, DES3.MODE_ECB)
+        cipher = DES3.new(key, DES3.MODE_ECB)  # type: ignore
         plainText = "{}{}".format(plainText, "".join(chr(padDiff) * padDiff))
         # cipher.encrypt - the C function that powers this doesn't accept plain
         # string, rather it accepts byte strings, hence the need for the
         # conversion below
-        test = plainText.encode('utf-8')
+        test = plainText.encode("utf-8")
         encrypted = base64.b64encode(cipher.encrypt(test)).decode("utf-8")
         return encrypted
