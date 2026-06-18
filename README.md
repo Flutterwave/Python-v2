@@ -2,6 +2,9 @@
     <img title="Flutterwave" height="200" src="https://flutterwave.com/images/logo/full.svg" width="50%"/>
 </p>
 
+> [!WARNING]
+> v1.5.0 requires Python 3.10 or higher. Before migrating, please read the [Migration Guide](/Upgrade.md) and ensure your Python version meets this requirement
+
 # Flutterwave Python Library.
 ![PyPI](https://img.shields.io/pypi/v/rave_python)
 ![PyPI - Downloads](https://img.shields.io/pypi/dm/rave_python)
